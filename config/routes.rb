@@ -6,7 +6,6 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
@@ -30,7 +29,6 @@ Rails.application.routes.draw do
       post "search"
     end
   end
-
 end
 
 # LINK TO ROUTES:
@@ -49,12 +47,3 @@ end
 
 # 5. Link to card details:
 # <%= link_to card.name, card_path(card) %>
-
-# 6.Form to add card to collection:
-# <%= form_with url: collection_collection_cards_path(@collection), method: :post do |f| %>
-#   <%= f.hidden_field :card_id, value: @card.id %>
-#   <%= f.submit "Add to Collection" %>
-# <% end %>
-
-# 7. Button to remove card from collection:
-# <%= button_to "Remove", collection_collection_card_path(@collection, @collection_card), method: :delete %>
