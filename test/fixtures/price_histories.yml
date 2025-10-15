@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cards: one
+  price: 9.99
+  source: MyString
+  recorded_at: 2025-10-15
+
+two:
+  cards: two
+  price: 9.99
+  source: MyString
+  recorded_at: 2025-10-15
