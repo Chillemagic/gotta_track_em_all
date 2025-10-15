@@ -1,0 +1,9 @@
+<h1>Your current Collections</h1>
+<br>
+<ul>
+  <% @collections.each do |c| %>
+    <li><%= c.name %></li>
+    <li><%= c.description %></li>
+    <br>
+  <% end %>
+</ul>
