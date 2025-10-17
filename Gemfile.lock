@@ -113,6 +113,9 @@ GEM
       responders
       warden (~> 1.2.3)
     dotenv (3.1.8)
+    dotenv-rails (3.1.8)
+      dotenv (= 3.1.8)
+      railties (>= 6.1)
     drb (2.2.3)
     ed25519 (1.4.0)
     erb (5.1.1)
@@ -445,6 +448,7 @@ DEPENDENCIES
   capybara
   debug
   devise (~> 4.9)
+  dotenv-rails
   httparty
   importmap-rails
   jbuilder

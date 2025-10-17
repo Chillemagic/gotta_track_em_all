@@ -71,3 +71,6 @@ gem "httparty"
 
 # SDK for pokemon tcg_api
 gem 'pokemon_tcg_sdk'
+
+# EMV file
+gem 'dotenv-rails', groups: [:development, :test]
