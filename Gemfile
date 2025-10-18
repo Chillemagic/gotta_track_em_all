@@ -65,6 +65,7 @@ end
 
 # User login
 gem "devise", "~> 4.9"
+gem "simple_form"
 
 # httparty for api requests
 gem "httparty"

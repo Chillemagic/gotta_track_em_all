@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "pages/home"
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -14,9 +15,7 @@ Rails.application.routes.draw do
   root "pages#home"
 
   # collections routes
-  resources :collections do
-    resources :collection_cards, only: [ :create, :update, :destroy ]
-  end
+  resources :collections 
 
   # cards routes
   resources :cards, only: [ :index, :show ] do
