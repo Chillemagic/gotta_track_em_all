@@ -4,6 +4,10 @@
   <% @collections.each do |c| %>
     <li><%= c.name %></li>
     <li><%= c.description %></li>
-    <br>
+    <%= link_to "Show Card", collection_path(c) %>
+    <%= link_to "Edit", edit_collection_path(c) %>
+    <%= link_to "Delete", collection_path(c), data:{turbo_method: :delete} %>
   <% end %>
 </ul>
+<br>
+<%= link_to "Create New Collection", new_collection_path %>
