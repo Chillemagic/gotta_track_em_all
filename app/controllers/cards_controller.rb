@@ -1,4 +1,5 @@
 class CardsController < ApplicationController
+  before_action :authenticate_user! # for Devise
   before_action :set_card, only: %i[show destroy]
 
   def index
