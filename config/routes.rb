@@ -14,5 +14,37 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "pages#home"
 
-  resources :collections, only: [:new, :create, :index, :show]
+  # collections routes
+  resources :collections do
+    resources :collection_cards, only: [ :create, :update, :destroy ]
+  end
+
+  # cards routes
+  resources :cards, only: [ :index, :show ] do
+    # member refers to an individual car
+    member do
+      get "price_history"
+    end
+    # collection refers to all cards
+    collection do
+      post "search"
+    end
+  end
 end
+
+# LINK TO ROUTES:
+
+# 1. Link to all collections:
+# <%= link_to "My Collections", collections_path %>
+
+# 2. Link to specific collection:
+# <%= link_to @collection.name, collection_path(@collection) %>
+
+# 3. Link to new collection form:
+# <%= link_to "New Collection", new_collection_path %>
+
+# 4. Link to edit collection:
+# <%= link_to "Edit", edit_collection_path(@collection) %>
+
+# 5. Link to card details:
+# <%= link_to card.name, card_path(card) %>

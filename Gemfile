@@ -63,5 +63,15 @@ group :test do
   gem "selenium-webdriver"
 end
 
+# User login
 gem "devise", "~> 4.9"
 gem "simple_form"
+
+# httparty for api requests
+gem "httparty"
+
+# SDK for pokemon tcg_api
+gem 'pokemon_tcg_sdk'
+
+# EMV file
+gem 'dotenv-rails', groups: [:development, :test]
