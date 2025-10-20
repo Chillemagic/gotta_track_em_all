@@ -1,2 +1,14 @@
-<h1>Folio#index</h1>
-<p>Find me in app/views/collections/index.html.erb</p>
+
+<h1>Your current Collections</h1>
+<br>
+<ul>
+  <% @collections.each do |c| %>
+    <li><%= c.name %></li>
+    <li><%= c.description %></li>
+    <%= link_to "Show Card", collection_path(c) %>
+    <%= link_to "Edit", edit_collection_path(c) %>
+    <%= link_to "Delete", collection_path(c), data:{turbo_method: :delete} %>
+  <% end %>
+</ul>
+<br>
+<%= link_to "Create New Collection", new_collection_path %>
