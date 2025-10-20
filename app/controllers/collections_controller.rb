@@ -1,4 +1,5 @@
 class CollectionsController < ApplicationController
+
   before_action :authenticate_user! # for Devise
   before_action :set_collection, only: [:show, :edit, :update, :destroy]
 
