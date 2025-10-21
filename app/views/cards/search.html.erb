@@ -1,0 +1,7 @@
+<%# list pokemon image %>
+<%# pokemon type,card number, card set,  %>
+
+<%= simple_form_for :search, search: search_cards_path, method: :post do |f| %>
+  <%= f.input :image, as: :file %>
+  <%= f.button :submit, "Search Card" %>
+<% end %>

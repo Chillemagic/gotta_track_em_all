@@ -15,16 +15,17 @@ Rails.application.routes.draw do
   root "pages#home"
 
   # collections routes
-  resources :collections 
+  resources :collections
 
   # cards routes
   resources :cards, only: [ :index, :show ] do
-    # member refers to an individual car
+    # member refers to an individual card
     member do
       get "price_history"
     end
     # collection refers to all cards
     collection do
+      get "search"
       post "search"
     end
   end
