@@ -32,13 +32,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_051257) do
 
   create_table "collection_cards", force: :cascade do |t|
     t.bigint "collection_id", null: false
-    t.bigint "cards_id", null: false
+    t.bigint "card_id", null: false
     t.decimal "purchase_price"
     t.string "condition"
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cards_id"], name: "index_collection_cards_on_cards_id"
+    t.index ["card_id"], name: "index_collection_cards_on_card_id"
     t.index ["collection_id"], name: "index_collection_cards_on_collection_id"
   end
 
@@ -75,7 +75,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_051257) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "collection_cards", "cards", column: "cards_id"
+  add_foreign_key "collection_cards", "cards"
   add_foreign_key "collection_cards", "collections"
   add_foreign_key "collections", "users"
   add_foreign_key "price_histories", "cards", column: "cards_id"

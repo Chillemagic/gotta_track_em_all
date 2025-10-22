@@ -24,7 +24,7 @@ class CardsController < ApplicationController
 
   def destroy
     @card.destroy
-    redirect_to cards_url, notice "Card was successfully removed from your collection."
+    redirect_to cards_url, notice: "Card was successfully removed from your collection."
   end
 
   private
