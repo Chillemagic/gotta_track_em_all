@@ -83,3 +83,5 @@ gem "cloudinary"
 
 #image hosting
 gem 'activestorage-cloudinary-service'
+
+gem 'solid_queue'
