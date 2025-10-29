@@ -1,2 +1,0 @@
-class CollectionCardsController < ApplicationController
-end
