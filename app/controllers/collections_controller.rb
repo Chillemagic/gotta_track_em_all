@@ -1,5 +1,6 @@
 class CollectionsController < ApplicationController
   layout "background_black", only: [:show] # for black background, white text
+
   before_action :authenticate_user! # for Devise
   before_action :set_collection, only: [:show, :edit, :update, :destroy]
 
