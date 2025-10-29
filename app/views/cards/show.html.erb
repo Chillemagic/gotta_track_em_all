@@ -1,0 +1,25 @@
+<%# app/views/cards/show.html.erb %>
+<div class="card-details">
+  <h1><%= @card.name %></h1>
+
+  <% if @card.image_url.present? %>
+    <img src="<%= @card.image_url %>" alt="<%= @card.name %>">
+  <% else %>
+    <div class="loading">
+      <p>🔄 Loading card image...</p>
+    </div>
+  <% end %>
+
+  <% if @card.pokemon_types.present? %>
+    <p><strong>Type:</strong> <%= @card.pokemon_types %></p>
+  <% else %>
+    <p>⏳ Loading card details...</p>
+  <% end %>
+
+<% latest_price = @card.price_histories.order(recorded_at: :desc).first %>
+  <% if latest_price %>
+    <p><strong>Raw Price:</strong> $<%= latest_price.pokedata_raw_price %></p>
+  <% else %>
+    <p>⏳ Loading pricing data...</p>
+  <% end %>
+</div>
