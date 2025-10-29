@@ -1,4 +1,5 @@
 class CollectionsController < ApplicationController
+  layout "background_black", only: [:show] # for black background, white text
 
   before_action :authenticate_user! # for Devise
   before_action :set_collection, only: [:show, :edit, :update, :destroy]
@@ -7,8 +8,9 @@ class CollectionsController < ApplicationController
     @collections = current_user.collections.order(created_at: :desc) # newest collection first
   end
 
+  # GET /collections/:id
   def show
-    #@collection = current_user.collections.find(params[:id])
+    @collection = Collection.find(params[:id])
   end
 
   def new

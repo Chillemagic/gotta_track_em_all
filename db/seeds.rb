@@ -10,6 +10,7 @@
 #   end
 
 User.destroy_all
+CollectionCard.destroy_all
 Collection.destroy_all
 
 user1 = User.create!(
@@ -389,4 +390,13 @@ cards.each do |card|
     card_api_id: card["id"]
   )
   puts "created new card"
+end
+
+Collection.all.each do |collection|
+  Card.all.each do |card|
+    CollectionCard.create!(
+      card: card,
+      collection: collection
+    )
+  end
 end
