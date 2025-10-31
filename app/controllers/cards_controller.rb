@@ -41,8 +41,8 @@ class CardsController < ApplicationController
         rarity: card_info["rarity"]
       )
       Rails.logger.info("Created card with ID: #{@card.id}, name: #{@card.name}, set: #{@card.set_name}, card_number: #{@card.card_number}, rarity: #{@card.rarity}")
-      FetchCardInfoJob.perform_now(@card.id)
-      FetchCardPricingJob.perform_now(@card.id)
+      FetchCardInfoJob.perform_later(@card.id)
+      FetchCardPricingJob.perform_later(@card.id)
 
       redirect_to search_cards_path, alert: "Could not identify card" if card_info[:error]
     end
