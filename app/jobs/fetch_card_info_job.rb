@@ -21,6 +21,7 @@ class FetchCardInfoJob < ApplicationJob
     # Check if request was successful
     unless response.success?
       Rails.logger.error("Pokemon TCG API failed: #{response.code} - #{response.message}")
+      FetchCardInfoContingencyJob.perform_later(card.id)
       return
     end
 
@@ -72,7 +73,6 @@ class FetchCardInfoJob < ApplicationJob
       return
     end
 
-    debugger
     # Save to database
     card.update(
       api_tcg_id: card_info.dig("id"),
@@ -85,6 +85,14 @@ class FetchCardInfoJob < ApplicationJob
       set_name: card_info.dig("set", "name"),
       release_date: PokedataParser.parse_release_date(card_info.dig("set", "releaseDate"))
     )
+    # refresh card for most accurate check
+    card.reload
+
+    unless card.complete_card_info?
+      Rails.logger.warn("Card ##{card.id} missing: #{card.missing_fields.join(', ')}")
+      FetchCardInfoContingencyJob.perform_later(card_id)
+      return
+    end
 
     Rails.logger.info("Successfully updated card #{card.id} with Pokemon TCG data")
 
