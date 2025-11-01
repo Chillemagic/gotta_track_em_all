@@ -11,22 +11,29 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
           <div class="mx-auto max-w-2xl text-left">
             <h1 class="font-semibold tracking-tight text-balance text-gray-900 sm:text-4xl lg:text-5xl">Hello there,</h1>
-            <h1 class="font-semibold tracking-tight text-balance text-gray-900 sm:text-4xl lg:text-5xl"><%= current_user.username.presence || "Trainer" %>!</h1>
+            <h1 class="font-semibold tracking-tight text-balance text-gray-900 sm:text-4xl lg:text-5xl"><%= current_user&.username.presence || "Trainer" %>!</h1>
           </div>
           <div class="mt-8 flow-root sm:mt-24">
 
-
-
             <!-- Placeholder for Chart or Folio -->
-            <div class="mt-auto mx-auto max-w-md bg-white rounded-lg shadow-md p-4">
-              <div class="h-64 bg-gray-100 flex items-center justify-center text-gray-500 text-sm italic">
-                Tracker Chart or PokeFolio goes here
+            <% if current_user&.pokescientist? %>
+              <div class="mt-auto mx-auto max-w-md bg-white rounded-lg shadow-md p-4">
+                <div class="h-64 bg-gray-100 flex items-center justify-center text-gray-500 text-sm italic">
+                  Pricing Chart goes here
+                </div>
               </div>
-            </div>
+            <% elsif current_user&.pokemaniac? %>
+              <div class="mt-auto mx-auto max-w-md bg-white rounded-lg shadow-md p-4">
+                <div class="h-64 bg-gray-100 flex items-center justify-center text-gray-500 text-sm italic">
+                  PokeFolio splash goes here
+                </div>
+              </div>
+            <% end %>
             </div>
         </div>
       </div>
       <div class="mt-8 flex flex-row items-center justify-center gap-5">
+
         <!-- TRACKER MODE Button -->
         <a href="<%= trackers_path %>"
           class="relative block w-38 h-8 overflow-hidden group">
@@ -72,11 +79,6 @@
             </span>
           </div>
         </a>
-
-
-
-
-
 
         <div aria-hidden="true" class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">
         <div style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)" class="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-288.75"></div>
