@@ -83,15 +83,15 @@ class FetchCardInfoContingencyJob < ApplicationJob
       rarity: card_info["rarity"],
       image_url: build_image_url(card_info["image"]),
       pokemon_types: card_info["types"]&.join(", "),
-      abilities: card_info["abilities"]&.to_json,
-      attacks: card_info["attacks"]&.to_json,
+      abilities: card_info["abilities"],
+      attacks: card_info["attacks"],
       set_name: card_info.dig("set", "name")
     )
   end
 
   def update_release_date(card, set_info)
     release_date = PokedataParser.parse_release_date(set_info["releaseDate"])
-    card.update!(release_date: release_date) if release_date.present?
+    card.update!(release_date: release_date, tcg_dex_status: "complete") if release_date.present?
   end
 
   def build_image_url(base_url)

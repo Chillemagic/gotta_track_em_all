@@ -13,7 +13,7 @@ class FetchCardPricingJob < ApplicationJob
     set_name = card.set_name
 
     if set_name == "McDonald's Collection 2021"
-      set_name = "McDonald’s 25th Anniversary"
+      set_name = "McDonald's 25th Anniversary"
     end
 
     # card_name = PokedataParser.normalize_name(card.name)
@@ -70,14 +70,13 @@ class FetchCardPricingJob < ApplicationJob
 
 
       # 4. Create price history for card
-      card.update!(
+    card.update!(
       pokedata_id: pricing_data["id"],
       # card_number: pricing_data["num"],
       # release_date: pricing_data["release_date"],
       set_name: pricing_data["set_name"]
     )
     # Check card.number
-    debugger
     card.price_histories.create!(
       pokedata_id: pricing_data["id"],
       card_name: pricing_data["name"],
@@ -85,9 +84,9 @@ class FetchCardPricingJob < ApplicationJob
       set_name: pricing_data["set_name"],
       release_date: pricing_data["release_date"],
       secret: pricing_data["secret"],
-      psa_pricing: psa_pricing.to_json,
-      cgc_pricing: cgc_pricing.to_json,
-      pricing_data: pricing_data["pricing"].to_json,
+      psa_pricing: psa_pricing,
+      cgc_pricing: cgc_pricing,
+      pricing_data: pricing_data["pricing"],
       pokedata_raw_price: pricing_data.dig("pricing", "Pokedata Raw", "value"),
       source: "Pokedata",
       recorded_at: Time.current

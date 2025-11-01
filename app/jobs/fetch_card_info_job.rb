@@ -70,6 +70,7 @@ class FetchCardInfoJob < ApplicationJob
 
     if card_info.nil?
       Rails.logger.error("No matching card found for #{card.name} (#{card.card_number}) in set #{card.set_name}")
+      FetchCardInfoContingencyJob.perform_later(card.id)
       return
     end
 
@@ -80,8 +81,8 @@ class FetchCardInfoJob < ApplicationJob
       rarity: card_info.dig("rarity"),
       image_url: card_info.dig("images", "large"),
       pokemon_types: card_info["types"]&.join(", "),
-      abilities: card_info.dig("abilities")&.to_json,
-      attacks: card_info.dig("attacks")&.to_json,
+      abilities: card_info.dig("abilities"),
+      attacks: card_info.dig("attacks"),
       set_name: card_info.dig("set", "name"),
       release_date: PokedataParser.parse_release_date(card_info.dig("set", "releaseDate"))
     )
@@ -95,8 +96,9 @@ class FetchCardInfoJob < ApplicationJob
     end
 
     Rails.logger.info("Successfully updated card #{card.id} with Pokemon TCG data")
+    card.update!(api_tcg_status: "complete")
 
-    rescue ActiveRecord::RecordNotFound
+  rescue ActiveRecord::RecordNotFound
       Rails.logger.error("Card #{card_id} not found")
     rescue StandardError => e
       Rails.logger.error("Failed to fetch card info for #{card_id}: #{e.message}")

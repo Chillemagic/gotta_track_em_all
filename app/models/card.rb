@@ -7,10 +7,10 @@ class Card < ApplicationRecord
   # validates :card_api_id, presence: true, uniqueness: true
   validates :name, presence: true
 
+  enum :api_tcg_status, { incomplete: "incomplete", complete: "complete" }, prefix: true
+  enum :tcg_dex_status, { incomplete: "incomplete", complete: "complete" }, prefix: true
+
   ESSENTIAL_FIELDS = %i[artist image_url rarity set_name].freeze
-
-
-
 
   def complete_card_info?
     ESSENTIAL_FIELDS.all? { |field| send(field).present? }
