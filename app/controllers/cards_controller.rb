@@ -30,7 +30,7 @@ class CardsController < ApplicationController
     end
 
     # Check the Cards db to see if the card exists
-    @card = Card.find_by(name: card_info["name"], set_name: card_info["set_name"])
+    @card = Card.find_by(name: card_info["name"], card_number: card_info["number"])
 
     # Create new card with just the name and
     if @card.nil?
@@ -41,8 +41,8 @@ class CardsController < ApplicationController
         rarity: card_info["rarity"]
       )
       Rails.logger.info("Created card with ID: #{@card.id}, name: #{@card.name}, set: #{@card.set_name}, card_number: #{@card.card_number}, rarity: #{@card.rarity}")
-      FetchCardInfoJob.perform_now(@card.id)
-      # FetchCardPricingJob.perform_now(@card.id)
+      FetchCardInfoJob.perform_later(@card.id)
+      FetchCardPricingJob.perform_later(@card.id)
 
       redirect_to search_cards_path, alert: "Could not identify card" if card_info[:error]
     end
@@ -114,7 +114,7 @@ class CardsController < ApplicationController
             role: "user",
             content: [
               { type: "text",
-                text: "Identify this Pokemon card be sure to identify if the word 'staff' can be found on the card and please select from the sets provided. If a gold star is found in the card name near the top return the rarity as 'Rare Holo Star' otherwise leave the ratiy empty. Identify the card number and make sure to ommit any leading zero for example don't do 086/096 instead use 86/96. Return only the card name, card number, card set, language, rarity(only return if gold star is present) and if staff appears on the card in a Json that can be accessed with a key,value pair. Here is the JSON example followed by the set names example: {
+                text: "Identify this Pokemon card be sure to identify if the word 'staff' can be found on the card and please select from the sets provided. If a gold star is found in the card name near the top return the rarity as 'Rare Holo Star' otherwise leave the ratiy empty. Identify the card number and make sure to ommit any leading zero for example don't do 086/096 instead use 86/96. Pay attention to any name suffix for example Charizard-GX and be sure to include it in the name Return only the card name, card number, card set, language, rarity(only return if gold star is present) and if staff appears on the card in a Json that can be accessed with a key,value pair. Here is the JSON example followed by the set names example: {
                       'id'=> 'base1-4',
                       'name' => 'Charizard',
                       'set_name' => 'Pokémon',

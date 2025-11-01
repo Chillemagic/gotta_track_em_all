@@ -8,6 +8,7 @@ class FetchCardPricingJob < ApplicationJob
     # 1. Find Card from existing card db
     puts "Running FetchCardPricingJob"
     card = Card.find(card_id)
+    card_number = card.card_number
 
     set_name = card.set_name
 
@@ -15,26 +16,40 @@ class FetchCardPricingJob < ApplicationJob
       set_name = "McDonald’s 25th Anniversary"
     end
 
+    # card_name = PokedataParser.normalize_name(card.name)
+
     # 2. find the api_id for pokedata API
-    search_response = HTTParty.get("https://www.pokedata.io/v0/search",
+    response = HTTParty.get(
+      "https://www.pokedata.io/v0/search",
       query: { query: card.name, asset_type: "CARD" },
+      headers: { "Authorization" => "Bearer #{ENV["POKEDATA_API_KEY"]}" },
       timeout: 30
     )
 
     # Check if the search was successful
     return { error: "API failed" } unless response.success?
     # Parse the api response
-    search_results = search_response.parsed_response
+    search_results = response.parsed_response
     # Find the matching card
 
-    matching_card = search_results.find { |result| result["set_name"] == set_name && result["num"].to_s == card.card_number.to_s }
+    # Iterate over search results
+    matching_card = search_results.find do |result|
+      # Compare release date of Card(already a date) and result (converts to date)
+      date_match = PokedataParser.parse_release_date(result["release_date"]) == card.release_date
+      # Compare card number of Card and result
+      card_number_match = result["num"].to_s == PokedataParser.extract_first_number(card_number).to_s
+      # If either match a resut is returned.
+      card_number_match && (card.release_date.nil? || result["release_date"].nil? || date_match)
+    end
 
     return { error: "No matching card found" } if matching_card.nil?
+    # Check matching_card
 
     # 3. Call Pokedata price using card.id
     pricing_response = HTTParty.get(
       "https://www.pokedata.io/v0/pricing",
       query: { id: matching_card["id"], asset_type: "CARD" },
+      headers: { "Authorization" => "Bearer #{ENV["POKEDATA_API_KEY"]}" },
       timeout: 30
     )
 
@@ -44,23 +59,35 @@ class FetchCardPricingJob < ApplicationJob
     end
 
     pricing_data = pricing_response.parsed_response
-    # 4. Create price history for card
-    card.update!(
-      pokedata_id: matching_card["id"],
-      card_number: pricing_data["num"],
-      release_date: pricing_data["release_date"],
+
+    pricing = pricing_data["pricing"]
+
+    # Collect all PSA pricing
+    psa_pricing = pricing.select { |key, _value| key.start_with?("PSA") }
+
+    # Collect all CGC pricing
+    cgc_pricing = pricing.select { |key, _value| key.start_with?("CGC") }
+
+
+      # 4. Create price history for card
+      card.update!(
+      pokedata_id: pricing_data["id"],
+      # card_number: pricing_data["num"],
+      # release_date: pricing_data["release_date"],
       set_name: pricing_data["set_name"]
     )
-
-    PriceHistory.create!(
-      cards_id: card.id,
+    # Check card.number
+    debugger
+    card.price_histories.create!(
       pokedata_id: pricing_data["id"],
       card_name: pricing_data["name"],
-      card_number: pricing_data["num"],
+      card_number: card_number,
       set_name: pricing_data["set_name"],
       release_date: pricing_data["release_date"],
       secret: pricing_data["secret"],
-      pricing_data: pricing_data["pricing"],
+      psa_pricing: psa_pricing.to_json,
+      cgc_pricing: cgc_pricing.to_json,
+      pricing_data: pricing_data["pricing"].to_json,
       pokedata_raw_price: pricing_data.dig("pricing", "Pokedata Raw", "value"),
       source: "Pokedata",
       recorded_at: Time.current
