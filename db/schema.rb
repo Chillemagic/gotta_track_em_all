@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< Updated upstream
 ActiveRecord::Schema[8.0].define(version: 2025_10_29_100433) do
+=======
+ActiveRecord::Schema[8.0].define(version: 2025_10_31_000420) do
+>>>>>>> Stashed changes
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,7 +47,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_100433) do
   end
 
   create_table "cards", force: :cascade do |t|
-    t.integer "pokedata_id"
+    t.string "pokedata_id"
     t.string "name"
     t.string "card_number"
     t.date "release_date"
@@ -57,8 +61,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_100433) do
     t.string "set_name"
     t.jsonb "abilities"
     t.jsonb "attacks"
-    t.integer "api_tcg_id"
+    t.string "api_tcg_id"
     t.string "language"
+    t.string "tcgdex_id"
   end
 
   create_table "collection_cards", force: :cascade do |t|
@@ -80,7 +85,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_100433) do
   end
 
   create_table "price_histories", force: :cascade do |t|
-    t.bigint "cards_id", null: false
+    t.bigint "card_id", null: false
     t.decimal "pokedata_raw_price"
     t.string "source"
     t.date "recorded_at"
@@ -93,7 +98,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_100433) do
     t.string "set_name"
     t.date "release_date"
     t.boolean "secret"
-    t.index ["cards_id"], name: "index_price_histories_on_cards_id"
+    t.jsonb "cgc_pricing", default: {}
+    t.jsonb "psa_pricing", default: {}
+    t.index ["card_id"], name: "index_price_histories_on_card_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -236,7 +243,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_100433) do
   add_foreign_key "collection_cards", "cards"
   add_foreign_key "collection_cards", "collections"
   add_foreign_key "collections", "users"
-  add_foreign_key "price_histories", "cards", column: "cards_id"
+  add_foreign_key "price_histories", "cards"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
