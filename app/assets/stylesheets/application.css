@@ -8,3 +8,191 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+ /* ------------------------------
+   Gradient Card + Small Icon
+   ------------------------------ */
+@import url('https://fonts.cdnfonts.com/css/pokemon-solid');
+
+.font-pokemon {
+  font-family: 'Pokemon Solid', sans-serif;
+}
+
+.font-pokemon {
+  font-family: 'Pokemon Solid', sans-serif;
+  letter-spacing: 2px;
+  color: #ffcb05;
+  text-shadow: 3px 3px 0 #3b4cca;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Saira:wght@300;400;600&display=swap');
+
+.font-saira {
+  font-family: 'Saira', sans-serif;
+}
+
+
+.card {
+  --background: linear-gradient(to left, #f7ba2b 0%, #ea5358 100%);
+  width: 190px;
+  height: 254px;
+  padding: 5px;
+  border-radius: 1rem;
+  overflow: visible;
+  background: var(--background);
+  position: relative;
+  z-index: 1;
+}
+
+.card::after {
+  position: absolute;
+  content: "";
+  top: 30px;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  transform: scale(0.8);
+  filter: blur(25px);
+  background: var(--background);
+  transition: opacity .5s;
+}
+
+.card-info {
+  --color: #181818;
+  background: var(--color);
+  color: var(--color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  border-radius: .7rem;
+}
+
+.card .title {
+  font-weight: bold;
+  letter-spacing: .1em;
+}
+
+/* Hover effects */
+.card:hover::after {
+  opacity: 0;
+}
+
+.card:hover .card-info {
+  color: #f7ba2b;
+  transition: color 1s;
+}
+
+/* Small inline icon variant */
+.card--icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1.25rem;   /* Adjust size */
+  height: 1.25rem;
+  padding: 2px;
+  border-radius: .375rem;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.card--icon::after { display: none; }
+.card--icon .card-info { border-radius: .25rem; }
+.card--icon .title { display: none; }
+
+/* --- Pokemon Holo Card (CSS-only) --- */
+.pkm-holo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 63 / 88;        /* standard card ratio */
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: #040712;
+  background-image: var(--front);
+  background-size: cover;
+  background-position: 50% 50%;
+  box-shadow:
+    -5px -5px 5px -5px rgba(0,231,255,.6),
+     5px  5px 5px -5px rgba(255,0,231,.6),
+     0 55px 35px -20px rgba(0, 0, 0, 0.5);
+  transition: transform .3s ease, box-shadow .2s ease;
+  isolation: isolate;
+}
+
+/* gradient layer */
+.pkm-holo::before,
+.pkm-holo::after {
+  content: "";
+  position: absolute; inset: 0;
+  mix-blend-mode: color-dodge;
+  pointer-events: none;
+}
+
+/* animated gradient sweep */
+.pkm-holo::before {
+  opacity: .55;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255,0,231,.8) 25%,
+    transparent 47%,
+    transparent 53%,
+    rgba(0,231,255,.8) 75%,
+    transparent 100%
+  );
+  background-size: 250% 250%;
+  filter: brightness(.6) contrast(1.1);
+  transition: opacity .25s ease;
+}
+
+/* sparkles + holo texture */
+.pkm-holo::after {
+  opacity: .75;
+  background-image:
+    url("https://assets.codepen.io/13471/sparkles.gif"),
+    url("https://assets.codepen.io/13471/holo.png"),
+    linear-gradient(125deg,#ff008450 15%,#fca40040 30%,#ffff0030 40%,#00ff8a20 60%,#00cfff40 70%,#cc4cfa50 85%);
+  background-size: 160%,160%,160%;
+  background-position: 50% 50%;
+  background-blend-mode: overlay;
+  filter: brightness(1) contrast(1);
+  transition: opacity .25s ease, filter .25s ease;
+}
+
+.pkm-holo:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    -20px -20px 30px -25px rgba(255,0,231,.7),
+     20px  20px 30px -25px rgba(0,231,255,.7),
+     0 55px 35px -20px rgba(0, 0, 0, 0.5);
+}
+
+.pkm-holo:hover::before {
+  animation: pkmHoloGradient 6s ease infinite;
+  opacity: .9;
+  filter: brightness(.8) contrast(1.25);
+}
+
+.pkm-holo:hover::after {
+  opacity: 1;
+  filter: brightness(1.05) contrast(1.15);
+  animation: pkmHoloSparkle 6s ease infinite;
+}
+
+/* keyframes */
+@keyframes pkmHoloGradient {
+  0%,100% { background-position: 50% 50%; }
+  25%     { background-position: 100% 100%; }
+  50%     { background-position: 0% 0%; }
+  75%     { background-position: 100% 0%; }
+}
+
+@keyframes pkmHoloSparkle {
+  0%,100% { background-position: 50% 50%; opacity: .85; }
+  25%     { background-position: 40% 60%; opacity: 1; }
+  50%     { background-position: 60% 40%; opacity: .7; }
+  75%     { background-position: 55% 55%; opacity: .95; }
+}

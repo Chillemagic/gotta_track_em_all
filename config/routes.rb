@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :collection_cards
   get "tracker/index"
   get "tracker/show"
 
