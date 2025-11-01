@@ -213,7 +213,7 @@ cards.each do |card|
     release_date: card['set']["releaseDate"],
     rarity: card["rarity"],
     image_url: card["images"]["large"],
-    card_api_id: card["id"]
+    #card_api_id: card["id"]
   )
   puts "created new card"
 end
@@ -387,7 +387,7 @@ cards.each do |card|
     release_date: card['set']["releaseDate"],
     rarity: card["rarity"],
     image_url: card["images"]["large"],
-    card_api_id: card["id"]
+    #card_api_id: card["id"]
   )
   puts "created new card"
 end

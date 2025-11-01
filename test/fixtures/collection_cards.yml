@@ -2,14 +2,8 @@
 
 one:
   collection: one
-  cards: one
-  purchase_price: 9.99
-  condition: MyString
-  notes: MyText
+  card: one
 
 two:
   collection: two
-  cards: two
-  purchase_price: 9.99
-  condition: MyString
-  notes: MyText
+  card: two
