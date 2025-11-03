@@ -1,3 +1,35 @@
-<h1><%= @collection.name %></h1>
-<p><%= @collection.description %></p>
+<h1 class="text-5xl"><%= @collection.name %></h1>
+<p class="text-lg mb-8"><%= @collection.description %></p>
 
+<div class="flex flex-wrap gap-3">
+  <% @collection.cards.each do |card| %>
+    <div>
+      <%= image_tag card.image_url,
+          alt: card.name,
+          class: "rounded-md max-w-[250px]"%>
+          <div class="text-center">
+            <p class="text-2xl"><%= card.name %></p>
+            <p class="mb-4">Card ID: <%= card.card_api_id %></p>
+            <p><span class="underline font-semibold">Pokemon Set:</span> <%= card.set_name %></p>
+            <p><span class="underline font-semibold">Release Date:</span> <%= card.release_date %></p>
+            <p><span class="underline font-semibold">Card Rarity:</span> <%= card.rarity %></p>
+          </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="fixed inset-x-0 bottom-0 p-4 bg-black/50 backdrop-blur grid grid-rows-2 gap-3">
+  <%= link_to "Card Tracker Page", cards_path,
+      class: "block w-[200px] justify-self-end text-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" %>
+
+  <div class="grid grid-cols-3 gap-3">
+    <%= link_to "Tracker", cards_path,
+      class: "block text-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" %>
+
+    <%= link_to "Search", cards_path,
+      class: "block text-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" %>
+
+    <%= link_to "Folio", cards_path,
+      class: "block text-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" %>
+  </div>
+</div>
