@@ -1,7 +1,6 @@
 require "base64"
 
 class CardsController < ApplicationController
-
   before_action :authenticate_user! # for Devise
   before_action :set_card, only: %i[show destroy]
 
@@ -14,7 +13,7 @@ class CardsController < ApplicationController
 
   def search
     # Render the search page for a get request
-    return render :search if request.get?
+    return render :search if request.get? ||request.head?
     # Check if image has been uploaded
     return redirect_to search_cards_path, alert: "Please upload an image" unless params[:search]&.dig(:image).present?
 
