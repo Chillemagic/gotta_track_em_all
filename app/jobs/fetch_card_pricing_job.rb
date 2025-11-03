@@ -35,9 +35,9 @@ class FetchCardPricingJob < ApplicationJob
     # Iterate over search results
     matching_card = search_results.find do |result|
       # Compare release date of Card(already a date) and result (converts to date)
-      date_match = PokedataParser.parse_release_date(result["release_date"]) == card.release_date
+      date_match = PokedataParser.parse_release_date(result["release_date"]) == PokedataParser.parse_release_date(card.release_date.to_s)
       # Compare card number of Card and result
-      card_number_match = result["num"].to_s == PokedataParser.extract_first_number(card_number).to_s
+      card_number_match = PokedataParser.extract_first_number(result["num"]) == PokedataParser.extract_first_number(card_number)
       # If either match a resut is returned.
       card_number_match && (card.release_date.nil? || result["release_date"].nil? || date_match)
     end

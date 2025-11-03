@@ -5,9 +5,12 @@ class FetchCardInfoJob < ApplicationJob
   # retry_on HTTParty::Error, wait: 5.minutes, attempts: 3
 
   def perform(card_id)
-    puts "Running FetchCardInfoJob"
+    Rails.logger.info("Running FetchCardInfoJob for card #{card_id}")
     # Find created card to add to
     card = Card.find(card_id)
+    card.update!(api_tcg_status: "pending")
+    # Broadcast turbo stream
+    # broadcast(card)
 
     # Fetch with retry logic and long timeout
     response = HTTParty.get(
@@ -21,6 +24,10 @@ class FetchCardInfoJob < ApplicationJob
     # Check if request was successful
     unless response.success?
       Rails.logger.error("Pokemon TCG API failed: #{response.code} - #{response.message}")
+      # Update card status and broadcast turbo stream
+      card.update!(api_tcg_status: "incomplete")
+      # broadcast(card)
+      # Call contingency API TCG Dex
       FetchCardInfoContingencyJob.perform_later(card.id)
       return
     end
@@ -70,6 +77,10 @@ class FetchCardInfoJob < ApplicationJob
 
     if card_info.nil?
       Rails.logger.error("No matching card found for #{card.name} (#{card.card_number}) in set #{card.set_name}")
+      # Update card status and broadcast turbo stream
+      card.update!(api_tcg_status: "incomplete")
+    #  broadcast(card)
+      # Call contingency API TCG Dex
       FetchCardInfoContingencyJob.perform_later(card.id)
       return
     end
@@ -91,17 +102,35 @@ class FetchCardInfoJob < ApplicationJob
 
     unless card.complete_card_info?
       Rails.logger.warn("Card ##{card.id} missing: #{card.missing_fields.join(', ')}")
+      # Update card status and broadcast turbo stream
+      card.update!(api_tcg_status: "incomplete")
+      # broadcast(card)
+      # Call contingency API TCG Dex
       FetchCardInfoContingencyJob.perform_later(card_id)
       return
     end
 
     Rails.logger.info("Successfully updated card #{card.id} with Pokemon TCG data")
+    # Update card status and broadcast turbo stream
     card.update!(api_tcg_status: "complete")
+    # broadcast(card)
 
   rescue ActiveRecord::RecordNotFound
       Rails.logger.error("Card #{card_id} not found")
     rescue StandardError => e
       Rails.logger.error("Failed to fetch card info for #{card_id}: #{e.message}")
       raise
+  end
+
+
+  private
+
+  def broadcast(card)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "card_#{card.id}",
+      target: "card-details",
+      partial: "cards/card_info",
+      locals: { card: card }
+    )
   end
 end

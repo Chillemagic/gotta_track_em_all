@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     # member refers to an individual card
     member do
       get "price_history"
+      post :simulate_price
     end
     # collection refers to all cards
     collection do
