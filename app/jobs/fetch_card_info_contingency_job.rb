@@ -9,7 +9,7 @@ class FetchCardInfoContingencyJob < ApplicationJob
 
   def perform(card_id)
     card = Card.find(card_id)
-
+    # broadcast(card)
     # Step 1: Search for card by name and number
     tcgdex_id = fetch_tcgdex_id(card)
     raise CardNotFoundError, "No matching card found in TCGdex" unless tcgdex_id
@@ -19,22 +19,33 @@ class FetchCardInfoContingencyJob < ApplicationJob
     # Step 2: Fetch detailed card information
     card_info = fetch_card_details(tcgdex_id)
     update_card_info(card, card_info)
+    # broadcast(card)
 
     # Step 3: Fetch set information for release date
     set_info = fetch_set_info(card.tcgdex_id)
     update_release_date(card, set_info)
+    # broadcast(card)
 
     Rails.logger.info("Successfully fetched card info for Card ##{card_id}")
   rescue CardNotFoundError => e
     Rails.logger.warn("Card ##{card_id}: #{e.message}")
     card.update(fetch_failed: true) # Optional: track failed fetches
-    # Don't re-raise - this is an expected scenario
+    broadcast(card)
   rescue APIError => e
     Rails.logger.error("Card ##{card_id}: #{e.message}")
     raise # Let retry mechanism handle it
   end
 
   private
+
+  def broadcast(card)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "card_#{card.id}",
+      target: "card-details",
+      partial: "cards/card_info",
+      locals: { card: card }
+    )
+  end
 
   def fetch_tcgdex_id(card)
     response = HTTParty.get(
@@ -98,4 +109,5 @@ class FetchCardInfoContingencyJob < ApplicationJob
     return nil unless base_url.present?
     "#{base_url}/high.webp"
   end
+
 end

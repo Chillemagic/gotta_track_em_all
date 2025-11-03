@@ -1,25 +1,34 @@
 <%# app/views/cards/show.html.erb %>
 <div class="card-details">
-  <h1><%= @card.name %></h1>
 
-  <% if @card.image_url.present? %>
-    <img src="<%= @card.image_url %>" alt="<%= @card.name %>">
-  <% else %>
-    <div class="loading">
-      <p>🔄 Loading card image...</p>
-    </div>
-  <% end %>
+  <%= render "cards/card_info", card: @card %>
 
-  <% if @card.pokemon_types.present? %>
-    <p><strong>Type:</strong> <%= @card.pokemon_types %></p>
-  <% else %>
-    <p>⏳ Loading card details...</p>
-  <% end %>
 
-<% latest_price = @card.price_histories.order(recorded_at: :desc).first %>
-  <% if latest_price %>
-    <p><strong>Raw Price:</strong> $<%= latest_price.pokedata_raw_price %></p>
-  <% else %>
-    <p>⏳ Loading pricing data...</p>
-  <% end %>
+  <button id="simulate-price" data-card-id="<%= @card.id %>">
+    Simulate Price Update
+  </button>
 </div>
+
+<script>
+  // Event delegation: works even after Turbo replaces #card-details
+  document.addEventListener("click", (event) => {
+    const btn = event.target.closest("#simulate-price");
+    if (!btn) return;
+
+    fetch(`/cards/${btn.dataset.cardId}/simulate_price`, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content,
+        "Accept": "application/json"
+      }
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Network response was not ok");
+      return response.json();
+    })
+    .then(data => {
+      console.log("Simulated price updated:", data);
+    })
+    .catch(error => console.error("Error:", error));
+  });
+</script>

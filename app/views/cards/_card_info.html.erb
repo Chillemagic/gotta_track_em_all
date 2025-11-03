@@ -1,0 +1,18 @@
+<div id="<%= "card_#{card.id}" %>">
+  <%= turbo_stream_from "card_#{card.id}" %>
+  <% if card.api_tcg_status == "pending" %>
+    <h2>Fetching card info… ⏳</h2>
+  <% elsif card.api_tcg_status == "incomplete" && card.tcg_dex_status == "incomplete" %>
+    <h2>We could not find that card 🙃 Please try a different one 🙏</h2>
+  <% else %>
+    <h2><%= card.name %></h2>
+    <p>Set: <%= card.set_name %></p>
+    <p>Rarity: <%= card.rarity.presence || "Loading..." %></p>
+    <img src="<%= card.image_url %>" alt="<%= card.name %>">
+    <p>  Price:
+        <%= card.price_histories.last&.pokedata_raw_price.present? ?
+        number_to_currency(card.price_histories.last.pokedata_raw_price, unit: "$") :
+        "Fetching..." %>
+      </p>
+  <% end %>
+</div>
