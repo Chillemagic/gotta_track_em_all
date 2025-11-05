@@ -16,7 +16,8 @@ Collection.destroy_all
 user1 = User.create!(
   email: "user1@mail.com",
   password: "secret",
-  username: "user1"
+  username: "user1",
+  trainer_type: "pokescientist"
 )
 
 pokemon_collections = [

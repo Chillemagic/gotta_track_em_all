@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_03_084041) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_05_081247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,7 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_084041) do
     t.bigint "card_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cards_id"], name: "index_collection_cards_on_cards_id"
+    t.index ["card_id"], name: "index_collection_cards_on_card_id"
     t.index ["collection_id"], name: "index_collection_cards_on_collection_id"
   end
 
@@ -250,7 +250,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_084041) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "collection_cards", "cards", column: "cards_id"
+  add_foreign_key "collection_cards", "cards"
   add_foreign_key "collection_cards", "collections"
   add_foreign_key "collections", "users"
   add_foreign_key "price_histories", "cards"

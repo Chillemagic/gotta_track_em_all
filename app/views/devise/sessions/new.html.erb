@@ -15,22 +15,24 @@
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Welcome Back, Trainer</h2>
           <h3 class="text-l text-gray 750 mb-6">Log in to access your collection</h3>
 
-          <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-            <%= devise_error_messages! %>
+          <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+            <%= f.error_notification %>
 
             <div class="space-y-4">
-              <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
-              <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              <%= f.input :email,
+                required: true,
+                autofocus: true,
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                input_html: { autocomplete: "email", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" }%>
 
-              <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
-              <%= f.password_field :password, autocomplete: "current-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              <%= f.input :password,
+                required: true,
+                hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                input_html: { autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-              <div class="flex items-center">
-                <%= f.check_box :remember_me %>
-                <%= f.label :remember_me, class: "ml-2 block text-sm text-gray-900" %>
-              </div>
-
-              <%= render partial: "components/button", locals: { button_path: new_user_session_path, button_label: "Log In" } %>
+              <%= render "components/button", button_label: "Log In", is_button: true %>
+            </div>
           <% end %>
 
           <div class="mt-6 text-center text-sm text-gray-600">
