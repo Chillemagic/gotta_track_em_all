@@ -12,6 +12,7 @@ class User < ApplicationRecord
   TRAINER_TYPES = %w[pokescientist pokemaniac]
 
   validates :trainer_type, presence: true, inclusion: { in: TRAINER_TYPES }
+  validates :username, presence: true, uniqueness: { case_sensitive: false }
 
   def pokescientist?
     trainer_type == "pokescientist"

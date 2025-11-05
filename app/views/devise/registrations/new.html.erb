@@ -1,29 +1,75 @@
-<h2>Sign up</h2>
+<main class="isolate">
+  <div class="relative pt-10">
+    <!-- Background -->
+    <div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+      <div style="clip-path: polygon(...)" class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"></div>
+    </div>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= f.error_notification %>
+    <!-- Sign-Up Card -->
+    <div class="py-1 sm:py-8 lg:pb-24">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-md bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Sign Up</h2>
+          <h3 class="text-l text-gray-750 mb-6">Create your trainer profile</h3>
 
-  <div class="form-inputs">
-    <%= f.input :email,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "email" }%>
-    <%= f.input :password,
-                required: true,
-                hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
-                required: true,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :trainer_type,
-              collection: [["PokeScientist: Data-focussed", "pokescientist"], ["PokeManiac: Collector-focussed", "pokemaniac"]],
-              prompt: "Select your trainer type",
-              required: true %>
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            <%= devise_error_messages! %>
+
+            <div class="space-y-4">
+              <!-- First Name -->
+              <%= f.label :first_name, class: "block text-sm font-medium text-gray-700" %>
+              <%= f.text_field :first_name, class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+
+              <!-- Last Name -->
+              <%= f.label :last_name, class: "block text-sm font-medium text-gray-700" %>
+              <%= f.text_field :last_name, class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+
+              <!-- Username with availability check -->
+              <div class="relative" data-controller="username-check">
+                <%= f.label :username, class: "block text-sm font-medium text-gray-700" %>
+                <%= f.text_field :username,
+                    class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                    data: { username_check_target: "input", action: "input->username-check#debouncedCheck" } %>
+                <div data-username-check-target="feedback" class="absolute left-0 top-full mt-1 z-10"></div>
+              </div>
+
+              <!-- Date of Birth -->
+              <%= f.label :date_of_birth, class: "block text-sm font-medium text-gray-700" %>
+              <%= f.date_select :date_of_birth,
+                    start_year: Date.today.year - 100,
+                    end_year: Date.today.year,
+                    default: Date.new(2000, 1, 1),
+                    order: %i[day month year],
+                    class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+
+              <!-- Email -->
+              <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+
+              <!-- Password -->
+              <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
+              <%= f.password_field :password, autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+
+              <!-- Password Confirmation -->
+              <%= f.label :password_confirmation, class: "block text-sm font-medium text-gray-700" %>
+              <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+
+              <!-- Trainer Type -->
+              <%= f.label :trainer_type, class: "block text-sm font-medium text-gray-700" %>
+              <%= f.select :trainer_type, [["PokeScientist: Data-focussed", "pokescientist"], ["PokeManiac: Collector-focussed", "pokemaniac"]],
+                          { prompt: "Select your trainer type" },
+                          class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+
+              <!-- Submit Button -->
+              <%= render partial: "users/sign_up_button", locals: { button_label: "Sign Up", form_submit: true } %>
+            </div>
+          <% end %>
+
+          <div class="mt-6 text-center text-sm text-gray-600">
+            <%= render "devise/shared/links" %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</main>
