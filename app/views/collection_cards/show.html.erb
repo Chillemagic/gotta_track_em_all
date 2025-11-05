@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @collection_card %>
+
+<div>
+  <%= link_to "Edit this collection card", edit_collection_card_path(@collection_card) %> |
+  <%= link_to "Back to collection cards", collection_cards_path %>
+
+  <%= button_to "Destroy this collection card", @collection_card, method: :delete %>
+</div>

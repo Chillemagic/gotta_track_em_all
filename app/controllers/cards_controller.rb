@@ -28,10 +28,12 @@ class CardsController < ApplicationController
     end
 
     # Check the Cards db to see if the card exists
-    @card = Card.find_by(name: card_info["name"], set_name: card_info["set_name"])
+    @card = Card.find_by(name: card_info["name"], card_number: card_info["number"])
 
-    # Create new card with just the name and
-    if @card.nil?
+    if @card.present?
+      UpdatePriceHistoryJob.perform_later(@card.id)
+    else
+      # Create new card with just the name and
       @card = Card.create!(
         name: card_info["name"],
         set_name: card_info["set_name"],
@@ -39,11 +41,11 @@ class CardsController < ApplicationController
         rarity: card_info["rarity"]
       )
       Rails.logger.info("Created card with ID: #{@card.id}, name: #{@card.name}, set: #{@card.set_name}, card_number: #{@card.card_number}, rarity: #{@card.rarity}")
-      FetchCardInfoJob.perform_now(@card.id)
-      # FetchCardPricingJob.perform_now(@card.id)
 
-      redirect_to search_cards_path, alert: "Could not identify card" if card_info[:error]
+      FetchCardInfoJob.set(wait: 2.seconds).perform_later(@card.id)
+      FetchCardPricingJob.set(wait: 10.seconds).perform_later(@card.id)
     end
+
     redirect_to @card
 
   rescue ActiveRecord::RecordInvalid => e
@@ -70,32 +72,6 @@ class CardsController < ApplicationController
   end
 
   private
-  # def gather_card_info(card)
-  #   # Pokedata API:
-  #   # 1. Find the pokemon id with card data
-  #   pokedata_api_search = HTTParty.get("https://www.pokedata.io/v0/search?query=#{card['name']}&asset_type=CARD")
-  #   search_results = pokedata_api_search.parsed_response
-
-  #   matching_card = search_results.find { |result| result["set_name"] == card["set_name"] && result["num"] == card["number"] }
-
-  #   # {
-  #   #   "id": "37382",        => card.card_api_id
-  #   #   "language": "ENGLISH",
-  #   #   "name": "Electrode",          => card.name
-  #   #   "num": "32",                  => card.number
-  #   #   "release_date": "2006-02-13", => card.release_date
-  #   #   "secret": "false",
-  #   #   "set_code": null,
-  #   #   "set_id": "85",             => card.set_idADD
-  #   #   "set_name": "Legend Maker"  => card.pokemon_set
-  #   # },
-
-
-  #   # 2. Retrieve pricing information via pokemon id
-  #   pricing_response = HTTParty.get("https://www.pokedata.io/v0/pricing?id=#{matching_card['id']}&asset_type=CARD")
-  #   pricing_data = pricing_response.parsed_response
-
-  # end
 
   def set_card
     @card = Card.find(params[:id])
@@ -112,7 +88,7 @@ class CardsController < ApplicationController
             role: "user",
             content: [
               { type: "text",
-                text: "Identify this Pokemon card be sure to identify if the word 'staff' can be found on the card and please select from the sets provided. If a gold star is found in the card name near the top return the rarity as 'Rare Holo Star' otherwise leave the ratiy empty. Identify the card number and make sure to ommit any leading zero for example don't do 086/096 instead use 86/96. Return only the card name, card number, card set, language, rarity(only return if gold star is present) and if staff appears on the card in a Json that can be accessed with a key,value pair. Here is the JSON example followed by the set names example: {
+                text: "Identify this Pokemon card be sure to identify if the word 'staff' can be found on the card and please select from the sets provided. If a gold star is found in the card name near the top return the rarity as 'Rare Holo Star' otherwise leave the ratiy empty. Identify the card number and make sure to ommit any leading zero for example don't do 086/096 instead use 86/96. Pay attention to any name suffix for example Charizard-GX and be sure to include it in the name Return only the card name, card number, card set, language, rarity(only return if gold star is present) and if staff appears on the card in a Json that can be accessed with a key,value pair. Here is the JSON example followed by the set names example: {
                       'id'=> 'base1-4',
                       'name' => 'Charizard',
                       'set_name' => 'Pokémon',
@@ -156,7 +132,7 @@ class CardsController < ApplicationController
     return { error: "No response from OpenAI" } if parsed_content.nil?
 
     identified_card = JSON.parse(parsed_content)
-    debugger
+
     identified_card
   rescue JSON::ParserError => e
     { error: "Invalid JSON response: #{e.message}" }
@@ -168,7 +144,6 @@ class CardsController < ApplicationController
     base64_image = Base64.strict_encode64(image.read)
     "data:image/jpeg;base64,#{base64_image}"
   end
-
 
   def card_params
   params.require(:card).permit(
