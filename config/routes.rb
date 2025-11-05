@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   get "tracker/index"
   get "tracker/show"
+  get "users/check_username", to: "users#check_username"
 
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
