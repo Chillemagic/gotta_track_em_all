@@ -1,0 +1,18 @@
+<%= form_with url: destroy_user_session_path, method: :delete, local: true, html: { class: "relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group" } do %>
+  <!-- Blue background as border -->
+  <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
+    <div class="flex-1 bg-blue-500 rounded-t-md"></div>
+    <div class="flex-1 bg-blue-800 rounded-b-md"></div>
+  </div>
+
+  <!-- Red as button -->
+  <div class="absolute inset-[4px] flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
+    <div class="flex-1 bg-red-600"></div>
+    <div class="flex-1 bg-red-800"></div>
+  </div>
+
+  <!-- Button text -->
+  <div class="absolute inset-[6px] flex items-center justify-center">
+    <%= submit_tag (local_assigns[:button_label] || "Sign out"), class: "text-white text-md font-bold uppercase tracking-tight" %>
+  </div>
+<% end %>
