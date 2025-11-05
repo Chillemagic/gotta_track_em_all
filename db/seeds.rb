@@ -14,9 +14,10 @@ CollectionCard.destroy_all
 Collection.destroy_all
 
 user1 = User.create!(
-  email: "user1@mail.com",
+  email: "user1@gmail.com",
   password: "secret",
-  username: "user1"
+  username: "user1",
+  trainer_type: "pokescientist"
 )
 
 pokemon_collections = [
@@ -35,9 +36,6 @@ pokemon_collections = [
 pokemon_collections.each do |hash|
   Collection.create!(hash)
 end
-
-
-
 
 # file_path = Rails.root.join("db", "seeds", "pokemon_cards.json")
 # cards = JSON.parse(File.read(file_path))
