@@ -70,18 +70,18 @@ gem "simple_form"
 gem "httparty"
 
 # SDK for pokemon tcg_api
-gem 'pokemon_tcg_sdk'
+gem "pokemon_tcg_sdk"
 
 # EMV file
-gem 'dotenv-rails', groups: [:development, :test]
+gem "dotenv-rails", groups: %i[development test]
 
-#sdk for openai
+# sdk for openai
 gem "ruby-openai"
 
-#cloudnary for image hosting
+# cloudnary for image hosting
 gem "cloudinary"
 
-#image hosting
-gem 'activestorage-cloudinary-service'
+# image hosting
+gem "activestorage-cloudinary-service"
 
-gem 'solid_queue'
+gem "solid_queue"

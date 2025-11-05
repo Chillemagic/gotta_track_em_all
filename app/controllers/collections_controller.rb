@@ -1,8 +1,8 @@
 class CollectionsController < ApplicationController
-  layout "background_black", only: [:show] # for black background, white text
+  layout "background_black", only: %i[show] # for black background, white text
 
   before_action :authenticate_user! # for Devise
-  before_action :set_collection, only: [:show, :edit, :update, :destroy]
+  before_action :set_collection, only: %i[show edit update destroy]
 
   def index
     @collections = current_user.collections.order(created_at: :desc) # newest collection first

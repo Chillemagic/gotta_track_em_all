@@ -18,7 +18,7 @@ class CollectionCardsController < ApplicationController
   # GET /collection_cards/1/edit
   def edit
   end
-
+https://github.com/Chillemagic/gotta_track_em_all/pull/33/conflict?name=app%252Fcontrollers%252Fcollection_cards_controller.rb&ancestor_oid=5eb65c3168bf5389b92ee880d2a388785aa6248f&base_oid=e8cd5d6fe1eb008351c42b466de7aae9dd0c32eb&head_oid=95f4821d01aac5c08be45ce2147d4f1eab1e53c9
   # POST /collection_cards or /collection_cards.json
   def create
     @collection_card = CollectionCard.new(collection_card_params)

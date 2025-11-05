@@ -1,7 +1,10 @@
-<% is_button ||= false %>
+<% label = local_assigns[:button_label] || "Click" %>
+<% path = local_assigns[:button_path] || "#" %>
+<% method = local_assigns[:method] || :get %>
+<% form_submit = local_assigns[:form_submit] || false %>
 
-<% if is_button %>
-  <button class="relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group">
+<% if form_submit %>
+  <button type="submit" class="relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group">
     <!-- Blue background as border -->
     <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
       <div class="flex-1 bg-blue-500 rounded-t-md"></div>
@@ -17,12 +20,12 @@
     <!-- Button text -->
     <div class="absolute inset-[6px] flex items-center justify-center">
       <span class="text-white text-md font-bold uppercase tracking-tight">
-        <%= button_label %>
+        <%= label %>
       </span>
     </div>
   </button>
 <% else %>
-  <%= link_to (local_assigns[:button_path] || "#"), method: (local_assigns[:method] || :get), data: { turbo: false }, class: "relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group" do %>
+  <%= link_to path, method: method, data: { turbo: false }, class: "relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group" do %>
     <!-- Blue background as border -->
     <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
       <div class="flex-1 bg-blue-500 rounded-t-md"></div>
@@ -38,7 +41,7 @@
     <!-- Button text -->
     <div class="absolute inset-[6px] flex items-center justify-center">
       <span class="text-white text-md font-bold uppercase tracking-tight">
-        <%= button_label %>
+        <%= label %>
       </span>
     </div>
   <% end %>
