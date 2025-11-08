@@ -1,4 +1,7 @@
-<div class="mx-auto max-w-4xl px-4">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+  <!-- Nav bar -->
+  <%= render "components/upper_nav_bar" %>
+  <div class="mx-auto max-w-4xl px-4">
   <h1 class="text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
     <%= @collection.name %>
   </h1>
@@ -51,21 +54,5 @@
             </div>
       </div>
     <% end %>
-  </div>
-</div>
-
-<div class="fixed inset-x-0 bottom-0 p-4 bg-black/50 backdrop-blur grid grid-rows-2 gap-3">
-  <%= link_to "Card Tracker Page", cards_path,
-      class: "block w-[200px] justify-self-end text-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" %>
-
-  <div class="grid grid-cols-3 gap-3">
-    <%= link_to "Tracker", cards_path,
-      class: "block text-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" %>
-
-    <%= link_to "Search", cards_path,
-      class: "block text-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" %>
-
-    <%= link_to "Folio", cards_path,
-      class: "block text-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" %>
   </div>
 </div>
