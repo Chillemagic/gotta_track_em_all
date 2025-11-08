@@ -1,16 +1,43 @@
 <!-- app/views/collections/edit.html.erb -->
-<h1>Edit Collection</h1>
+<h1 class="mx-auto max-w-3xl px-4 mt-12 mb-8 text-4xl md:text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+  Edit Collection
+</h1>
 
-<%= form_with model: @collection do |f| %>
-  <p>
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </p>
+<div class="mx-auto max-w-3xl px-4">
+  <div class="rounded-xl bg-white/5 ring-1 ring-white/10 p-6 md:p-8">
+    <%= form_with model: @collection do |f| %>
+      <div class="space-y-6">
 
-  <p>
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </p>
+        <!-- Name -->
+        <div>
+          <%= f.label :name, "Name",
+                class: "block text-sm font-medium text-gray-400 mb-2 underline underline-offset-4" %>
+          <%= f.text_field :name,
+                class: "block w-full rounded-md bg-white/10 px-3 py-2 text-base md:text-lg text-gray-500 placeholder-gray-400
+                        ring-1 ring-inset ring-white/10 focus:outline-none focus:ring-2 focus:ring-orange-400" %>
+        </div>
 
-  <%= f.submit "Save changes" %>
-<% end %>
+        <!-- Description -->
+        <div>
+          <%= f.label :description, "Description",
+                class: "block text-sm font-medium text-gray-400 mb-2 underline underline-offset-4" %>
+          <%= f.text_area :description,
+                rows: 10,
+                class: "block w-full rounded-md bg-white/10 px-3 py-2 text-base md:text-lg text-gray-500 placeholder-gray-400
+                        ring-1 ring-inset ring-white/10 focus:outline-none focus:ring-2 focus:ring-orange-400
+                        min-h-56 resize-y" %>
+        </div>
+
+        <!-- Actions -->
+        <div class="pt-2">
+          <%= f.submit "Save changes",
+                class: "inline-flex items-center justify-center rounded-md bg-orange-500 px-4 py-1.5
+                        text-sm font-semibold text-white shadow-sm hover:bg-red-400
+                        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400
+                        transition" %>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+</div>
