@@ -1,0 +1,67 @@
+<!-- Include this script tag or install `@tailwindplus/elements` via npm: -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+
+<nav class="relative bg-gray-800">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <!-- top row: single non-wrapping flex line -->
+    <div class="relative flex h-16 items-center">
+
+      <!-- Left: Logo (fixed size) and links to homepage -->
+      <div class="flex-none">
+        <%= link_to root_path, class: "inline-block" do %>
+          <%= image_tag "GTEA-round.png", alt: "Gotta Track Em All Logo", class: "h-20 w-auto" %>
+        <% end %>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Right: Profile dropdown (fixed size) -->
+      <div class="flex-none ml-3">
+        <el-dropdown class="relative">
+          <button aria-expanded="false" aria-controls="user-menu" class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+            <span class="absolute -inset-1.5"></span>
+            <span class="sr-only">Open user menu</span>
+            <%= image_tag "Plain-Profile-Icon.jpg", alt: "Profile Picture", class: "size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" %>
+          </button>
+
+          <el-menu id="user-menu" anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+            <%= link_to "Edit your profile", edit_user_registration_path, class: "block w-full px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:outline-hidden" %>
+            <%= button_to (local_assigns[:button_label] || "Sign out"), destroy_user_session_path, method: :delete, class: "block w-full px-4 py-2 text-sm text-left text-gray-700 focus:bg-gray-100 focus:outline-hidden" %>
+          </el-menu>
+        </el-dropdown>
+      </div>
+
+      <!-- Absolute centered button group -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="hidden sm:flex items-center space-x-4 pointer-events-auto z-10">
+          <%= render partial: "components/button", locals: { button_path: trackers_path, button_label: "TRACKER" } %>
+          <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
+          <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
+        </div>
+      </div>
+
+      <!-- Mobile menu button (kept in flow but hidden on sm+) -->
+      <div class="-mr-2 flex sm:hidden">
+        <button type="button" command="--toggle" commandfor="mobile-menu" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
+          <span class="absolute -inset-0.5"></span>
+          <span class="sr-only">Open main menu</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+            <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+            <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <el-disclosure id="mobile-menu" hidden class="block sm:hidden">
+    <div class="space-y-1 px-2 pt-2 pb-3">
+      <%= render partial: "components/button", locals: { button_path: trackers_path, button_label: "TRACKER" } %>
+      <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
+      <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
+    </div>
+</nav>

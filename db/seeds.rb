@@ -17,7 +17,9 @@ user1 = User.create!(
   email: "user1@mail.com",
   password: "secret",
   username: "user1",
-  trainer_type: "pokescientist"
+  trainer_type: "pokescientist",
+  first_name: "first",
+  last_name: "last"
 )
 
 pokemon_collections = [
