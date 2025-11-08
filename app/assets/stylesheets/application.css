@@ -13,6 +13,7 @@
    Gradient Card + Small Icon
    ------------------------------ */
 @import url('https://fonts.cdnfonts.com/css/pokemon-solid');
+@import url('https://fonts.googleapis.com/css2?family=Saira:wght@300;400;600&display=swap');
 
 .font-pokemon {
   font-family: 'Pokemon Solid', sans-serif;
@@ -25,7 +26,6 @@
   text-shadow: 3px 3px 0 #3b4cca;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Saira:wght@300;400;600&display=swap');
 
 .font-saira {
   font-family: 'Saira', sans-serif;
