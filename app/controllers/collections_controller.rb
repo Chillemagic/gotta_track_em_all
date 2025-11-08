@@ -1,5 +1,6 @@
 class CollectionsController < ApplicationController
-  layout "background_black", only: %i[show] # for black background, white text
+  layout "background_pattern_dark", only: [:show, :index] # for pokemondark background, white text
+  # layout "background_nature", only: [:edit]
 
   before_action :authenticate_user! # for Devise
   before_action :set_collection, only: %i[show edit update destroy]
@@ -27,6 +28,7 @@ class CollectionsController < ApplicationController
   end
 
   def edit
+    render layout: "background_nature"
     @cards = Card.all # Loads all Card records so the edit form can show checkboxes
   end
 

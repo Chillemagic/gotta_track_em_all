@@ -29,7 +29,7 @@ class FetchCardInfoContingencyJob < ApplicationJob
     Rails.logger.info("Successfully fetched card info for Card ##{card_id}")
   rescue CardNotFoundError => e
     Rails.logger.warn("Card ##{card_id}: #{e.message}")
-    card.update(fetch_failed: true) # Optional: track failed fetches
+    card.update(fetch_failed: true) # Optional: track failed fetched
     broadcast(card)
   rescue APIError => e
     Rails.logger.error("Card ##{card_id}: #{e.message}")
