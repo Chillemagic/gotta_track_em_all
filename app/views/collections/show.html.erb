@@ -1,5 +1,5 @@
 <div class="mx-auto max-w-4xl px-4">
-  <h1 class="text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+  <h1 class="mt-12 text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
     <%= @collection.name %>
   </h1>
 
@@ -46,7 +46,7 @@
                 <%= link_to "Delete from collection",
                     collection_card_path(collection_card),
                     data: { turbo_method: :delete, turbo_confirm: "Remove this card?" },
-                    class: "inline-flex items-center rounded-full bg-white/10 px-2.5 py-1 text-sm font-semibold text-white ring-1 ring-inset ring-white/5 hover:bg-white/20" %>
+                    class: "inline-flex items-center rounded-full bg-white/30 px-2.5 py-1 text-sm font-semibold text-white ring-1 ring-inset ring-white/5 hover:bg-white/20" %>
               </div>
             </div>
       </div>
