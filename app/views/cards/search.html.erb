@@ -2,7 +2,7 @@
 <%# pokemon type,card number, card set,  %>
 
 <%# app/views/cards/search.html.erb %>
-<div class="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-2xl">
 
     <!-- Header Section -->
@@ -17,7 +17,14 @@
 
     <!-- Search Form Card -->
     <div class="bg-white/10 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
-      <%= simple_form_for :search, url: search_cards_path, method: :post, html: { multipart: true, class: "space-y-6" } do |f| %>
+<%= simple_form_for :search,
+                    url: search_cards_path,
+                    method: :post,
+                    html: {
+                      multipart: true,
+                      class: "space-y-6",
+                      data: { turbo: false }
+                    } do |f| %>
 
         <!-- File Upload Area -->
         <div class="space-y-3">
@@ -103,15 +110,5 @@
       </div>
     </div>
 
-  </div>
-</div>
-
-<!-- Bottom Navigation Bar -->
-<div class="fixed inset-x-0 bottom-0 p-4 bg-black/50 backdrop-blur">
-  <div class="max-w-4xl mx-auto">
-    <div class="flex justify-center gap-20">
-      <%= render "components/button", button_label: "← Home", button_path: root_path%>
-      <%= render "components/button", button_label: "Collections", button_path: collections_path %>
-    </div>
   </div>
 </div>

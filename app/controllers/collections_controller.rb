@@ -20,8 +20,10 @@ class CollectionsController < ApplicationController
 
   def create
     @collection = current_user.collections.new(collection_params)
+    @card = Card.find(params[:collection][:card_id]) # get card so Turbo Stream can render dropdown
+
     if @collection.save
-      redirect_to @collection, notice: "Collection created!"
+      redirect_back fallback_location: card_path(@card), notice: "Collection created!"
     else
       render :new, status: :unprocessable_entity
     end

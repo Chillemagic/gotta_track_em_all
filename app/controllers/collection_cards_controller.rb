@@ -23,9 +23,9 @@ class CollectionCardsController < ApplicationController
     @collections_card = CollectionCard.new(collection_card_params)
 
     if @collections_card.save
-      redirect_to collection_path(@collection_card.collection_id), notice: "Card added to collection!"
+      redirect_to collection_path(@collections_card.collection), notice: "Card added to collection!"
     else
-      redirect_to card_path(@collections_card.card_id), alert: "Failed to add card to collection."
+      redirect_to card_path(@collections_card.card), alert: "Failed to add card to collection."
     end
   end
 

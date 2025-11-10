@@ -4,6 +4,7 @@ class UpdatePriceHistoryJob < ApplicationJob
 
     card = Card.find(card_id)
 
+
     # Check if a price history has been pulled in the last 24 hours
     last_update = card.price_histories.order(recorded_at: :desc).first
     if last_update && last_update.recorded_at >= Date.current

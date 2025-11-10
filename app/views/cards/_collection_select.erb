@@ -1,0 +1,15 @@
+
+<%= simple_form_for CollectionCard.new, data: { turbo_frame: "_top" } do |f| %>
+  <%= f.input :collection_id,
+              collection: current_user.collections.pluck(:name, :id),
+              prompt: "Select a collection",
+              label_html: { class: "block text-sm font-medium text-gray-700" },
+              input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+
+  <%= f.hidden_field :card_id, value: card.id %>
+
+  <div class="mt-4">
+    <%= f.submit "Add to Collection",
+                class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+  </div>
+<% end %>

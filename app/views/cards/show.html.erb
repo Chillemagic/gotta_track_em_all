@@ -1,5 +1,5 @@
 <%# app/views/cards/show.html.erb %>
-<div class="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-4xl">
 
     <!-- Header Section -->
@@ -14,5 +14,32 @@
 
     <%= turbo_stream_from "card_#{@card.id}" %>
     <%= render "card_info", card: @card %>
+    <%= turbo_frame_tag "newCollection" do %>
+      <div data-controller="collection-form">
+        <!-- Existing Collection Form -->
+        <div>
+          <%= render partial: "cards/collection_select", locals: {card: @card} %>
+        </div>
+        <!-- Create New Collection Checkbox -->
+        <div class="mt-3">
+          <label class="flex items-center gap-2">
+            <%= check_box_tag "create_new_collection", "1", false,
+                data: { action: "collection-form#toggle" } %>
+            <span>Create a new collection</span>
+          </label>
+        </div>
+
+        <!-- New Collection Form (hidden by default) -->
+        <div class="hidden mt-4" data-collection-form-target="newCollection">
+          <%= simple_form_for @collection do |c| %>
+            <%= c.input :name %>
+            <%= c.input :description %>
+            <%= c.hidden_field :card_id, value: @card.id %>
+            <%= c.submit "Create Collection",
+                        class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>

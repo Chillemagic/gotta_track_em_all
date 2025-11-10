@@ -1,13 +1,17 @@
 require "base64"
 class CardsController < ApplicationController
+  layout "background_pattern_dark"
+
   before_action :authenticate_user! # for Devise
   before_action :set_card, only: %i[show destroy]
+
 
   def index
     @cards = Card.all
   end
 
   def show
+    @collection = Collection.new
   end
 
   def search
@@ -42,8 +46,7 @@ class CardsController < ApplicationController
       )
       Rails.logger.info("Created card with ID: #{@card.id}, name: #{@card.name}, set: #{@card.set_name}, card_number: #{@card.card_number}, rarity: #{@card.rarity}")
 
-      FetchCardInfoJob.set(wait: 2.seconds).perform_later(@card.id)
-      FetchCardPricingJob.set(wait: 10.seconds).perform_later(@card.id)
+      FetchCardInfoJob.perform_later(@card.id, current_user.id)
     end
 
     redirect_to @card
