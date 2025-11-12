@@ -1,0 +1,11 @@
+<p>Total Value: $<%= current_user.total_card_value %></p>
+<p>Average Price: $<%= current_user.average_card_price&.round(2) %></p>
+<% if false %>
+  <% if most_card = current_user.most_valuable_card %>
+    <p>Most Valuable Card: <%= most_card[:card].name %> ($<%= most_card[:price] %>)</p>
+  <% end %>
+
+  <% if most_set = current_user.most_valuable_set %>
+    <p>Most Valuable Set: <%= most_set[:set_name] %> ($<%= most_set[:total] %>)</p>
+  <% end %>
+<% end %>

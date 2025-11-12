@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
   layout "background_nature"
+
   before_action :authenticate_user!
 
   def home

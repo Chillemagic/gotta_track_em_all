@@ -12,6 +12,7 @@ class CollectionsController < ApplicationController
   # GET /collections/:id
   def show
     @collection = Collection.find(params[:id])
+    @collection_cards = @collection.collection_cards.includes(:card)
   end
 
   def new
