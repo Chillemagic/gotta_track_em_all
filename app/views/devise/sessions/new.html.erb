@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-gray-900">
+<%= render 'shared/background_wrapper' do %>
   <main class="isolate">
     <!-- Hero section -->
     <div class="relative pt-10">
@@ -14,7 +14,7 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
           <div class="mx-auto max-w-md bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Welcome back, Trainer</h2>
-            <h3 class="text-l text-gray 750 mb-6">Log in to access your collection</h3>
+            <h3 class="text-l text-gray-700 mb-6">Log in to access your collection</h3>
 
             <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
               <%= f.error_notification %>
@@ -31,7 +31,7 @@
                   required: true,
                   hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
                   label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+                  input_html: { autocomplete: "current-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
                 <%= render "components/button", button_label: "Log In", is_button: true %>
               </div>
@@ -48,4 +48,4 @@
       </div>
     </div>
   </main>
-</div>
+<% end %>

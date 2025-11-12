@@ -1,10 +1,125 @@
-<p style="color: green"><%= notice %></p>
+<p class="text-green-500 mb-4"><%= notice %></p>
 
-<%= render @collection_card %>
+<div id="card_<%= @collection_card.id %>" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+  <!-- Card Image -->
+  <div class="flex justify-center items-start">
+    <div class="pkm-holo rounded-md w-full max-w-md"
+         style="--front: url('<%= @collection_card.card.image_url %>')"
+         role="img" aria-label="<%= @collection_card.card.name %>">
+    </div>
+  </div>
 
-<div>
-  <%= link_to "Edit this collection card", edit_collection_card_path(@collection_card) %> |
-  <%= link_to "Back to collection cards", collection_cards_path %>
+  <!-- Card Info -->
+  <div class="bg-white/10 backdrop-blur rounded-lg p-6 ring-1 ring-white/5 space-y-6">
 
-  <%= button_to "Destroy this collection card", @collection_card, method: :delete %>
+    <!-- Card Name -->
+    <h2 class="text-3xl font-bold text-yellow-400 mb-2"><%= @collection_card.card.name %></h2>
+
+    <!-- Pokemon Types -->
+    <% if @collection_card.card.pokemon_types.present? %>
+      <h3 class="text-lg text-white">
+        Types:
+        <% types = @collection_card.card.pokemon_types.is_a?(Array) ? @collection_card.card.pokemon_types.join(', ') : @collection_card.card.pokemon_types %>
+        <%= types %>
+      </h3>
+    <% end %>
+
+    <!-- Abilities -->
+    <% if @collection_card.card.abilities.present? %>
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-2">Abilities</h3>
+        <ul class="list-disc ml-6">
+          <% @collection_card.card.abilities.each do |ability| %>
+            <li class="mb-2">
+              <strong class="text-white"><%= ability['name'] %></strong>
+              <% if ability['text'].present? %>
+                <br>
+                <span class="text-sm text-gray-200"><%= ability['text'] %></span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Attacks -->
+    <% if @collection_card.card.attacks.present? %>
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-2">Attacks</h3>
+        <ul class="list-disc ml-6">
+          <% @collection_card.card.attacks.each do |attack| %>
+            <li class="mb-2">
+              <strong class="text-white"><%= attack['name'] %></strong>
+              <% if attack['cost'].present? %>(<%= attack['cost'].join(', ') %>)<% end %>
+              <% if attack['damage'].present? %> - Damage: <%= attack['damage'] %><% end %>
+              <% if attack['effect'].present? %>
+                <br>
+                <span class="text-sm text-gray-200"><%= attack['effect'] %></span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Card Metadata -->
+    <div class="space-y-2 text-gray-200">
+      <p><span class="font-semibold underline">Set:</span> <%= @collection_card.card.set_name %></p>
+      <p><span class="font-semibold underline">Release Date:</span> <%= @collection_card.card.release_date %></p>
+      <p><span class="font-semibold underline">Rarity:</span> <%= @collection_card.card.rarity %></p>
+      <% if @collection_card.card.artist.present? %>
+        <p><span class="font-semibold underline">Artist:</span> <%= @collection_card.card.artist %></p>
+      <% end %>
+    </div>
+
+    <!-- Price Info -->
+    <% if @collection_card.card.price_histories.any? %>
+      <div class="mt-6 bg-white/10 backdrop-blur rounded-lg p-6 ring-1 ring-white/5">
+        <h3 class="text-2xl font-semibold text-white mb-4">Estimated Card Price</h3>
+        <p><strong>Card:</strong> <%= @collection_card.card.name %> in <%= @collection_card.collection.name %></p>
+        <p><strong>Condition:</strong> <%= @collection_card.condition %></p>
+        <p><strong>Price:</strong>
+          <%= @selected_price ? number_to_currency(@selected_price) : "N/A" %>
+        </p>
+      </div>
+    <% end %>
+
+    <% if @collection_card.description.present? %>
+      <div class="mt-6 bg-white/10 backdrop-blur rounded-lg p-6 ring-1 ring-white/5">
+         <h3 class="text-2xl font-semibold text-white mb-4">Notes:</h3>
+         <h3><%= @collection_card.description %></h3>
+      </div>
+    <% end %>
+    <!-- Action Buttons -->
+    <div class="flex gap-4 mt-4">
+      <!-- Back to Collection -->
+      <%= link_to "Back to Collection", collection_path(@collection), class: "px-4 py-2 rounded bg-gray-600 text-white hover:bg-gray-700" %>
+
+      <!-- Delete Card (opens modal) -->
+      <button type="button" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+              onclick="document.getElementById('delete-modal').classList.remove('hidden')">
+        Delete Card
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+ <div class="bg-gray-800/70 rounded-lg shadow-lg w-96 p-6 relative text-white">
+    <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
+    <p class="mb-6">Are you sure you want to delete <strong><%= @collection_card.card.name %></strong> from your collection?</p>
+
+    <div class="flex justify-end gap-4">
+      <!-- Cancel -->
+      <button type="button" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+              onclick="document.getElementById('delete-modal').classList.add('hidden')">
+        Cancel
+      </button>
+
+      <!-- Confirm Delete -->
+      <%= button_to "Confirm Delete", collection_card_path(@collection_card), method: :delete, form_class: "inline", class: "px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700" %>
+    </div>
+  </div>
 </div>
