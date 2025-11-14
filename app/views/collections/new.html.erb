@@ -1,11 +1,46 @@
-<h1>New Collection</h1>
+<div class="mx-auto max-w-5xl px-4 py-10">
+  <h1 class="text-4xl md:text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+    New Card Collection
+  </h1>
 
-<%= simple_form_for(@collection) do |c| %>
-  <%= c.input :name %>
-  <%= c.input :description %>
-  <%= c.submit %>
+  <% if @collection.errors.any? %>
+  <div class="mb-4 text-red-400">
+    <h2 class="font-bold">Errors:</h2>
+    <ul class="list-disc ml-4">
+      <% @collection.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <!-- Form container -->
+  <div class="mt-8 rounded-xl bg-white/5 ring-1 ring-white/10 p-6 transition hover:ring-white/20 hover:bg-white/[0.08]">
+    <%= simple_form_for(@collection, html: { data: { turbo: false } }) do |c| %>
+      <div class="space-y-6">
+        <!-- Name input -->
+        <div>
+          <%= c.label :name, class: "block text-sm font-medium text-white mb-1" %>
+          <%= c.input_field :name, class: "w-full rounded-md bg-white-500/80 text-white border border-white/10 px-3 py-2 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" %>
+        </div>
+
+        <!-- Description input -->
+        <div>
+          <%= c.label :description, class: "block text-sm font-medium text-white mb-1" %>
+          <%= c.input_field :description, class: "w-full rounded-md bg-white-500/80 text-white border border-white/10 px-3 py-2 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" %>
+        </div>
+
+        <!-- Submit button using partial -->
+        <div class="mt-6">
+          <%= render "components/button", button_label: "Save Collection", is_button: true %>
+        </div>
+      </div>
 <% end %>
 
-<%= link_to "Back to Home Page", root_path %>
-<br>
-<%= link_to "Back to Collections", collections_path %>
+    <% end %>
+  </div>
+
+  <!-- Navigation buttons using partial -->
+  <div class="mt-8 flex gap-4">
+    <%= render "components/button", button_label: "To Collections", button_path: collections_path %>
+  </div>
+</div>

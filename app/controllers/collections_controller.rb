@@ -1,5 +1,5 @@
 class CollectionsController < ApplicationController
-  layout "background_pattern_dark", only: [:show, :index] # for pokemondark background, white text
+  layout "background_pattern_dark", only: %i[show index new] # for pokemondark background, white text
   # layout "background_nature", only: [:edit]
 
   before_action :authenticate_user! # for Devise
@@ -21,10 +21,9 @@ class CollectionsController < ApplicationController
 
   def create
     @collection = current_user.collections.new(collection_params)
-    @card = Card.find(params[:collection][:card_id]) # get card so Turbo Stream can render dropdown
 
     if @collection.save
-      redirect_back fallback_location: card_path(@card), notice: "Collection created!"
+      redirect_to collections_path, notice: "Collection created!"
     else
       render :new, status: :unprocessable_entity
     end
