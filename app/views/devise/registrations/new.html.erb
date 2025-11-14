@@ -1,93 +1,92 @@
-<%= render 'shared/background_wrapper' do %>
-  <main class="isolate">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-    <!-- Nav bar -->
-    <%= render "components/upper_nav_bar" %>
 
-    <div class="relative pt-10">
-      <!-- Background -->
-      <div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
-        <div style="clip-path: polygon(...)" class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"></div>
-      </div>
+<main class="isolate">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+  <!-- Nav bar -->
+  <%= render "components/upper_nav_bar" %>
 
-      <!-- Sign-Up Card -->
-      <div class="py-1 sm:py-8 lg:pb-24">
-        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+  <div class="relative pt-10">
+    <!-- Background -->
+    <div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+      <div style="clip-path: polygon(...)" class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"></div>
+    </div>
+
+    <!-- Sign-Up Card -->
+    <div class="py-1 sm:py-8 lg:pb-24">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8 bg-white/30 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
 
 
 
-              <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-                <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6 space-y-6">
-                <%= f.error_notification %>
-                <h1 class="text-3xl font-bold text-gray-900 mb-6">Sign Up</h1>
-                <h2 class="text-xl text-gray-750 mb-6">Create your trainer profile</h2>
+            <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+              <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6 space-y-6">
+              <%= f.error_notification %>
+              <h1 class="text-3xl font-bold text-gray-900 mb-6">Sign Up</h1>
+              <h2 class="text-xl text-gray-750 mb-6">Create your trainer profile</h2>
 
-                <!-- First name -->
-                <%= f.input :first_name,
-                  input_html: { class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" },
+              <!-- First name -->
+              <%= f.input :first_name,
+                input_html: { class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" },
+                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+
+              <!-- Last Name -->
+              <%= f.input :last_name,
+                input_html: { class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" },
+                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+
+              <!-- Username with availability check -->
+              <div class="relative" data-controller="username-check">
+                <%= f.input :username,
+                  input_html: {
+                    class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                    data: {
+                      username_check_target: "input",
+                      action: "input->username-check#debouncedCheck"
+                    }
+                  },
                   label_html: { class: "block text-sm font-medium text-gray-700" } %>
-
-                <!-- Last Name -->
-                <%= f.input :last_name,
-                  input_html: { class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" },
-                  label_html: { class: "block text-sm font-medium text-gray-700" } %>
-
-                <!-- Username with availability check -->
-                <div class="relative" data-controller="username-check">
-                  <%= f.input :username,
-                    input_html: {
-                      class: "w-full rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                      data: {
-                        username_check_target: "input",
-                        action: "input->username-check#debouncedCheck"
-                      }
-                    },
-                    label_html: { class: "block text-sm font-medium text-gray-700" } %>
-                  <div data-username-check-target="feedback" class="absolute left-0 top-full mt-1 z-10"></div>
-                </div>
-
-                <!-- Date of Birth -->
-                <%= f.input :date_of_birth,
-                  as: :date,
-                  order: %i[day month year],
-                  start_year: Date.today.year - 100,
-                  end_year: Date.today.year,
-                  default: Date.new(2000, 1, 1),
-                  input_html: { class: "w-full rounded-md border-gray-300 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
-                  label_html: { class: "block text-sm font-medium text-gray-700" } %>
-
-                <!-- Email -->
-                <%= f.input :email,
-                  input_html: { class: "w-full rounded-md border-gray-300 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
-                  label_html: { class: "block text-sm font-medium text-gray-700" } %>
-
-                <!-- Password -->
-                <%= f.input :password,
-                  input_html: { class: "w-full rounded-md border-gray-300 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
-                  label_html: { class: "block text-sm font-medium text-gray-700" } %>
-
-                <!-- Password Confirmation -->
-                <%= f.input :password_confirmation,
-                  input_html: { class: "w-full rounded-md border-gray-300 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
-                  label_html: { class: "block text-sm font-medium text-gray-700" } %>
-
-                <!-- Trainer Type -->
-                <%= f.input :trainer_type,
-                  as: :select,
-                  collection: [["PokeScientist: Data-focussed", "pokescientist"], ["PokeManiac: Collector-focussed", "pokemaniac"]],
-                  prompt: "Select your trainer type",
-                  input_html: { class: "w-full rounded-md border-gray-300 mb-8 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
-                  label_html: { class: "block text-sm font-medium text-gray-700" } %>
-
-                <!-- Submit Button -->
-                <%= render partial: "users/sign_up_button", locals: { button_label: "SUBMIT", form_submit: true } %>
+                <div data-username-check-target="feedback" class="absolute left-0 top-full mt-1 z-10"></div>
               </div>
-            <% end %>
-            <div class="mt-6 text-center text-sm text-gray-600">
-            </div>
 
-        </div>
+              <!-- Date of Birth -->
+              <%= f.input :date_of_birth,
+                as: :date,
+                order: %i[day month year],
+                start_year: Date.today.year - 100,
+                end_year: Date.today.year,
+                default: Date.new(2000, 1, 1),
+                input_html: { class: "w-full rounded-md border-gray-300 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
+                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+
+              <!-- Email -->
+              <%= f.input :email,
+                input_html: { class: "w-full rounded-md border-gray-300 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
+                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+
+              <!-- Password -->
+              <%= f.input :password,
+                input_html: { class: "w-full rounded-md border-gray-300 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
+                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+
+              <!-- Password Confirmation -->
+              <%= f.input :password_confirmation,
+                input_html: { class: "w-full rounded-md border-gray-300 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
+                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+
+              <!-- Trainer Type -->
+              <%= f.input :trainer_type,
+                as: :select,
+                collection: [["PokeScientist: Data-focussed", "pokescientist"], ["PokeManiac: Collector-focussed", "pokemaniac"]],
+                prompt: "Select your trainer type",
+                input_html: { class: "w-full rounded-md border-gray-300 mb-8 py-1 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" },
+                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+
+              <!-- Submit Button -->
+              <%= render partial: "users/sign_up_button", locals: { button_label: "SUBMIT", form_submit: true } %>
+            </div>
+          <% end %>
+          <div class="mt-6 text-center text-sm text-gray-600">
+          </div>
+
       </div>
     </div>
-  </main>
-<% end %>
+  </div>
+</main>
