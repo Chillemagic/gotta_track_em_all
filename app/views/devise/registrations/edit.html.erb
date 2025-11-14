@@ -1,8 +1,6 @@
+
 <main class="isolate">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-  <!-- Nav bar -->
-  <%= render "components/upper_nav_bar" %>
-
   <!-- Hero section -->
   <div class="relative pt-10">
     <!-- Background -->
@@ -13,9 +11,9 @@
     </div>
 
     <!-- Edit Profile Card -->
-    <div class="py-1 sm:py-8 lg:pb-24">
+    <div class="py-1 sm:py-8 lg:pb-24 ">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-md bg-white rounded-lg shadow-md p-6">
+        <div class="mx-auto max-w-md bg-white/30 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Your Profile</h2>
           <h3 class="text-l text-gray-750 mb-6">Update your trainer info or change your password</h3>
 
@@ -52,6 +50,7 @@
                 label: "New Password",
                 hint: "Leave blank if you don't want to change it",
                 label_html: { class: "block text-sm font-medium text-gray-700" },
+                hint_html: { class: "text-white"},
                 input_html: { autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
               <%= f.input :password_confirmation,
@@ -63,15 +62,13 @@
                 required: true,
                 hint: "Enter your current password to confirm changes",
                 label_html: { class: "block text-sm font-medium text-gray-700" },
+                hint_html: { class: "text-white"},
                 input_html: { autocomplete: "current-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-              <%= render "components/button", button_label: "Update Profile", is_button: true %>
+              <%= render "components/button", button_label: "Update Profile", is_button: true, width: "w-full" %>
+              <%= render "components/button", button_label: "Dashboard", width: "w-full", button_path: root_path%>
+            <% end %>
             </div>
-          <% end %>
-
-          <div class="mt-6 text-sm text-gray-600">
-            <%= link_to "Back to Dashboard", root_path, class: "text-indigo-600 hover:text-indigo-800" %>
-          </div>
         </div>
       </div>
     </div>

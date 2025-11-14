@@ -2,11 +2,7 @@
 <%# pokemon type,card number, card set,  %>
 
 <%# app/views/cards/search.html.erb %>
-<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-<!-- Nav bar -->
-<%= render "components/upper_nav_bar" %>
-
-<div class="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-2xl">
 
     <!-- Header Section -->
@@ -21,33 +17,40 @@
 
     <!-- Search Form Card -->
     <div class="bg-white/10 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
-      <%= simple_form_for :search, url: search_cards_path, method: :post, html: { multipart: true, class: "space-y-6" } do |f| %>
+      <%= simple_form_for :search,
+                          url: search_cards_path,
+                          method: :post,
+                          html: {
+                            multipart: true,
+                            class: "space-y-6",
+                            data: { turbo: false }
+                          } do |f| %>
 
-        <!-- File Upload Area -->
-        <div class="space-y-3">
-          <label class="block text-lg font-semibold text-white">
-            Upload Card Image
-          </label>
+              <!-- File Upload Area -->
+              <div class="space-y-3">
+                <label class="block text-lg font-semibold text-white">
+                  Upload Card Image
+                </label>
 
-          <div class="relative">
-            <%= f.input :image,
-                as: :file,
-                label: false,
-                input_html: {
-                  accept: 'image/*',
-                  class: 'block w-full text-sm text-gray-200
-                         file:mr-4 file:py-3 file:px-6
-                         file:rounded-lg file:border-0
-                         file:text-sm file:font-semibold
-                         file:bg-gradient-to-r file:from-blue-500 file:to-blue-600
-                         file:text-white
-                         hover:file:from-blue-600 hover:file:to-blue-700
-                         file:cursor-pointer file:transition-all file:duration-200
-                         cursor-pointer
-                         bg-white/5 rounded-lg p-3
-                         border-2 border-dashed border-white/20
-                         hover:border-white/40 transition-colors'
-                } %>
+                <div class="relative">
+                  <%= f.input :image,
+                      as: :file,
+                      label: false,
+                      input_html: {
+                        accept: 'image/*',
+                        class: 'block w-full text-sm text-gray-200
+                              file:mr-4 file:py-3 file:px-6
+                              file:rounded-lg file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-gradient-to-r file:from-blue-500 file:to-blue-600
+                              file:text-white
+                              hover:file:from-blue-600 hover:file:to-blue-700
+                              file:cursor-pointer file:transition-all file:duration-200
+                              cursor-pointer
+                              bg-white/5 rounded-lg p-3
+                              border-2 border-dashed border-white/20
+                              hover:border-white/40 transition-colors'
+                      } %>
           </div>
 
           <p class="text-sm text-gray-400 flex items-center gap-2">
@@ -107,15 +110,5 @@
       </div>
     </div>
 
-  </div>
-</div>
-
-<!-- Bottom Navigation Bar -->
-<div class="fixed inset-x-0 bottom-0 p-4 bg-black/50 backdrop-blur">
-  <div class="max-w-4xl mx-auto">
-    <div class="flex justify-center gap-20">
-      <%= render "components/button", button_label: "← Home", button_path: root_path%>
-      <%= render "components/button", button_label: "Collections", button_path: collections_path %>
-    </div>
   </div>
 </div>

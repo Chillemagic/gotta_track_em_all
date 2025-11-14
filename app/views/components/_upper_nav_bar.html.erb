@@ -1,13 +1,10 @@
-<!-- Include this script tag or install `@tailwindplus/elements` via npm: -->
-<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-
-<nav class="relative bg-gray-800">
+<nav class="relative bg-gray-400/30">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- top row: single non-wrapping flex line -->
     <div class="relative flex h-16 items-center">
 
       <!-- Left: Logo (fixed size) and links to homepage -->
-      <div class="flex-none">
+      <div class="flex-none relative z-20">
         <%= link_to root_path, class: "inline-block" do %>
           <%= image_tag "GTEA-round.png", alt: "Gotta Track Em All Logo", class: "h-20 w-auto" %>
         <% end %>
@@ -16,7 +13,7 @@
       <div class="flex-1"></div>
 
       <!-- Right: Profile dropdown (fixed size) -->
-      <div class="flex-none ml-3">
+      <div class="flex-none ml-3 relative z-20">
         <el-dropdown class="relative">
           <button aria-expanded="false" aria-controls="user-menu" class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
             <span class="absolute -inset-1.5"></span>
@@ -33,8 +30,7 @@
 
       <!-- Absolute centered button group -->
       <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div class="hidden sm:flex items-center space-x-4 pointer-events-auto z-10">
-          <%= render partial: "components/button", locals: { button_path: trackers_path, button_label: "TRACKER" } %>
+        <div class="hidden sm:flex items-center space-x-20 pointer-events-auto z-10">
           <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
           <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
         </div>
@@ -64,4 +60,5 @@
       <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
       <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
     </div>
+  </el-disclosure>
 </nav>

@@ -394,9 +394,11 @@ end
 
 Collection.all.each do |collection|
   Card.all.each do |card|
+    condition = ["PSA 10.0", "CGC 10.0", "Raw"].sample
     CollectionCard.create!(
       card: card,
-      collection: collection
+      collection: collection,
+      condition: condition
     )
   end
 end

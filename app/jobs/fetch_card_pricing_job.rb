@@ -7,6 +7,7 @@ class FetchCardPricingJob < ApplicationJob
   def perform(card_id)
     # 1. Find Card from existing card db
     puts "Running FetchCardPricingJob"
+
     card = Card.find(card_id)
     card_number = card.card_number
 
