@@ -51,25 +51,25 @@ class User < ApplicationRecord
 
   # Most valuable card
   def most_valuable_card
-    collection_cards.to_a.sort_by do |card|
-      price = card.fetch_price
-      price || 0
-    end.last
+    # collection_cards.to_a.sort_by do |card|
+    #   price = card.fetch_price
+    #   price || 0
+    # end.last
+    collection_cards.includes(:price_histories, :card).max_by do |card|
+      card.fetch_price.to_f.round(2)
+    end
   end
 
   # Most valuable set (grouped by set_name)
   def most_valuable_set
-    set_values ={}
-    collection_cards.each do |card|
-      price = card.fetch_price
-      set = card.card.set_name
-
-      if set_values[set].nil?
-        set_values[set] = price
-      else
-        set_values[set]+= price
-      end
+    # Set hash to default value of 0 to deal with nil values
+    set_values = Hash.new(0)
+    collection_cards.includes(:card).each do |card|
+      price = card.fetch_price.to_f
+      set = card.card&.set_name || "Unknown Set"
+      set_values[set]+= price
     end
-    set_values.max_by { |k, v| v }.first
+    set_name, total = set_values.max_by { |_set, total| total } || [nil, nil]
+    { set_name: set_name, total: total }
   end
 end

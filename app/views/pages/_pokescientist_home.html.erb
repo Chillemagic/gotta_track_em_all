@@ -1,13 +1,65 @@
-<div class="space-y-2">
-  <p>Average Price: $<%= number_with_precision(current_user.average_card_price, precision: 2) %></p>
-  <p>Total Value: $<%= number_with_precision(current_user.total_card_value, precision: 2) %></p>
-</div>
-<% if false %>
-  <% if most_card = current_user.most_valuable_card %>
-    <p>Most Valuable Card: <%= most_card[:card].name %> ($<%= most_card[:price] %>)</p>
-  <% end %>
+<div class="h-120 w-full">
+  <!-- Centered Header with Pokemon Font -->
+  <h2 class="font-pokemon text-3xl text-center text-yellow-400 mb-3" style="text-shadow: 2px 2px 0px #d97706, -1px -1px 0px #d97706, 1px -1px 0px #d97706, -1px 1px 0px #d97706;">
+    Collection Insights
+  </h2>
 
-  <% if most_set = current_user.most_valuable_set %>
-    <p>Most Valuable Set: <%= most_set[:set_name] %> ($<%= most_set[:total] %>)</p>
-  <% end %>
-<% end %>
+  <!-- Main Content Container -->
+  <div class="bg-gradient-to-br from-gray-300/70 to-gray-400/70 rounded-xl h-[calc(100%-3.5rem)] shadow-2xl p-4">
+    <div class="h-full w-full flex items-stretch gap-4">
+
+      <!-- Left Side: Stacked Figures (60%) -->
+      <div class="flex-[3] flex flex-col gap-3">
+        <!-- Total Card Value -->
+        <div class="flex-1 rounded-xl p-3 shadow-lg flex flex-col justify-center">
+          <p class="text-xs text-gray-700 uppercase font-bold tracking-wider">TOTAL CARD VALUE</p>
+          <p class="text-3xl font-bold text-gray-900">$<%= current_user.total_card_value %></p>
+        </div>
+
+        <!-- Average Card Price -->
+        <div class="flex-1 rounded-xl p-3 shadow-lg flex flex-col justify-center">
+          <p class="text-xs text-gray-700 uppercase font-bold tracking-wider">AVERAGE PRICE</p>
+          <p class="text-3xl font-bold text-gray-900">$<%= current_user.average_card_price&.round(2) %></p>
+        </div>
+
+        <!-- Most Valuable Set -->
+        <% if most_set = current_user.most_valuable_set %>
+          <div class="flex-1 rounded-xl p-3 shadow-lg flex flex-col justify-center">
+            <p class="text-xs text-gray-700 uppercase font-bold tracking-wider">TOP SET</p>
+            <p class="text-base font-bold text-gray-900 italic truncate"><%= most_set[:set_name] %></p>
+            <p class="text-2xl font-bold text-gray-900 mt-1">$<%= most_set[:total] %></p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Right Side: Most Valuable Card (40%) -->
+      <% if most_card = current_user.most_valuable_card %>
+        <div class="flex-[2] rounded-xl p-3 shadow-lg flex flex-col">
+          <p class="text-xs text-gray-700 uppercase font-bold tracking-wider text-center mb-2">MOST VALUABLE CARD:</p>
+
+          <p class="text-lg font-bold text-gray-900 italic text-center mb-2"><%= most_card.card.name %></p>
+
+          <!-- Image with Black Background -->
+          <div class="flex-1 relative mb-3 min-h-0 rounded-lg">
+            <div class="rounded-lg w-full h-full absolute inset-0"
+                style="--front: url('<%= most_card.card.image_url %>');
+                        background-image: var(--front);
+                        background-size: contain;
+                        background-position: center;
+                        background-repeat: no-repeat;"
+                role="img"
+                aria-label="<%= most_card.card.name %>">
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="text-center">
+            <p class="text-xs text-gray-700 uppercase font-bold tracking-wider">CURRENT PRICE:</p>
+            <p class="text-2xl font-bold text-gray-900">$<%= most_card.fetch_price %></p>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</div>

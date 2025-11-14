@@ -1,35 +1,23 @@
-<% is_button ||= false %>
+<%# app/views/components/_button.html.erb %>
+<%# Usage: %>
+<%# For navigation link: render "components/button", button_label: "Home", button_path: root_path, width: "w-1/2" %>
+<%# For form submit: render "components/button", button_label: "Create Collection", width: "w-full" %>
+<% width = local_assigns[:width] || "w-38" %>
+<% height = local_assigns[:height] || "h-12" %>
+<% button_path = local_assigns[:button_path] %>
+<% button_label = local_assigns[:button_label] || "Button" %>
 
-<% if is_button %>
-  <button class="relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group">
+<% if button_path.present? %>
+  <%# Navigation button %>
+  <%= link_to button_path, method: (local_assigns[:method] || :get), data: { turbo: false }, class: "relative block appearance-none cursor-pointer text-sm px-2 #{width} #{height} overflow-hidden group" do %>
+
     <!-- Blue background as border -->
     <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
       <div class="flex-1 bg-blue-500 rounded-t-md"></div>
       <div class="flex-1 bg-blue-800 rounded-b-md"></div>
     </div>
 
-    <!-- Red as button -->
-    <div class="absolute inset-[4px] flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
-      <div class="flex-1 bg-red-600"></div>
-      <div class="flex-1 bg-red-800"></div>
-    </div>
-
-    <!-- Button text -->
-    <div class="absolute inset-[6px] flex items-center justify-center">
-      <span class="text-white text-md font-bold uppercase tracking-tight">
-        <%= button_label %>
-      </span>
-    </div>
-  </button>
-<% else %>
-  <%= link_to (local_assigns[:button_path] || "#"), method: (local_assigns[:method] || :get), data: { turbo: false }, class: "relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group" do %>
-    <!-- Blue background as border -->
-    <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
-      <div class="flex-1 bg-blue-500 rounded-t-md"></div>
-      <div class="flex-1 bg-blue-800 rounded-b-md"></div>
-    </div>
-
-    <!-- Red as button -->
+    <!-- Red button layer -->
     <div class="absolute inset-[4px] flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
       <div class="flex-1 bg-red-600"></div>
       <div class="flex-1 bg-red-800"></div>
@@ -42,4 +30,26 @@
       </span>
     </div>
   <% end %>
+<% else %>
+  <%# Form submit button %>
+    <button type="submit" class="relative block appearance-none cursor-pointer text-sm px-2 <%= width %> <%= height %> overflow-hidden group">
+    <!-- Blue background as border -->
+    <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
+      <div class="flex-1 bg-blue-500 rounded-t-md"></div>
+      <div class="flex-1 bg-blue-800 rounded-b-md"></div>
+    </div>
+
+    <!-- Red button layer -->
+    <div class="absolute inset-[4px] flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
+      <div class="flex-1 bg-red-600"></div>
+      <div class="flex-1 bg-red-800"></div>
+    </div>
+
+    <!-- Button text -->
+    <div class="absolute inset-[6px] flex items-center justify-center">
+      <span class="text-white text-md font-bold uppercase tracking-tight">
+        <%= button_label %>
+      </span>
+    </div>
+  </button>
 <% end %>
