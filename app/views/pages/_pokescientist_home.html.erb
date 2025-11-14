@@ -1,5 +1,7 @@
-<p>Total Value: $<%= current_user.total_card_value %></p>
-<p>Average Price: $<%= current_user.average_card_price&.round(2) %></p>
+<div class="space-y-2">
+  <p>Average Price: $<%= number_with_precision(current_user.average_card_price, precision: 2) %></p>
+  <p>Total Value: $<%= number_with_precision(current_user.total_card_value, precision: 2) %></p>
+</div>
 <% if false %>
   <% if most_card = current_user.most_valuable_card %>
     <p>Most Valuable Card: <%= most_card[:card].name %> ($<%= most_card[:price] %>)</p>
