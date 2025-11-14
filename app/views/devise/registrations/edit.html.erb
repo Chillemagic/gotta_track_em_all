@@ -1,81 +1,76 @@
-<%= render "shared/background_wrapper" do %>
-  <main class="isolate">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-    <!-- Nav bar -->
-    <%= render "components/upper_nav_bar" %>
 
-    <!-- Hero section -->
-    <div class="relative pt-10">
-      <!-- Background -->
-      <div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
-        <div style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"
-          class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75">
-        </div>
+<main class="isolate">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+  <!-- Hero section -->
+  <div class="relative pt-10">
+    <!-- Background -->
+    <div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+      <div style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"
+        class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75">
       </div>
+    </div>
 
-      <!-- Edit Profile Card -->
-      <div class="py-1 sm:py-8 lg:pb-24">
-        <div class="mx-auto max-w-7xl px-6 lg:px-8">
-          <div class="mx-auto max-w-md bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Your Profile</h2>
-            <h3 class="text-l text-gray-750 mb-6">Update your trainer info or change your password</h3>
+    <!-- Edit Profile Card -->
+    <div class="py-1 sm:py-8 lg:pb-24 ">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-md bg-white/30 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Your Profile</h2>
+          <h3 class="text-l text-gray-750 mb-6">Update your trainer info or change your password</h3>
 
-            <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-              <%= f.error_notification %>
+          <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+            <%= f.error_notification %>
 
-              <div class="space-y-4">
-                <%= f.input :first_name,
-                  label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+            <div class="space-y-4">
+              <%= f.input :first_name,
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-                <%= f.input :last_name,
-                  label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+              <%= f.input :last_name,
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-                <%= f.input :username,
-                  required: true,
-                  label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+              <%= f.input :username,
+                required: true,
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-                <%= f.input :trainer_type,
-                  collection: User::TRAINER_TYPES,
-                  collection: [["PokeScientist: Data-focussed", "pokescientist"], ["PokeManiac: Collector-focussed", "pokemaniac"]],
-                  prompt: "Select your trainer type",
-                  label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+              <%= f.input :trainer_type,
+                collection: User::TRAINER_TYPES,
+                collection: [["PokeScientist: Data-focussed", "pokescientist"], ["PokeManiac: Collector-focussed", "pokemaniac"]],
+                prompt: "Select your trainer type",
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-                <%= f.input :email,
-                  disabled: true,
-                  label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { class: "w-full bg-gray-100 border-gray-300 py-1.5 shadow-sm sm:text-sm" } %>
+              <%= f.input :email,
+                disabled: true,
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                input_html: { class: "w-full bg-gray-100 border-gray-300 py-1.5 shadow-sm sm:text-sm" } %>
 
-                <%= f.input :password,
-                  label: "New Password",
-                  hint: "Leave blank if you don't want to change it",
-                  label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+              <%= f.input :password,
+                label: "New Password",
+                hint: "Leave blank if you don't want to change it",
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                hint_html: { class: "text-white"},
+                input_html: { autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-                <%= f.input :password_confirmation,
-                  label: "Confirm New Password",
-                  label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+              <%= f.input :password_confirmation,
+                label: "Confirm New Password",
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                input_html: { autocomplete: "new-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-                <%= f.input :current_password,
-                  required: true,
-                  hint: "Enter your current password to confirm changes",
-                  label_html: { class: "block text-sm font-medium text-gray-700" },
-                  input_html: { autocomplete: "current-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
+              <%= f.input :current_password,
+                required: true,
+                hint: "Enter your current password to confirm changes",
+                label_html: { class: "block text-sm font-medium text-gray-700" },
+                hint_html: { class: "text-white"},
+                input_html: { autocomplete: "current-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-                <%= render "components/button", button_label: "Update Profile", is_button: true %>
-              </div>
+              <%= render "components/button", button_label: "Update Profile", is_button: true, width: "w-full" %>
+              <%= render "components/button", button_label: "Dashboard", width: "w-full", button_path: root_path%>
             <% end %>
-
-            <div class="mt-6 text-sm text-gray-600">
-              <%= link_to "Back to Dashboard", root_path, class: "text-indigo-600 hover:text-indigo-800" %>
             </div>
-          </div>
         </div>
       </div>
     </div>
-  </main>
-<% end %>
+  </div>
+</main>

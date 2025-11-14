@@ -74,11 +74,5 @@
       </article>
     <% end %>
   </div>
-
-  <!-- Keep your Create New Collection link as-is; just add spacing -->
-  <div class="mt-10">
-        <%= link_to "Create New Collection",
-                new_collection_path,
-                class: "rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-green-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-400" %>
-  </div>
+  <%= render "components/button", button_label: "New collecion", width: "w-full", button_path: new_collection_path%>
 </div>

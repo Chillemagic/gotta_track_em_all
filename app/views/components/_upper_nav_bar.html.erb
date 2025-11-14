@@ -4,7 +4,7 @@
     <div class="relative flex h-16 items-center">
 
       <!-- Left: Logo (fixed size) and links to homepage -->
-      <div class="flex-none">
+      <div class="flex-none relative z-20">
         <%= link_to root_path, class: "inline-block" do %>
           <%= image_tag "GTEA-round.png", alt: "Gotta Track Em All Logo", class: "h-20 w-auto" %>
         <% end %>
@@ -13,7 +13,7 @@
       <div class="flex-1"></div>
 
       <!-- Right: Profile dropdown (fixed size) -->
-      <div class="flex-none ml-3">
+      <div class="flex-none ml-3 relative z-20">
         <el-dropdown class="relative">
           <button aria-expanded="false" aria-controls="user-menu" class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
             <span class="absolute -inset-1.5"></span>
