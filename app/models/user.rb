@@ -72,4 +72,8 @@ class User < ApplicationRecord
     set_name, total = set_values.max_by { |_set, total| total } || [nil, nil]
     { set_name: set_name, total: total }
   end
+
+  def favourites
+    collection_cards.where(favourite: true)
+  end
 end

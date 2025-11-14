@@ -45,14 +45,16 @@ class CollectionCardsController < ApplicationController
   def update
     respond_to do |format|
       if @collection_card.update(collection_card_params)
-        format.html { redirect_to @collection_card, notice: "Collection card was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @collection_card }
+        format.html { redirect_to @collection_card, notice: "Collection card updated.", status: :see_other }
+        format.json { render json: @collection_card }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @collection_card.errors, status: :unprocessable_entity }
       end
     end
   end
+
+
 
   # DELETE /collection_cards/1 or /collection_cards/1.json
   def destroy
@@ -72,6 +74,6 @@ class CollectionCardsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def collection_card_params
-      params.require(:collection_card).permit(:collection_id, :card_id, :description, :condition, :price)
+      params.require(:collection_card).permit(:collection_id, :card_id, :description, :condition, :price, :favourite)
     end
 end
