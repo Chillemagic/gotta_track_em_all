@@ -14,7 +14,7 @@
           </h1>
         </div>
 
-        <div class="mt-8 h-115 flow-root sm:mt-24 z-10 relative">
+        <div class="mt-0 h-115 flow-root sm:mt-24 z-10 relative">
           <% if current_user&.pokescientist? %>
             <div class="mt-auto mx-auto max-w-3/4 bg-white bg-white/10 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
               <div class="h-115 w-full flex items-center justify-center text-gray-500 text-sm italic">
@@ -22,9 +22,9 @@
               </div>
             </div>
           <% elsif current_user&.pokemaniac? %>
-            <div class="mt-auto mx-auto max-w-md bg-white rounded-lg shadow-md p-4">
-              <div class="h-64 bg-gray-100 flex items-center justify-center text-gray-500 text-sm italic">
-                PokeFolio splash goes here
+            <div class="mt-auto mx-auto max-w-3/4 bg-white bg-white/10 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
+              <div class="h-115 w-full flex items-center justify-center text-gray-500 text-sm italic">
+                <%= render "pokemaniac_home" %>
               </div>
             </div>
           <% end %>

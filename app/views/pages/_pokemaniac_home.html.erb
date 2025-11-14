@@ -1,0 +1,96 @@
+<div class="h-120 w-full">
+  <!-- Centered Header with Pokemon Font -->
+  <h2 class="font-pokemon text-3xl text-center text-yellow-400 mb-3"
+      style="text-shadow: 2px 2px 0px #d97706, -1px -1px 0px #d97706, 1px -1px 0px #d97706, -1px 1px 0px #d97706;">
+    Here are some of your favourites!
+  </h2>
+
+  <!-- Main Content Container -->
+  <div class="bg-gradient-to-br from-gray-300/70 to-gray-400/70 rounded-xl h-[calc(100%-3.5rem)] shadow-2xl p-2">
+    <div class="h-full w-full flex flex-wrap items-stretch gap-2 justify-center">
+
+      <% if current_user.favourites.empty? %>
+        <!-- No favourites: placeholder + button -->
+        <div class="flex flex-col max-h-[350px] items-center justify-center w-full mt-0 gap-4">
+          <h2 class="text-2xl md:text-3xl font-bold text-white text-center"
+              style="text-shadow: 2px 2px 0px #d97706, -1px -1px 0px #d97706, 1px -1px 0px #d97706, -1px 1px 0px #d97706;">
+            Looks like you haven't added favourites yet!
+          </h2>
+
+          <!-- Images Row -->
+          <div class="flex justify-center items-end gap-6 w-full max-w-4xl mx-auto relative">
+            <% ['sad.png', 'scary.jpg', 'toge.jpeg'].each_with_index do |img, index| %>
+              <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur
+                          flex-shrink-0 shadow-md relative transition-all duration-300 ease-out
+                          hover:scale-105 hover:shadow-2xl hover:backdrop-blur-sm"
+                  style="--front: url('<%= asset_path(img) %>');
+                          background-image: var(--front);
+                          background-size: contain;
+                          background-position: center;
+                          background-repeat: no-repeat;">
+              </div>
+
+              <%# Place the button under the middle image (index 1) %>
+              <% if index == 1 %>
+                <div class="absolute top-full m-2 pb-4 left-1/2 transform -translate-x-1/2">
+                  <%= render "components/button", button_label: "Search Cards",
+                            width: "w-48 md:w-64", button_path: search_cards_path %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+
+
+        <!-- Has favourites: display up to 4 random favourites -->
+        <% favourite_cards = current_user.favourites.sample(4) %>
+        <% slots = favourite_cards + Array.new(4 - favourite_cards.size) %>
+
+        <div class="flex justify-center gap-6 flex-nowrap mt-6">
+          <% slots.each do |col| %>
+            <div class="flex flex-col items-center">
+
+              <% if col.present? %>
+                <%= link_to collection_card_path(col) do %>
+                  <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur
+                              flex-shrink-0 shadow-md relative transition-all duration-300 ease-out
+                              hover:scale-105 hover:shadow-2xl hover:backdrop-blur-sm transform scale-100"
+                      style="--front: url('<%= asset_path(col.card.image_url) %>');
+                             background-image: var(--front);
+                             background-size: contain;
+                             background-position: center;
+                             background-repeat: no-repeat;">
+                  </div>
+
+                  <div class="text-center mt-2">
+                    <h2 class="text-xl font-bold text-gray-900"><%= col.card.name %></h2>
+                    <h2 class="text-xl text-gray-600">Set Name:</h2>
+                    <h2 class="text-xl font-bold text-gray-900"><%= col.card.set_name %></h2>
+                  </div>
+                <% end %>
+
+              <% else %>
+
+                <!-- Placeholder card -->
+                <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur flex-shrink-0 shadow-md
+                            relative transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl
+                            hover:backdrop-blur-sm"
+                    style="--front: url('<%= asset_path('c_back.png') %>');
+                           background-image: var(--front);
+                           background-size: contain;
+                           background-position: center;
+                           background-repeat: no-repeat;"
+                    role="img" aria-label="Empty slot">
+                </div>
+
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+      <% end %>
+
+    </div>
+  </div>
+</div>
