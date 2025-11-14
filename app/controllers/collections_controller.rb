@@ -11,7 +11,6 @@ class CollectionsController < ApplicationController
 
   # GET /collections/:id
   def show
-    @collection = Collection.find(params[:id])
     @collection_cards = @collection.collection_cards.includes(:card)
   end
 
@@ -52,7 +51,7 @@ class CollectionsController < ApplicationController
   private
 
   def set_collection
-    @collection = current_user.collections.find(params[:id])
+    @collection = current_user.collections.find(params[:user_id])
   end
 
   def collection_params

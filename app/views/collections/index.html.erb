@@ -6,18 +6,21 @@
   <!-- Cards grid -->
   <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <% @collections.each do |c| %>
-      <article class="group relative rounded-xl bg-white/5 ring-1 ring-white/10 p-5 transition hover:ring-white/20 hover:bg-white/[0.08]">
-        <!-- Header: name + your existing dropdown (unchanged inside) -->
+      <article class="group relative rounded-2xl bg-white/10 backdrop-blur ring-1 ring-white/5 p-5 transition hover:bg-white/[0.15] hover:ring-white/10">
+
         <div class="flex items-start gap-3">
           <h2 class="text-xl font-semibold text-white leading-snug"><%= c.name %></h2>
-
-          <!-- keep your dropdown exactly as you had it -->
           <div class="ml-auto">
             <el-dropdown class="inline-block">
-              <button class="mb-0 inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-xs font-semibold text-white inset-ring-1 inset-ring-white/5 hover:bg-white/20">
-                Options
-                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="-mr-1 size-4 text-gray-500">
-                  <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" />
+              <button
+                type="button"
+                class="inline-flex items-center justify-center p-2 text-gray-400 hover:text-white focus-visible:outline-none"
+                aria-label="Options"
+              >
+                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-5">
+                  <circle cx="10" cy="4" r="1.5" />
+                  <circle cx="10" cy="10" r="1.5" />
+                  <circle cx="10" cy="16" r="1.5" />
                 </svg>
               </button>
 
@@ -34,16 +37,6 @@
                   <% end %>
                 </div>
 
-                <div class="py-1">
-                  <%= link_to collection_path(c),
-                              class: "group/item flex items-center px-4 py-2 text-sm text-gray-300 focus:bg-white/5 focus:text-white focus:outline-hidden",
-                              role: "button" do %>
-                  <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mr-3 size-5 text-gray-500 group-focus/item:text-white">
-                    <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h4.59l-2.1 1.95a.75.75 0 0 0 1.02 1.1l3.5-3.25a.75.75 0 0 0 0-1.1l-3.5-3.25a.75.75 0 1 0-1.02 1.1l2.1 1.95H6.75Z" clip-rule="evenodd" fill-rule="evenodd" />
-                  </svg>
-                  Show Cards
-                  <% end %>
-                </div>
 
                 <div class="py-1">
                   <%= link_to collection_path(c), data: { turbo_method: :delete, turbo_confirm: "Delete this collection?" },
@@ -60,6 +53,7 @@
           </div>
         </div>
 
+
         <!-- Description -->
         <p class="mt-3 text-sm text-gray-300/90"><%= c.description %></p>
 
@@ -71,14 +65,45 @@
             </span>
           <% end %>
         </div>
+
+        <%# === Mini card previews (show up to 3) === %>
+        <% preview_cards = c.collection_cards.includes(:card).first(3) %>
+        <% if preview_cards.present? %>
+          <div class="mt-4 grid grid-cols-3 gap-3">
+            <% preview_cards.each do |collection_card| %>
+              <% card = collection_card.card %>
+              <div class="rounded-md overflow-hidden ring-1 ring-white/10 bg-white/5">
+                <!-- use your holo component mini, or swap to <img> if preferred -->
+                <div
+                  class="pkm-holo h-28 w-full"
+                  style="--front: url('<%= card.image_url %>')"
+                  role="img"
+                  aria-label="<%= card.name %>">
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <div class="mt-5 ml-40">
+          <%= link_to collection_path(c),
+              class: "inline-flex items-center justify-center gap-x-1.5 rounded-md bg-white/30 px-3 py-2 text-xs font-semibold text-white inset-ring-1 inset-ring-white/5 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60",
+              role: "button" do %>
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-4 -ml-0.5">
+              <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h4.59l-2.1 1.95a.75.75 0 0 0 1.02 1.1l3.5-3.25a.75.75 0 0 0 0-1.1l-3.5-3.25a.75.75 0 1 0-1.02 1.1l2.1 1.95H6.75Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+            Show Cards
+          <% end %>
+        </div>
+
       </article>
     <% end %>
   </div>
 
-  <!-- Keep your Create New Collection link as-is; just add spacing -->
   <div class="mt-10">
-        <%= link_to "Create New Collection",
-                new_collection_path,
-                class: "rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-green-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-400" %>
+    <%= link_to "Create New Collection",
+        new_collection_path,
+        class: "relative inline-flex w-full items-center justify-center rounded-md bg-sky-600 px-6 h-14 text-lg font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600" %>
   </div>
+
 </div>

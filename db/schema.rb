@@ -69,7 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_11_105539) do
     t.bigint "card_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "condition",
+    t.string "condition", default: "Poor"
     t.decimal "price"
     t.text "description"
     t.index ["card_id"], name: "index_collection_cards_on_card_id"
