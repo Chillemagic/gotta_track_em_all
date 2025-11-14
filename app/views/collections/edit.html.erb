@@ -34,13 +34,8 @@
 
         <!-- Actions -->
         <div class="pt-2">
-          <%= f.submit "Save changes",
-                class: "inline-flex items-center justify-center rounded-md bg-orange-500 px-4 py-1.5
-                        text-sm font-semibold text-white shadow-sm hover:bg-red-400
-                        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400
-                        transition" %>
+          <%= render "components/button", button_label: "Save changes", is_button: true %>
         </div>
-
       </div>
     <% end %>
   </div>

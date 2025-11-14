@@ -23,7 +23,7 @@ class CollectionsController < ApplicationController
     # get card so Turbo Stream can render dropdown
 
     if @collection.save
-      redirect_back fallback_location: card_path(@card), notice: "Collection created!"
+      redirect_to collections_path, notice: "Collection created!"
     else
       render :new, status: :unprocessable_entity
     end
