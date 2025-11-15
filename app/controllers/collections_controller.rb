@@ -51,7 +51,7 @@ class CollectionsController < ApplicationController
   private
 
   def set_collection
-    @collection = current_user.collections.find(params[:user_id])
+    @collection = current_user.collections.find(params[:id])
   end
 
   def collection_params
