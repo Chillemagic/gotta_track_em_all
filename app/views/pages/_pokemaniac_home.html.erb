@@ -15,7 +15,7 @@
   <% end %>
 
   <!-- Main Content Container -->
-  <div class="bg-gradient-to-br from-gray-300/70 to-gray-400/70 rounded-xl h-[calc(100%-3.5rem)] shadow-2xl p-2">
+  <div class="rounded-xl h-[calc(100%-3.5rem)] p-2">
     <div class="h-full w-full flex flex-wrap items-stretch gap-2 justify-center">
 
       <% if favourites.empty? %>
@@ -66,7 +66,7 @@
                              background-repeat: no-repeat;">
                   </div>
 
-                  <div class="text-center mt-2">
+                  <div class="text-center mt-2 border border-white/20 rounded-xl shadow-lg">
                     <h2 class="text-xl font-bold text-gray-900"><%= col.card.name %></h2>
                     <h2 class="text-xl text-gray-600">Set Name:</h2>
                     <h2 class="text-xl font-bold text-gray-900"><%= col.card.set_name %></h2>
@@ -74,16 +74,26 @@
                 <% end %>
               <% else %>
                 <!-- Placeholder card -->
-                <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur flex-shrink-0 shadow-md
-                            relative transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl
-                            hover:backdrop-blur-sm"
-                    style="--front: url('<%= asset_path('c_back.png') %>');
-                           background-image: var(--front);
-                           background-size: contain;
-                           background-position: center;
-                           background-repeat: no-repeat;"
-                    role="img" aria-label="Empty slot">
-                </div>
+                <%= link_to collections_path do %>
+                  <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur flex-shrink-0 shadow-md
+                              relative transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl
+                              hover:backdrop-blur-sm"
+                      style="--front: url('<%= asset_path('c_back.png') %>');
+                            background-image: var(--front);
+                            background-size: contain;
+                            background-position: center;
+                            background-repeat: no-repeat;"
+                      role="img" aria-label="Empty slot">
+                  </div>
+              <% end %>
+
+                <%= link_to collections_path do %>
+                  <div class="text-center mt-2 border border-white/20 rounded-xl shadow-lg">
+                    <% favourites = current_user.favourites %>
+                    <h2 class="text-xl font-bold text-gray-900">You only have <%= favourites.count%> favourites! </h2>
+                    <h2 class="text-xl font-bold text-gray-900">Click to add more!</h2>
+                  </div>
+                <% end %>
               <% end %>
             </div>
           <% end %>
