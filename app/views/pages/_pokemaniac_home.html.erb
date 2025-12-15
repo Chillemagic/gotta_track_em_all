@@ -8,7 +8,7 @@
       Looks like you haven't added favourites yet!
     </h2>
   <% else %>
-    <h2 class="font-pokemon text-3xl text-center text-yellow-400 mb-3"
+    <h2 class="font-pokemon sm:text-3xl lg:text-3xl text-center text-yellow-400 mb-3"
         style="text-shadow: 2px 2px 0px #d97706, -1px -1px 0px #d97706, 1px -1px 0px #d97706, -1px 1px 0px #d97706;">
       Here are some of your favourites!
     </h2>
@@ -20,30 +20,29 @@
 
       <% if favourites.empty? %>
         <!-- No favourites: placeholder + button -->
-        <div class="flex flex-col max-h-[350px] items-center justify-center w-full mt-0 gap-4">
-          <!-- (Removed the second “Looks like…” h2 here, since it’s now the main heading above) -->
-
+        <div>
           <!-- Images Row -->
-          <div class="flex justify-center items-end gap-6 w-full max-w-4xl mx-auto relative">
+          <div class="flex  max-h-[350px] items-center justify-center w-full pt-4 mt-0 gap-4">
             <% ['sad.png', 'scary.jpg', 'toge.jpeg'].each_with_index do |img, index| %>
-              <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur
-                          flex-shrink-0 shadow-md relative transition-all duration-300 ease-out
-                          hover:scale-105 hover:shadow-2xl hover:backdrop-blur-sm"
-                  style="--front: url('<%= asset_path(img) %>');
-                          background-image: var(--front);
-                          background-size: contain;
-                          background-position: center;
-                          background-repeat: no-repeat;">
+              <div class="<%= responsive_visibility_class(index) %>">
+                  <%= link_to collections_path do %>
+                    <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur
+                                flex-shrink-0 shadow-md relative transition-all duration-300 ease-out
+                                hover:scale-105 hover:shadow-2xl hover:backdrop-blur-sm"
+                        style="--front: url('<%= asset_path(img) %>');
+                                background-image: var(--front);
+                                background-size: contain;
+                                background-position: center;
+                                background-repeat: no-repeat;">
+                    </div>
+                  <% end %>
               </div>
-
-              <%# Place the button under the middle image (index 1) %>
-              <% if index == 1 %>
-                <div class="absolute top-full m-2 pb-4 left-1/2 transform -translate-x-1/2">
-                  <%= render "components/button", button_label: "Search Cards",
-                            width: "w-48 md:w-64", button_path: search_cards_path %>
-                </div>
-              <% end %>
             <% end %>
+          </div>
+          <div class="w-full justify-items-center m-2 pt-4 pb-4">
+            <%= render "components/button", button_label: "Search Cards",
+                      width: "w-48 md:w-64", button_path: search_cards_path
+            %>
           </div>
         </div>
       <% else %>
@@ -51,19 +50,20 @@
         <% favourite_cards = favourites.sample(4) %>
         <% slots = favourite_cards + Array.new(4 - favourite_cards.size) %>
 
-        <div class="flex justify-center gap-6 flex-nowrap mt-6">
-          <% slots.each do |col| %>
-            <div class="flex flex-col items-center">
+        <div class="flex justify-center gap-6 flex-nowrap mt-6 ">
+          <% slots.each_with_index do |col, index| %>
+
+            <div class="<%= responsive_visibility_class(index) %>">
               <% if col.present? %>
                 <%= link_to collection_card_path(col) do %>
                   <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur
                               flex-shrink-0 shadow-md relative transition-all duration-300 ease-out
                               hover:scale-105 hover:shadow-2xl hover:backdrop-blur-sm transform scale-100"
                       style="--front: url('<%= asset_path(col.card.image_url) %>');
-                             background-image: var(--front);
-                             background-size: contain;
-                             background-position: center;
-                             background-repeat: no-repeat;">
+                            background-image: var(--front);
+                            background-size: contain;
+                            background-position: center;
+                            background-repeat: no-repeat;">
                   </div>
 
                   <div class="text-center mt-2 border border-white/20 rounded-xl shadow-lg">
@@ -99,7 +99,6 @@
           <% end %>
         </div>
       <% end %>
-
     </div>
   </div>
 </div>
