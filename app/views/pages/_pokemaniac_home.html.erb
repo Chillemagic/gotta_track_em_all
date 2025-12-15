@@ -90,7 +90,12 @@
                 <%= link_to collections_path do %>
                   <div class="text-center mt-2 border border-white/20 rounded-xl shadow-lg">
                     <% favourites = current_user.favourites %>
-                    <h2 class="text-xl font-bold text-gray-900">You only have <%= favourites.count%> favourites! </h2>
+                    <% if favourites.count == 1 %>
+                      <% favourites_count = "1 favourite" %>
+                    <% else %>
+                      <% favourites_count = "#{favourites.count} favourites" %>
+                    <% end %>
+                    <h2 class="text-xl font-bold text-gray-900">You only have <%= favourites_count%>! </h2>
                     <h2 class="text-xl font-bold text-gray-900">Click to add more!</h2>
                   </div>
                 <% end %>
