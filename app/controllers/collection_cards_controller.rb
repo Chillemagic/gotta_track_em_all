@@ -32,12 +32,12 @@ class CollectionCardsController < ApplicationController
   end
   # POST /collection_cards or /collection_cards.json
   def create
-    @collections_card = CollectionCard.new(collection_card_params)
+    @collection_card = CollectionCard.new(collection_card_params)
 
-    if @collections_card.save
-      redirect_to @collections_card, notice: "Card added to collection!"
+    if @collection_card.save
+      redirect_to @collection_card, notice: "Card added to collection!"
     else
-      redirect_to card_path(@collections_card.card), alert: "Failed to add card to collection."
+      redirect_to card_path(@collection_card.card), alert: "Failed to add card to collection."
     end
   end
 

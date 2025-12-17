@@ -23,7 +23,14 @@ class CollectionsController < ApplicationController
     # get card so Turbo Stream can render dropdown
 
     if @collection.save
-      redirect_to collections_path, notice: "Collection created!"
+      respond_to do |format|
+        if turbo_frame_request?
+          @collection_card = CollectionCard.new
+          format.html { render partial: "cards/collection_frame", locals: { collection: @collection } }
+        else
+          format.html { redirect_to collections_path, notice: "Collection created!" }
+        end
+      end
     else
       render :new, status: :unprocessable_entity
     end
