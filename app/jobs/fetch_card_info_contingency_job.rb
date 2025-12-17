@@ -13,6 +13,7 @@ class FetchCardInfoContingencyJob < ApplicationJob
 
     # broadcast(card)
     # Step 1: Search for card by name and number
+    Rails.logger.info("Running FetchCardInfoContingencyJob for card #{card_id}")
     tcgdex_id = fetch_tcgdex_id(card)
     raise CardNotFoundError, "No matching card found in TCGdex" unless tcgdex_id
 
@@ -101,6 +102,7 @@ class FetchCardInfoContingencyJob < ApplicationJob
       set_name: card_info.dig("set", "name"),
       tcg_dex_status: "complete"
     )
+    Rails.logger.info("Successfully updated card #{card_id} with TCG Dex data")
     FetchCardPricingJob.perform_later(card.id)
   end
 
