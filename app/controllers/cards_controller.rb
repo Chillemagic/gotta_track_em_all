@@ -12,7 +12,7 @@ class CardsController < ApplicationController
 
   def show
     @collection = Collection.new
-    @collection_card ||= CollectionCard.new(card: @card, condition: "Poor")
+    @collection_card ||= CollectionCard.new(card: @card, condition: "Raw")
     @collection ||= Collection.new
 
     pricing_history = @card.price_histories.last
@@ -30,7 +30,7 @@ class CardsController < ApplicationController
 
   def search
     # Render the search page for a get request
-    return render :search if request.get? ||request.head?
+    return render :search if request.get? || request.head?
     # Check if image has been uploaded
     unless params[:search]&.dig(:image).present?
       return redirect_to search_cards_path, alert: "Please upload an image"
@@ -49,6 +49,7 @@ class CardsController < ApplicationController
     @card = Card.find_by(name: card_info["name"], card_number: card_info["number"])
 
     if @card.present?
+      Rails.logger.info("Existing card found, card name:#{@card.name}, card id: #{@card.id}")
       UpdatePriceHistoryJob.perform_later(@card.id)
     else
       # Create new card with just the name and
