@@ -6,8 +6,7 @@ class FetchCardPricingJob < ApplicationJob
 
   def perform(card_id)
     # 1. Find Card from existing card db
-    puts "Running FetchCardPricingJob"
-
+    Rails.logger.info("Running FetchCardInfoContingencyJob for card #{card_id}")
     card = Card.find(card_id)
     card_number = card.card_number
 
@@ -93,7 +92,7 @@ class FetchCardPricingJob < ApplicationJob
       recorded_at: Time.current
     )
 
-    Rails.logger.info("Successfully created price history for card #{card.id}")
+    Rails.logger.info("Successfully created price history for card #{card_id}")
 
     rescue ActiveRecord::RecordNotFound
       Rails.logger.error("Card #{card_id} not found")

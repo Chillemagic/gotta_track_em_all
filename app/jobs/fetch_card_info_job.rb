@@ -30,7 +30,8 @@ class FetchCardInfoJob < ApplicationJob
       card.update!(api_tcg_status: "incomplete")
       # broadcast(card)
       # Call contingency API TCG Dex
-      FetchCardInfoContingencyJob.perform_later(card.id, @user_id)
+      Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
+      FetchCardInfoContingencyJob.perform_later(card_id, @user_id)
       return
     end
 
@@ -83,7 +84,8 @@ class FetchCardInfoJob < ApplicationJob
       card.update!(api_tcg_status: "incomplete")
     #  broadcast(card)
       # Call contingency API TCG Dex
-      FetchCardInfoContingencyJob.perform_later(card.id, @user_id)
+      Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
+      FetchCardInfoContingencyJob.perform_later(card_id, @user_id)
       return
     end
 
@@ -103,19 +105,20 @@ class FetchCardInfoJob < ApplicationJob
     card.reload
 
     unless card.complete_card_info?
-      Rails.logger.warn("Card ##{card.id} missing: #{card.missing_fields.join(', ')}")
+      Rails.logger.warn("Card ##{card_id} missing: #{card.missing_fields.join(', ')}")
       # Update card status and broadcast turbo stream
       card.update!(api_tcg_status: "incomplete")
       # broadcast(card)
       # Call contingency API TCG Dex
+      Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
       FetchCardInfoContingencyJob.perform_later(card_id, @user_id)
       return
     end
 
-    Rails.logger.info("Successfully updated card #{card.id} with Pokemon TCG data")
+    Rails.logger.info("Successfully updated card #{card_id} with Pokemon TCG data")
     # Update card status and broadcast turbo stream
     card.update!(api_tcg_status: "complete")
-    FetchCardPricingJob.perform_later(card.id)
+    FetchCardPricingJob.perform_later(card_id)
     # broadcast(card)
 
   rescue ActiveRecord::RecordNotFound
@@ -140,7 +143,7 @@ class FetchCardInfoJob < ApplicationJob
 
   def broadcast(card)
     Turbo::StreamsChannel.broadcast_replace_to(
-      "card_#{card.id}",
+      "card_#{card_id}",
       target: "card-details",
       partial: "cards/card_info",
       locals: { card: card }
