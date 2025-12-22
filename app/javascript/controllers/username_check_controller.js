@@ -4,23 +4,28 @@ export default class extends Controller {
   static targets = ["input", "feedback"]
 
   connect() {
-    this.debouncedCheck = this.debounce(this.check.bind(this), 300)
+    // Create debounced function once and bind it
+    this.debouncedCheckFn = this.debounce(() => this.check(), 300)
+    this.inputTarget.addEventListener("input", this.debouncedCheckFn)
   }
 
   check() {
+
     const username = this.inputTarget.value
-    fetch(`/users/check_username?username=${username}`)
-      .then(response => response.text())
-      .then(html => {
-        this.feedbackTarget.innerHTML = html
+    fetch(`/check_username?username=${encodeURIComponent(username)}`)
+      .then(response => response.json())
+      .then(data => {
+        this.feedbackTarget.textContent = data.available
+          ? "✅ Username is available"
+          : "❌ Username is taken"
       })
   }
 
-  debounce(func, delay) {
+  debounce(func, wait) {
     let timeout
-    return (...args) => {
+    return  (...args) => {
       clearTimeout(timeout)
-      timeout = setTimeout(() => func(...args), delay)
+      timeout = setTimeout(() => func.apply(this, args), wait)
     }
   }
 }

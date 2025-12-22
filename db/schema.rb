@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_03_084041) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_15_015437) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,7 +69,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_084041) do
     t.bigint "card_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cards_id"], name: "index_collection_cards_on_cards_id"
+    t.string "condition", default: "Poor"
+    t.decimal "price"
+    t.text "description"
+    t.boolean "favourite", default: false
+    t.index ["card_id"], name: "index_collection_cards_on_card_id"
     t.index ["collection_id"], name: "index_collection_cards_on_collection_id"
   end
 
@@ -102,11 +106,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_084041) do
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
-    t.string "channel", null: false
-    t.text "data", null: false
+    t.binary "channel", null: false
+    t.binary "payload", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.bigint "channel_hash", null: false
     t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -250,7 +256,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_084041) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "collection_cards", "cards", column: "cards_id"
+  add_foreign_key "collection_cards", "cards"
   add_foreign_key "collection_cards", "collections"
   add_foreign_key "collections", "users"
   add_foreign_key "price_histories", "cards"

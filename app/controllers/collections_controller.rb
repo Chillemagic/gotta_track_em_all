@@ -1,5 +1,5 @@
 class CollectionsController < ApplicationController
-  layout "background_black", only: %i[show] # for black background, white text
+  layout :choose_layout
 
   before_action :authenticate_user! # for Devise
   before_action :set_collection, only: %i[show edit update destroy]
@@ -10,7 +10,7 @@ class CollectionsController < ApplicationController
 
   # GET /collections/:id
   def show
-    @collection = Collection.find(params[:id])
+    @collection_cards = @collection.collection_cards.includes(:card)
   end
 
   def new
@@ -19,14 +19,25 @@ class CollectionsController < ApplicationController
 
   def create
     @collection = current_user.collections.new(collection_params)
+    @card = Card.find_by(id: params.dig(:collection, :card_id))
+    # get card so Turbo Stream can render dropdown
+
     if @collection.save
-      redirect_to @collection, notice: "Collection created!"
+      respond_to do |format|
+        if turbo_frame_request?
+          @collection_card = CollectionCard.new
+          format.html { render partial: "cards/collection_frame", locals: { collection: @collection } }
+        else
+          format.html { redirect_to collections_path, notice: "Collection created!" }
+        end
+      end
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
+    render layout: "background_nature"
     @cards = Card.all # Loads all Card records so the edit form can show checkboxes
   end
 
@@ -52,5 +63,16 @@ class CollectionsController < ApplicationController
 
   def collection_params
     params.require(:collection).permit(:name, :description, card_ids: [])
+  end
+
+  def choose_layout
+    case action_name.to_sym
+    when :show, :index
+      "background_pattern_dark"
+    when :edit, :new
+      "background_nature"
+    else
+      "application"
+    end
   end
 end

@@ -1,18 +1,78 @@
-<div id="<%= "card_#{card.id}" %>">
-  <%= turbo_stream_from "card_#{card.id}" %>
-  <% if card.api_tcg_status == "pending" %>
-    <h2>Fetching card info… ⏳</h2>
-  <% elsif card.api_tcg_status == "incomplete" && card.tcg_dex_status == "incomplete" %>
-    <h2>We could not find that card 🙃 Please try a different one 🙏</h2>
-  <% else %>
-    <h2><%= card.name %></h2>
-    <p>Set: <%= card.set_name %></p>
-    <p>Rarity: <%= card.rarity.presence || "Loading..." %></p>
-    <img src="<%= card.image_url %>" alt="<%= card.name %>">
-    <p>  Price:
-        <%= card.price_histories.last&.pokedata_raw_price.present? ?
-        number_to_currency(card.price_histories.last.pokedata_raw_price, unit: "$") :
-        "Fetching..." %>
+<%# app/views/cards/_card_info.html.erb %>
+<%# Expects a local variable 'card' %>
+
+<div id="card_<%= card.id %>" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+
+  <!-- Card Image -->
+  <div class="flex justify-center items-start">
+    <div class="pkm-holo rounded-md w-full max-w-md" style="--front: url('<%= card.image_url %>')" role="img" aria-label="<%= card.name %>"></div>
+  </div>
+
+  <!-- Card Info -->
+  <div class="bg-white/10 backdrop-blur border border-white/20 rounded-lg p-6 ring-1 ring-white/5">
+    <h2 class="text-3xl font-bold text-white mb-6"><%= card.name %></h2>
+
+    <div class="space-y-4 text-gray-200">
+      <p class="flex items-center gap-3">
+        <span class="card card--icon" aria-hidden="true"><span class="card-info"></span></span>
+        <span class="underline font-semibold">Pokemon Set:</span>
+        <span><%= card.set_name %></span>
       </p>
-  <% end %>
+
+      <p class="flex items-center gap-3">
+        <svg class="inline-block w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 9C7.44772 9 7 9.44771 7 10C7 10.5523 7.44772 11 8 11H16C16.5523 11 17 10.5523 17 10C17 9.44771 16.5523 9 16 9H8Z"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M6 3C4.34315 3 3 4.34315 3 6V18C3 19.6569 4.34315 21 6 21H18C19.6569 21 21 19.6569 21 18V6C21 4.34315 19.6569 3 18 3H6ZM5 18V7H19V18C19 18.5523 18.5523 19 18 19H6C5.44772 19 5 18.5523 5 18Z"/>
+        </svg>
+        <span class="underline font-semibold">Release Date:</span>
+        <span><%= card.release_date %></span>
+      </p>
+
+      <p class="flex items-center gap-3">
+        <svg class="inline-block w-5 h-5 shrink-0" viewBox="0 0 512 512" fill="currentColor">
+          <path d="M168.5 72l87.5 93 87.5-93-175 0zM383.9 99.1l-72.3 76.9 129 0-56.6-76.9zm50 124.9L78.1 224 256 420.3 433.9 224zM71.5 176l129 0-72.3-76.9-56.6 76.9zm434.3 40.1l-232 256c-4.5 5-11 7.9-17.8 7.9s-13.2-2.9-17.8-7.9l-232-256c-7.7-8.5-8.3-21.2-1.5-30.4l112-152c4.5-6.1 11.7-9.8 19.3-9.8l240 0c7.6 0 14.8 3.6 19.3 9.8l112 152c6.8 9.2 6.1 21.9-1.5 30.4z"/>
+        </svg>
+        <span class="underline font-semibold">Card Rarity:</span>
+        <span><%= card.rarity %></span>
+      </p>
+
+      <% if card.artist.present? %>
+        <p class="flex items-center gap-3">
+          <svg class="inline-block w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z"/>
+            <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z"/>
+          </svg>
+          <span class="underline font-semibold">Artist:</span>
+          <span><%= card.artist %></span>
+        </p>
+      <% end %>
+
+      <% if card.price_histories.any? %>
+        <% prices = card.price_histories.last %>
+        <div class="mt-10 bg-white/10 backdrop-blur rounded-lg p-6 ring-1 ring-white/5">
+          <h3 class="text-2xl font-semibold text-white mb-4">Market Prices</h3>
+
+          <p class="text-gray-300 mb-4">
+            <span class="font-semibold text-white">Raw Price:</span>
+            $<%= number_with_precision(prices.pokedata_raw_price, precision: 2) %> USD
+          </p>
+
+          <% if prices.psa_pricing.present? %>
+            <h4 class="text-xl font-semibold text-white mb-2">PSA Graded Prices</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 text-gray-200 text-sm">
+              <% prices.psa_pricing.each do |grade, info| %>
+                <% value = info["value"] %>
+                <% currency = info["currency"]&.upcase || "USD" %>
+                <% next if value.blank? || value == 0 %>
+                <div class="flex justify-between bg-black/30 px-2 py-4 rounded-md">
+                  <span><%= grade %></span>
+                  <span class="font-semibold">$<%= number_with_precision(value, precision: 2) %> <%= currency %></span>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
