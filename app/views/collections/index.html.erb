@@ -2,9 +2,16 @@
   <!-- Nav bar -->
 
 <div class="mx-auto max-w-5xl px-4 py-10">
-  <h1 class="text-4xl md:text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
-    Your current Collections
-  </h1>
+  <div class="w-full  place-content-between md:flex">
+    <div>
+      <h1 class="font-pokemon text-xl justify-self-center mb-4 sm:text-3xl sm:justify-self-center  md:text-4xl md:justify-self-center lg:5xl text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+        Your current Collections
+      </h1>
+    </div>
+    <div class="sm:w-full sm:mt-4 md:w-1/5">
+      <%= render "components/button", button_label: "New collecion", width: "w-full", button_path: new_collection_path%>
+    </div>
+  </div>
 
   <!-- Cards grid -->
   <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -103,6 +110,5 @@
     <% end %>
   </div>
   <div class="mt-5">
-  <%= render "components/button", button_label: "New collecion", width: "w-full", button_path: new_collection_path%>
   </div>
 </div>
