@@ -7,10 +7,13 @@ class FetchCardInfoContingencyJob < ApplicationJob
   class APIError < StandardError; end
   class CardNotFoundError < StandardError; end
 
-  def perform(card_id)
+  def perform(card_id, user_id)
     card = Card.find(card_id)
+    user = User.find(user_id)
+
     # broadcast(card)
     # Step 1: Search for card by name and number
+    Rails.logger.info("Running FetchCardInfoContingencyJob for card #{card_id}")
     tcgdex_id = fetch_tcgdex_id(card)
     raise CardNotFoundError, "No matching card found in TCGdex" unless tcgdex_id
 
@@ -96,8 +99,11 @@ class FetchCardInfoContingencyJob < ApplicationJob
       pokemon_types: card_info["types"]&.join(", "),
       abilities: card_info["abilities"],
       attacks: card_info["attacks"],
-      set_name: card_info.dig("set", "name")
+      set_name: card_info.dig("set", "name"),
+      tcg_dex_status: "complete"
     )
+    Rails.logger.info("Successfully updated card #{card_id} with TCG Dex data")
+    FetchCardPricingJob.perform_later(card.id)
   end
 
   def update_release_date(card, set_info)

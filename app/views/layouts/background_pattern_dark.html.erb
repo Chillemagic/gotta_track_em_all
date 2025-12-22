@@ -8,10 +8,6 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%# Tailwind CSS %>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-
 
     <%= yield :head %>
 
@@ -25,13 +21,13 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
   <body
-    class="text-white relative bg-cover"
+    class="text-white relative bg-cover bg-fixed"
     style="background-image: url('<%= image_path("wallpapers/pokemon_background.png")%>');"
   >
+    <%= render "components/upper_nav_bar" %>
     <%= yield %>
   </body>
 </html>

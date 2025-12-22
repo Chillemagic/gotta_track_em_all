@@ -1,18 +1,16 @@
 <%# app/views/cards/show.html.erb %>
-<div class="min-h-screen bg-gradient-to-b from-gray-900 via-blue-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-4xl">
 
     <!-- Header Section -->
     <div class="text-center mb-8">
       <h1 class="text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
-        Your Pokémon Card
+        We found a match!
       </h1>
-      <p class="mt-5 text-lg font-saira text-gray-200 leading-relaxed">
-        View and manage your card details
-      </p>
     </div>
 
     <%= turbo_stream_from "card_#{@card.id}" %>
     <%= render "card_info", card: @card %>
+    <%= render "collection_frame" %>
   </div>
 </div>

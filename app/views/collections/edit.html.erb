@@ -1,3 +1,7 @@
+<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+  <!-- Nav bar -->
+  <%= render "components/upper_nav_bar" %>
+
 <!-- app/views/collections/edit.html.erb -->
 <h1 class="mx-auto max-w-3xl px-4 mt-12 mb-8 text-4xl md:text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
   Edit Collection
@@ -30,13 +34,8 @@
 
         <!-- Actions -->
         <div class="pt-2">
-          <%= f.submit "Save changes",
-                class: "inline-flex items-center justify-center rounded-md bg-orange-500 px-4 py-1.5
-                        text-sm font-semibold text-white shadow-sm hover:bg-red-400
-                        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400
-                        transition" %>
+          <%= render "components/button", button_label: "Save changes", is_button: true %>
         </div>
-
       </div>
     <% end %>
   </div>

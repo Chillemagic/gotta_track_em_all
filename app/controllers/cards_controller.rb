@@ -1,18 +1,36 @@
 require "base64"
 class CardsController < ApplicationController
+  layout "background_pattern_dark"
+
   before_action :authenticate_user! # for Devise
   before_action :set_card, only: %i[show destroy]
+
 
   def index
     @cards = Card.all
   end
 
   def show
+    @collection = Collection.new
+    @collection_card ||= CollectionCard.new(card: @card, condition: "Raw")
+    @collection ||= Collection.new
+
+    pricing_history = @card.price_histories.last
+    if pricing_history
+      pricing_hash = pricing_history.attributes["pricing_data"]
+      grading_keys = pricing_hash.keys
+                                 .select { |k| k.match?(/\A(PSA|CGC)\s*\d+(\.\d+)?\z/) }
+                                 .sort_by { |k| k[/\d+(\.\d+)?/].to_f }
+      raw_keys = pricing_hash.keys.select { |k| k.downcase.include?("raw") }
+      @condition_options = raw_keys + grading_keys
+    else
+      @condition_options = ["Raw"] + (1..10).flat_map { |n| ["CGC #{n}.0", "PSA #{n}.0"] }
+    end
   end
 
   def search
     # Render the search page for a get request
-    return render :search if request.get? ||request.head?
+    return render :search if request.get? || request.head?
     # Check if image has been uploaded
     unless params[:search]&.dig(:image).present?
       return redirect_to search_cards_path, alert: "Please upload an image"
@@ -31,6 +49,7 @@ class CardsController < ApplicationController
     @card = Card.find_by(name: card_info["name"], card_number: card_info["number"])
 
     if @card.present?
+      Rails.logger.info("Existing card found, card name:#{@card.name}, card id: #{@card.id}")
       UpdatePriceHistoryJob.perform_later(@card.id)
     else
       # Create new card with just the name and
@@ -42,8 +61,7 @@ class CardsController < ApplicationController
       )
       Rails.logger.info("Created card with ID: #{@card.id}, name: #{@card.name}, set: #{@card.set_name}, card_number: #{@card.card_number}, rarity: #{@card.rarity}")
 
-      FetchCardInfoJob.set(wait: 2.seconds).perform_later(@card.id)
-      FetchCardPricingJob.set(wait: 10.seconds).perform_later(@card.id)
+      FetchCardInfoJob.perform_later(@card.id, current_user.id)
     end
 
     redirect_to @card

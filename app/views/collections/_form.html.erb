@@ -1,0 +1,18 @@
+<div class="py-1 sm:py-8 lg:pb-24">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mx-auto max-w-md bg-white/30 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
+      <h1>Create a new collection</h1>
+
+      <%= simple_form_for(@collection) do |c| %>
+        <%= c.input :name %>
+        <%= c.input :description %>
+        <%= render "components/button", button_label: "Create Collection", width: "w-full" %>
+          <%# For form submit: render "components/button", button_label: "Create Collection", width: "w-full" %>
+      <% end %>
+      <div class="flex justify-between mt-4">
+        <%= render "components/button", button_label: "Home Page", width: "w-2/5", button_path: root_path %>
+        <%= render "components/button", button_label: "Collections Page", width: "w-2/5", button_path: collections_path %>
+      </div>
+    </div>
+  </div>
+</div>
