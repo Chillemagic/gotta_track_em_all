@@ -1,0 +1,13 @@
+<!-- Bottom Sticky Nav Bar with buttons for TRACKER SEARCH FOLIO -->
+<div class="w-full overflow-x-hidden">
+  <nav class="fixed bottom-0 left-0 w-full z-50 py-0 shadow-inner" style="
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.1) 80%, transparent 90%), #6b7280;
+    padding-bottom: env(safe-area-inset-bottom);
+  ">
+    <div class="flex flex-shrink-0 justify-around items-center px-4 py-4 max-w-screen-sm text-base mx-auto">
+      <%= render partial: "components/button", locals: { button_path: trackers_path, button_label: "TRACKER" } %>
+      <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
+      <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
+    </div>
+  </nav>
+</div>
