@@ -3,12 +3,12 @@
   <div class="text-center">
     <h2 class="text-white">Add Card To Collection:</h2>
   </div>
-  <!-- Description -->
+  <%# Description %>
   <%= f.input :description, as: :text,
               label_html: { class: "text-white"},
               input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-  <!-- Condition Dropdown -->
+  <%# Condition Dropdown %>
   <%= f.input :condition,
               as: :select,
               collection: @condition_options,
@@ -17,7 +17,7 @@
               label_html: { class: "text-white"},
               input_html: { class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
-  <!-- Collection Selector -->
+  <%# Collection Selector %>
   <%= f.input :collection_id,
               collection: current_user.collections.pluck(:name, :id),
               prompt: "Select a collection",
