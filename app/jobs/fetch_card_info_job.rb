@@ -31,7 +31,7 @@ class FetchCardInfoJob < ApplicationJob
       # broadcast(card)
       # Call contingency API TCG Dex
       Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
-      FetchCardInfoContingencyJob.perform_later(card_id, @user_id)
+      FetchCardInfoContingencyJob.perform_now(card_id, @user_id)
       return
     end
 
@@ -82,10 +82,10 @@ class FetchCardInfoJob < ApplicationJob
       Rails.logger.error("No matching card found for #{card.name} (#{card.card_number}) in set #{card.set_name}")
       # Update card status and broadcast turbo stream
       card.update!(api_tcg_status: "incomplete")
-    #  broadcast(card)
+      # broadcast(card)
       # Call contingency API TCG Dex
       Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
-      FetchCardInfoContingencyJob.perform_later(card_id, @user_id)
+      FetchCardInfoContingencyJob.perform_now(card_id, @user_id)
       return
     end
 
@@ -111,14 +111,14 @@ class FetchCardInfoJob < ApplicationJob
       # broadcast(card)
       # Call contingency API TCG Dex
       Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
-      FetchCardInfoContingencyJob.perform_later(card_id, @user_id)
+      FetchCardInfoContingencyJob.perform_now(card_id, @user_id)
       return
     end
 
     Rails.logger.info("Successfully updated card #{card_id} with Pokemon TCG data")
     # Update card status and broadcast turbo stream
     card.update!(api_tcg_status: "complete")
-    FetchCardPricingJob.perform_later(card_id)
+    FetchCardPricingJob.perform_now(card_id)
     # broadcast(card)
 
   rescue ActiveRecord::RecordNotFound

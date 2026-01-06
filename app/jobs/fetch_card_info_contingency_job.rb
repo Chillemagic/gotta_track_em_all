@@ -103,7 +103,7 @@ class FetchCardInfoContingencyJob < ApplicationJob
       tcg_dex_status: "complete"
     )
     Rails.logger.info("Successfully updated card #{card_id} with TCG Dex data")
-    FetchCardPricingJob.perform_later(card.id)
+    FetchCardPricingJob.now(card.id)
   end
 
   def update_release_date(card, set_info)
