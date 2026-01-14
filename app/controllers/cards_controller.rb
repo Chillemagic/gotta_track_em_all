@@ -29,6 +29,8 @@ class CardsController < ApplicationController
   end
 
   def search
+    @holo_options = [ "Standard", "Holo (The Pokemon artwork is shiny)", "Reverse Holo (The part outside the artwork is shiny)" ]
+
     # Render the search page for a get request
     return render :search if request.get? || request.head?
     # Check if image has been uploaded
@@ -57,7 +59,8 @@ class CardsController < ApplicationController
         name: card_info["name"],
         set_name: card_info["set_name"],
         card_number: card_info["number"],
-        rarity: card_info["rarity"]
+        rarity: card_info["rarity"],
+        holo_type: params[:holo_type]
       )
       Rails.logger.info("Created card with ID: #{@card.id}, name: #{@card.name}, set: #{@card.set_name}, card_number: #{@card.card_number}, rarity: #{@card.rarity}")
 
@@ -175,7 +178,8 @@ class CardsController < ApplicationController
     :image,
     :image_url,
     :pokemon_types,
-    :finish_type
+    :finish_type,
+    :holo_type
   )
   end
 end
