@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_052255) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_14_045935) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,6 +60,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_052255) do
     t.string "rarity"
     t.date "release_date"
     t.string "set_name"
+    t.string "status", default: "processing"
     t.string "tcg_dex_status"
     t.string "tcgdex_id"
     t.datetime "updated_at", null: false
