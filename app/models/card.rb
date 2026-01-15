@@ -5,7 +5,7 @@ class Card < ApplicationRecord
   has_one_attached :image
 
   # validates :card_api_id, presence: true, uniqueness: true
-  validates :name, presence: true
+  # validates :name, presence: true
 
   after_update_commit -> {
     Rails.logger.info "🔔 Broadcasting update for card #{id}"
@@ -18,6 +18,7 @@ class Card < ApplicationRecord
     )
   }
 
+  enum :status,         { processing: "processing", incomplete: "incomplete", complete: "complete", duplicate: "duplicate" }, prefix: true
   enum :api_tcg_status, { pending: "pending", incomplete: "incomplete", complete: "complete" }, prefix: true
   enum :tcg_dex_status, { pending: "pending", incomplete: "incomplete", complete: "complete" }, prefix: true
 
