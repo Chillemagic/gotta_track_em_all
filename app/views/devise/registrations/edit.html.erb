@@ -64,6 +64,27 @@
                 hint_html: { class: "text-white"},
                 input_html: { autocomplete: "current-password", class: "w-full rounded-md border-gray-300 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" } %>
 
+              <h3 class="text-sm font-medium text-gray-700 mb-2">Choose an Avatar</h3>
+               <div class="grid grid-cols-4 gap-4 mb-4">
+                <% ["beauty_avatar.png", "bug_catcher_avatar.png", "black_belt_avatar.png", "fisherman_avatar.png", "hiker_avatar.png", "pokefan_f_avatar.png", "pokefan_m_avatar.png", "pokemaniac_avatar.png", "rocket_grunt_f_avatar.png", "rocket_grunt_m_avatar.png", "scientist_f_avatar.png", "scientist_m_avatar.png"].each do |icon| %>
+                  <label class="cursor-pointer block text-center">
+                    <%= f.radio_button :preset_avatar, icon, class: "hidden peer" %>
+
+                    <%= image_tag icon,class: "w-16 h-16 rounded-full border-2 border-transparent peer-checked:border-indigo-500 shadow-sm" %>
+                  </label>
+                <% end %>
+              </div>
+
+              <h3 class="text-sm font-medium text-gray-700 mb-1">Or upload your own</h3>
+
+              <%= f.file_field :avatar,
+                    direct_upload: true,
+                    class: "block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
+                          file:rounded-md file:border-0 file:text-sm file:font-semibold
+                          file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" %>
+            </div>
+
+
               <%= render "components/button", button_label: "Update Profile", is_button: true, width: "w-full" %>
               <%= render "components/button", button_label: "Dashboard", width: "w-full", button_path: root_path%>
             <% end %>
