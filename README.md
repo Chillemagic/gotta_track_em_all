@@ -1,24 +1,58 @@
-# README
+# Gotta Track ’Em All — Personal Fork
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is my personal fork of the **Gotta Track ’Em All** project, created to showcase my verified contributions for job applications. This fork highlights only the work I personally implemented in the original team repository.
 
-Things you may want to cover:
+## 🔍 View My Contributions
+You can view all commits authored by me using the GitHub commit filter:
 
-* Ruby version
+**https://github.com/OvenShoe/gotta_track_em_all/commits?author=OvenShoe**
 
-* System dependencies
+All work listed below is based on commits I authored in the original repository.
 
-* Configuration
+---
 
-* Database creation
+# 🧩 My Contributions
 
-* Database initialization
+## 🧭 UI & Navigation
+- Implemented the navigation bar  
+- Improved navigation flow and routing behaviour  
+- Standardised layout components for consistent UX  
 
-* How to run the test suite
+## 🔐 Authentication Pages
+- Created and styled:
+  - Login page  
+  - Signup page  
+  - Forgot-password page  
+- Improved form structure, validation behaviour, and UI consistency  
 
-* Services (job queues, cache servers, search engines, etc.)
+## 🏠 Homepage & Layout
+- Built and styled the homepage  
+- Applied TailwindCSS styling across multiple views  
+- Improved spacing, alignment, and visual hierarchy  
 
-* Deployment instructions
+## 🗂️ Rails Models, Controllers & Routing
+- Added and updated controllers and routes  
+- Performed schema updates and migrations  
+- Fixed routing bugs and improved controller logic  
 
-* ...
+## 🧹 Code Quality & Repo Maintenance
+- Cleaned up unused files and folders  
+- Applied Rubocop fixes  
+- Improved project structure and readability  
+
+---
+
+# 🛠️ Tech Stack (My Work)
+- **Ruby on Rails**  
+- **PostgreSQL**  
+- **TailwindCSS**  
+- **Stimulus**  
+- **HTML / ERB**  
+- **Git & GitHub**  
+
+---
+
+# 📌 Purpose of This Fork
+This fork exists solely to present my individual contributions.  
+It is not intended to represent the full team project.
+
