@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :collection_cards
+  mount ActionCable.server => "/cable"
   get "tracker/index"
   get "tracker/show"
   get "/check_username", to: "users#check_username"
