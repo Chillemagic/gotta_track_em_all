@@ -10,7 +10,6 @@
         <% end %>
       </div>
 
-      <div class="flex-1"></div>
 
       <!-- Right: Profile dropdown (fixed size) -->
       <div class="max-[600px]:hidden flex-none ml-3 relative z-20">
@@ -21,12 +20,10 @@
             <%= image_tag "Plain-Profile-Icon.jpg", alt: "Profile Picture", class: "size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" %>
           </button>
 
-          <el-menu id="user-menu" anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-            <%= link_to "Edit your profile", edit_user_registration_path, class: "block w-full px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:outline-hidden" %>
-            <%= button_to (local_assigns[:button_label] || "Sign out"), destroy_user_session_path, method: :delete, class: "block w-full px-4 py-2 text-sm text-left text-gray-700 focus:bg-gray-100 focus:outline-hidden" %>
-          </el-menu>
-        </el-dropdown>
-      </div>
+        <!-- Hamburger icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.75" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+          <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
 
       <!-- Absolute centered button group -->
       <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -108,7 +105,32 @@
         </el-dropdown>
       </div>
 
-    </div>
+  <div class="flex-1"></div>
+
+  <!-- Right: Profile dropdown (fixed size) -->
+  <div class="flex-none ml-3 relative z-20">
+    <el-dropdown class="relative">
+      <button aria-expanded="false" aria-controls="user-menu" class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+        <span class="absolute -inset-1.5"></span>
+        <span class="sr-only">Open user menu</span>
+        <% avatar_url =
+     if current_user.avatar.attached?
+       url_for(current_user.avatar)
+     elsif current_user.preset_avatar.present?
+       asset_path(current_user.preset_avatar)
+     else
+       "Plain-Profile-Icon.jpg"
+     end %>
+
+<%= image_tag avatar_url,
+      alt: "Profile Picture",
+      class: "size-11 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" %>  </button>
+
+      <el-menu id="user-menu" anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+        <%= link_to "Edit your profile", edit_user_registration_path, class: "block w-full px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:outline-hidden" %>
+        <%= button_to (local_assigns[:button_label] || "Sign out"), destroy_user_session_path, method: :delete, class: "block w-full px-4 py-2 text-sm text-left text-gray-700 focus:bg-gray-100 focus:outline-hidden" %>
+      </el-menu>
+    </el-dropdown>
   </div>
 
   <!-- Mobile menu -->
@@ -117,5 +139,5 @@
       <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
       <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
     </div>
-  </el-disclosure>
+  </div>
 </nav>
