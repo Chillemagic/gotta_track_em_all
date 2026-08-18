@@ -2,7 +2,6 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 import "channels"
-import "@tailwindcss/browser"
 import "@tailwindplus/elements"
 
 document.addEventListener("turbo:load", () => {
