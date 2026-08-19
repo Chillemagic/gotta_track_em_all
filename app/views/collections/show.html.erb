@@ -14,7 +14,7 @@
   </div>
 
 
-  <div class="grid max-[600px]:hidden grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="max-[943px]:hidden grid grid-cols-3 gap-4">
     <% count = @collection.collection_cards.count %>
     <% @collection.collection_cards.each_with_index do |collection_card, index| %>
       <% position = index + 1 %>
@@ -23,7 +23,7 @@
         <div class="w-full flex">
           <h2 class="mx-auto"># <%= position %> of <%= count %> in the collection</h2>  
         </div>
-        <div class="pkm-holo rounded-md w-full" style="--front: url('<%= card.image_url %>')" role="img" aria-label="<%= card.name %>"></div>
+        <div class="pkm-holo max-w-[280px] mx-auto" style="--front: url('<%= card.image_url %>')" role="img" aria-label="<%= card.name %>"></div>
         <%# Card name etc%>
         <div class="mt-4">
           <p class="text-2xl"><%= card.name %></p>
@@ -74,8 +74,8 @@
   </div>
 </div>
 <!-- Mobile Scrolling Menu -->
-<div class="mx-auto min-[599px]:hidden max-w-5xl px-2 py-8">
-  <div data-controller="scroll-area" data-scroll-area-target="root" data-action="mouseenter->scroll-area#onRootMouseEnter mouseleave->scroll-area#onRootMouseLeave" class="relative w-full max-w-2xl">
+<div class="w-full min-[943px]:hidden max-w-5xl px-2 py-8">
+  <div data-controller="scroll-area" data-scroll-area-target="root" data-action="mouseenter->scroll-area#onRootMouseEnter mouseleave->scroll-area#onRootMouseLeave" class="mx-auto relative w-full max-w-2xl">
   <!-- Viewport -->
   <div class="rounded-xl border border-black/10 dark:border-white/10 bg-neutral-50 dark:bg-neutral-900 p-4">
     <div class="overflow-x-auto scrollbar-hide flex pb-2 snap-align-start gap-4 scroll-fade-x" data-scroll-area-target="viewport" data-action="scroll->scroll-area#onViewportScroll">
