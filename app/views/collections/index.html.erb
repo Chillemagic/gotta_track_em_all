@@ -97,12 +97,14 @@
                   <% card = collection_card.card %>
                   <div class="rounded-md overflow-hidden ring-1 ring-white/10 bg-white/5">
                     <!-- use your holo component mini, or swap to <img> if preferred -->
-                    <div
-                      class="pkm-holo h-28 w-full"
-                      style="--front: url('<%= card.image_url %>')"
-                      role="img"
-                      aria-label="<%= card.name %>">
-                    </div>
+                    <%= link_to collection_card_path(collection_card) do %>
+                      <div
+                        class="pkm-holo h-28 w-full"
+                        style="--front: url('<%= card.image_url %>')"
+                        role="img"
+                        aria-label="<%= card.name %>">
+                      </div>
+                    <% end %>
                   </div>
                 <% end %>
               </div>

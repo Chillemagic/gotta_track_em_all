@@ -23,7 +23,9 @@
         <div class="w-full flex">
           <h2 class="mx-auto"># <%= position %> of <%= count %> in the collection</h2>  
         </div>
-        <div class="pkm-holo max-w-[280px] mx-auto" style="--front: url('<%= card.image_url %>')" role="img" aria-label="<%= card.name %>"></div>
+        <%= link_to collection_card_path(collection_card) do %>
+          <div class="pkm-holo max-w-[280px] mx-auto" style="--front: url('<%= card.image_url %>')" role="img" aria-label="<%= card.name %>"></div>
+        <% end %>
         <%# Card name etc%>
         <div class="mt-4">
           <p class="text-2xl"><%= card.name %></p>
@@ -75,6 +77,19 @@
 </div>
 <!-- Mobile Scrolling Menu -->
 <div class="w-full min-[943px]:hidden max-w-5xl px-2 py-8">
+  <div class="w-full flex">
+    <div class="flex items-center mx-auto px-4 py-2">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+      </svg>
+      <h2 class="text-sm px-4">
+        Swipe to view 
+      </h2>  
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+      </svg> 
+    </div>
+  </div>
   <div data-controller="scroll-area" data-scroll-area-target="root" data-action="mouseenter->scroll-area#onRootMouseEnter mouseleave->scroll-area#onRootMouseLeave" class="mx-auto relative w-full max-w-2xl">
   <!-- Viewport -->
   <div class="rounded-xl border border-black/10 dark:border-white/10 bg-neutral-50 dark:bg-neutral-900 p-4">
@@ -87,7 +102,9 @@
             <div class="w-full flex">
               <h2 class="mx-auto"># <%= position %> of <%= count %> in the collection</h2>  
             </div>
-            <div class="pkm-holo rounded-md w-full" style="--front: url('<%= card.image_url %>')" role="img" aria-label="<%= card.name %>"></div>
+            <%= link_to collection_card_path(collection_card) do %>
+              <div class="pkm-holo max-w-[280px] mx-auto" style="--front: url('<%= card.image_url %>')" role="img" aria-label="<%= card.name %>"></div>
+            <% end %>           
             <%# Card name etc%>
             <div class="mt-4">
               <p class="text-2xl"><%= card.name %></p>
