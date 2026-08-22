@@ -5,7 +5,8 @@
         Your Collections
       </h1>
     </div> 
-  </div> <!-- __________________________________WIP: Scroll Area ________________________________-->
+  </div>
+  <!-- __________________________________WIP: Scroll Area ________________________________-->
   <div data-controller="scroll-area" data-scroll-area-target="root" data-action="mouseenter->scroll-area#onRootMouseEnter mouseleave->scroll-area#onRootMouseLeave" class="relative w-full pb-5">
     <div class="flex justify-between items-center my-3">
       <div class="flex items-center px-4 py-2">
@@ -30,8 +31,14 @@
     <!-- Viewport -->
     <div class="rounded-xl border border-black/10 dark:border-white/10 bg-neutral-50 dark:bg-neutral-900 p-2">
       <div class="py-4 overflow-x-auto scrollbar-hide flex gap-4 scroll-fade-x" data-scroll-area-target="viewport" data-action="scroll->scroll-area#onViewportScroll">
-        <% @collections.each do |c| %>
+        <% count = @collections.count %>
+        <% @collections.each.with_index do |c, index| %>
+          <% position = index + 1 %>
           <article class="group relative w-80 shrink-0 snap-start rounded-2xl bg-white/10 backdrop-blur ring-1 ring-white/5 p-5 transition hover:bg-white/[0.15] hover:ring-white/10">
+
+            <div class="w-full flex">
+              <h2 class="mx-auto">Collection #<%= position %>/<%= count %> </h2>  
+            </div>
 
             <div class="flex items-start gap-3">
               <h2 class="text-xl font-semibold text-white leading-snug"><%= c.name %></h2>
