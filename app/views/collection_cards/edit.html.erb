@@ -1,12 +1,26 @@
 <% content_for :title, "Editing collection card" %>
+<div class="w-full">
+  <div class="flex my-4">
+    <h1 class="mx-auto font-pokemon text-2xl justify-self-center min-[599px]:text-lg min-[599px]:mb-2 mb-4 sm:text-3xl sm:justify-self-center  md:text-4xl md:justify-self-center lg:5xl text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+      <%= @collection_card.card.name %>  #<%= @collection_card.card.card_number %>
+    </h1>
+  </div>
 
-<h1>Editing collection card</h1>
+  <div class="mx-2">
+    <%= render "form", collection_card: @collection_card %>
+  </div>
 
-<%= render "form", collection_card: @collection_card %>
-
-<br>
-
-<div>
-  <%= link_to "Show this collection card", @collection_card %> |
-  <%= link_to "Back to collection cards", collection_cards_path %>
+  <br>
+  <div class="flex w-full">
+    <div class="mx-auto">
+      <%= link_to "Show this collection card",
+            @collection_card,
+            class: "text-white transition-colors hover:text-yellow-400 focus:text-yellow-400 focus:outline-none" %>
+      <span aria-hidden="true">|</span>
+      <%= link_to "Back to collections",
+            collections_path,
+            class: "text-white transition-colors hover:text-yellow-400 focus:text-yellow-400 focus:outline-none" %>
+    </div>
+  </div>
+  </div>
 </div>
