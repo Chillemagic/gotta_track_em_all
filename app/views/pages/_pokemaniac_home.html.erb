@@ -1,109 +1,104 @@
-<div class="h-120 w-full">
+<% if current_user.collection_cards.empty? %>
+  <%= render "empty_collection_home" %>
+<% else %>
+<div class="w-full px-1 py-2 sm:px-2">
   <% favourites = current_user.favourites %>
 
-  <!-- Centered Header with Pokemon Font -->
-  <% if favourites.empty? %>
-    <h2 class="font-pokemon text-3xl text-center text-yellow-400 mb-3"
-        style="text-shadow: 2px 2px 0px #d97706, -1px -1px 0px #d97706, 1px -1px 0px #d97706, -1px 1px 0px #d97706;">
-      Looks like you haven't added favourites yet!
-    </h2>
-  <% else %>
-    <h2 class="font-pokemon sm:text-3xl lg:text-3xl text-center text-yellow-400 mb-3"
-        style="text-shadow: 2px 2px 0px #d97706, -1px -1px 0px #d97706, 1px -1px 0px #d97706, -1px 1px 0px #d97706;">
+  <h2 class="font-pokemon mt-2 mb-2 text-center text-xl leading-snug text-yellow-400 sm:text-xl lg:mb-3 lg:text-3xl"
+      style="text-shadow: 2px 2px 0px #d97706, -1px -1px 0px #d97706, 1px -1px 0px #d97706, -1px 1px 0px #d97706;">
+    <% if favourites.empty? %>
+      You have no favourites!
+    <% else %>
       Here are some of your favourites!
-    </h2>
+    <% end %>
+  </h2>
+
+  <% if favourites.empty? %>
+    <% if current_user.collection_cards.present? %>
+      <% carousel_slots = ['sad.png', 'scary.jpg', 'toge.jpeg', 'sad_pikachu.jpg'] %>
+    <% else %>
+      <% carousel_slots = ['c_back.png']  %>
+    <% end %>
+  <% else %>
+    <% favourite_cards = favourites.sample(4) %>
+    <% carousel_slots = favourite_cards + Array.new(4 - favourite_cards.size) %>
   <% end %>
 
-  <!-- Main Content Container -->
-  <div class="rounded-xl h-[calc(100%-3.5rem)] p-2">
-    <div class="h-full w-full flex flex-wrap items-stretch gap-2 justify-center">
-
-      <% if favourites.empty? %>
-        <!-- No favourites: placeholder + button -->
-        <div>
-          <!-- Images Row -->
-          <div class="flex  max-h-[350px] items-center justify-center w-full pt-4 mt-0 gap-4">
-            <% ['sad.png', 'scary.jpg', 'toge.jpeg'].each_with_index do |img, index| %>
-              <div class="<%= responsive_visibility_class(index) %>">
-                  <%= link_to collections_path do %>
-                    <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur
-                                flex-shrink-0 shadow-md relative transition-all duration-300 ease-out
-                                hover:scale-105 hover:shadow-2xl hover:backdrop-blur-sm"
-                        style="--front: url('<%= asset_path(img) %>');
-                                background-image: var(--front);
-                                background-size: contain;
-                                background-position: center;
-                                background-repeat: no-repeat;">
-                    </div>
-                  <% end %>
-              </div>
+  <section id="pokemaniac-favourites-carousel"
+           class="mx-auto w-full max-w-6xl overflow-hidden px-1 pb-2 sm:px-2"
+           aria-label="Favourite cards"
+           data-controller="carousel"
+           data-carousel-dots-value="true"
+           data-carousel-buttons-value="true"
+           data-carousel-loop-value="false">
+    <div class="cursor-grab overflow-hidden outline-hidden active:cursor-grabbing"
+         data-carousel-target="viewport">
+      <div class="flex">
+        <% carousel_slots.each_with_index do |slot, index| %>
+          <article class="mr-3 flex min-w-0 basis-full flex-shrink-0 flex-grow-0 select-none flex-col items-center rounded-2xl border border-white/20 bg-white/10 p-3 shadow-lg ring-1 ring-white/5 backdrop-blur sm:basis-1/2 sm:p-4 lg:basis-1/3 lg:p-5 xl:basis-1/4"
+                   aria-label="Favourite slot <%= index + 1 %>">
+            <% if favourites.empty? %>
+              <%= link_to collections_path, class: "flex flex-1 flex-col items-center" do %>
+                <%= image_tag slot,
+                              alt: "Find a card to add to your favourites",
+                              class: "h-44 w-32 rounded-lg object-contain shadow-md transition duration-300 ease-out hover:scale-105 hover:shadow-2xl sm:h-48 sm:w-36 lg:h-64 lg:w-48",
+                              draggable: false %>
+                <div class="mt-2 text-center lg:mt-3">
+                  <p class="text-base font-bold text-gray-900 lg:text-xl">Discover your favourites</p>
+                  <p class="text-xs text-gray-600 lg:text-sm">Browse your collection to get started.</p>
+                </div>
+              <% end %>
+            <% elsif slot.present? %>
+              <%= link_to collection_card_path(slot), class: "flex flex-1 flex-col items-center" do %>
+                <%= image_tag slot.card.image_url,
+                              alt: slot.card.name,
+                              class: "h-44 w-32 rounded-lg object-contain shadow-md transition duration-300 ease-out hover:scale-105 hover:shadow-2xl sm:h-48 sm:w-36 lg:h-64 lg:w-48",
+                              draggable: false %>
+                <div class="mt-2 w-full text-center lg:mt-3">
+                  <p class="truncate text-base font-bold text-gray-900 lg:text-xl"><%= slot.card.name %></p>
+                  <p class="text-xs font-bold uppercase tracking-wider text-gray-700 lg:text-sm">Set name</p>
+                  <p class="truncate text-base font-bold text-gray-900 lg:text-xl"><%= slot.card.set_name %></p>
+                </div>
+              <% end %>
+            <% else %>
+              <%= link_to collections_path, class: "flex flex-1 flex-col items-center" do %>
+                <%= image_tag 'c_back.png',
+                              alt: "Empty favourite slot",
+                              class: "h-44 w-32 rounded-lg object-contain shadow-md transition duration-300 ease-out hover:scale-105 hover:shadow-2xl sm:h-48 sm:w-36 lg:h-64 lg:w-48",
+                              draggable: false %>
+                <div class="mt-2 text-center lg:mt-3">
+                  <p class="text-base font-bold text-gray-900 lg:text-xl">
+                    You only have <%= pluralize(favourites.count, 'favourite') %>!
+                  </p>
+                  <p class="text-xs text-gray-600 lg:text-sm">Click to add more.</p>
+                </div>
+              <% end %>
             <% end %>
-          </div>
-          <div class="w-full justify-items-center m-2 pt-4 pb-4">
-            <%= render "components/button", button_label: "Search Cards",
-                      width: "w-48 md:w-64", button_path: search_cards_path
-            %>
-          </div>
-        </div>
-      <% else %>
-        <!-- Has favourites: display up to 4 random favourites -->
-        <% favourite_cards = favourites.sample(4) %>
-        <% slots = favourite_cards + Array.new(4 - favourite_cards.size) %>
-
-        <div class="flex justify-center gap-6 flex-nowrap mt-6 ">
-          <% slots.each_with_index do |col, index| %>
-
-            <div class="<%= responsive_visibility_class(index) %>">
-              <% if col.present? %>
-                <%= link_to collection_card_path(col) do %>
-                  <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur
-                              flex-shrink-0 shadow-md relative transition-all duration-300 ease-out
-                              hover:scale-105 hover:shadow-2xl hover:backdrop-blur-sm transform scale-100"
-                      style="--front: url('<%= asset_path(col.card.image_url) %>');
-                            background-image: var(--front);
-                            background-size: contain;
-                            background-position: center;
-                            background-repeat: no-repeat;">
-                  </div>
-
-                  <div class="text-center mt-2 border border-white/20 rounded-xl shadow-lg">
-                    <h2 class="text-xl font-bold text-gray-900"><%= col.card.name %></h2>
-                    <h2 class="text-xl text-gray-600">Set Name:</h2>
-                    <h2 class="text-xl font-bold text-gray-900"><%= col.card.set_name %></h2>
-                  </div>
-                <% end %>
-              <% else %>
-                <!-- Placeholder card -->
-                <%= link_to collections_path do %>
-                  <div class="rounded-lg w-48 h-64 bg-white/10 backdrop-blur flex-shrink-0 shadow-md
-                              relative transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl
-                              hover:backdrop-blur-sm"
-                      style="--front: url('<%= asset_path('c_back.png') %>');
-                            background-image: var(--front);
-                            background-size: contain;
-                            background-position: center;
-                            background-repeat: no-repeat;"
-                      role="img" aria-label="Empty slot">
-                  </div>
-              <% end %>
-
-                <%= link_to collections_path do %>
-                  <div class="text-center mt-2 border border-white/20 rounded-xl shadow-lg">
-                    <% favourites = current_user.favourites %>
-                    <% if favourites.count == 1 %>
-                      <% favourites_count = "1 favourite" %>
-                    <% else %>
-                      <% favourites_count = "#{favourites.count} favourites" %>
-                    <% end %>
-                    <h2 class="text-xl font-bold text-gray-900">You only have <%= favourites_count%>! </h2>
-                    <h2 class="text-xl font-bold text-gray-900">Click to add more!</h2>
-                  </div>
-                <% end %>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
+          </article>
+        <% end %>
+      </div>
     </div>
-  </div>
+
+    <div class="mt-2 flex items-center justify-center px-2 pb-1 sm:mt-3 sm:justify-between lg:mt-4">
+      <div class="grid grid-cols-2 gap-2">
+        <button class="flex size-9 items-center justify-center rounded-full border border-white/20 bg-white/20 text-gray-800 shadow-md backdrop-blur transition hover:bg-white/30 disabled:cursor-not-allowed disabled:opacity-40 sm:size-10"
+                type="button" data-carousel-target="prevButton" aria-label="Previous favourite">
+          <svg aria-hidden="true" class="size-4" viewBox="0 0 18 18" fill="currentColor"><path d="M11.5 16a.75.75 0 0 1-.53-.22L4.72 9.53a.75.75 0 0 1 0-1.06l6.25-6.25a.75.75 0 1 1 1.06 1.06L6.31 9l5.72 5.72A.75.75 0 0 1 11.5 16Z"/></svg>
+        </button>
+        <button class="flex size-9 items-center justify-center rounded-full border border-white/20 bg-white/20 text-gray-800 shadow-md backdrop-blur transition hover:bg-white/30 disabled:cursor-not-allowed disabled:opacity-40 sm:size-10"
+                type="button" data-carousel-target="nextButton" aria-label="Next favourite">
+          <svg aria-hidden="true" class="size-4" viewBox="0 0 18 18" fill="currentColor"><path d="M6.5 16a.75.75 0 0 1-.53-1.28L11.69 9 5.97 3.28a.75.75 0 0 1 1.06-1.06l6.25 6.25a.75.75 0 0 1 1.06 1.06l-6.25 6.25A.75.75 0 0 1 6.5 16Z"/></svg>
+        </button>
+      </div>
+      <div class="hidden flex-wrap items-center justify-end gap-1.5 sm:flex" data-carousel-target="dotsContainer"></div>
+    </div>
+  </section>
+
+  <% if favourites.empty? %>
+    <div class="mt-4 flex w-full justify-center pb-4">
+      <%= render "components/button", button_label: "Search Cards",
+                 width: "w-48 md:w-64", button_path: search_cards_path %>
+    </div>
+  <% end %>
 </div>
+<% end %>
