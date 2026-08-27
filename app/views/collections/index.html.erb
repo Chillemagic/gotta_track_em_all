@@ -1,4 +1,9 @@
 <div class="mx-auto max-w-5xl px-2 py-8">
+  <% if current_user.collection_cards.empty? %>
+    <div class="flex min-h-[calc(100vh-12rem)] items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg ring-1 ring-white/5 backdrop-blur sm:p-8">
+      <%= render "pages/empty_collection_home" %>
+    </div>
+  <% else %>
   <div class="w-full flex">
     <div class="mx-auto">
       <h1 class="font-pokemon text-2xl justify-self-center min-[599px]:mb-2 mb-4 sm:text-3xl sm:justify-self-center  md:text-4xl md:justify-self-center lg:5xl text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
@@ -142,5 +147,6 @@
            class="relative h-full rounded-full bg-neutral-500 transition-opacity duration-100 dark:bg-neutral-400">
       </div>
     </div>
-  </div> 
+  </div>
+  <% end %>
 </div>

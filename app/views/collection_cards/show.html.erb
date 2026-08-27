@@ -223,9 +223,9 @@
                       <% @collection_card.card.attacks.each do |attack| %>
                         <li class="mb-2">
                           <strong class="text-white"><%= attack['name'] %></strong>
-                          <% if attack['effect'].present? %>
+                          <% if attack['text'].present? %>
                             <br>
-                            <span class="text-sm text-gray-200"><%= attack['effect'] %></span>
+                            <span class="text-sm text-gray-200"><%= attack['text'] %></span>
                           <% end %>
                         </li>
                       <% end %>
