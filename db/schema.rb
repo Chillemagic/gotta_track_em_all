@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_22_121835) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_132423) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -64,6 +64,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_22_121835) do
     t.string "tcg_dex_status"
     t.string "tcgdex_id"
     t.datetime "updated_at", null: false
+    t.index ["api_tcg_id"], name: "index_cards_on_api_tcg_id", unique: true, where: "(api_tcg_id IS NOT NULL)"
   end
 
   create_table "collection_cards", force: :cascade do |t|
