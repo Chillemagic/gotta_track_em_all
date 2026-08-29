@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_26_132423) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_28_013809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,6 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_132423) do
     t.jsonb "attacks"
     t.string "card_number"
     t.datetime "created_at", null: false
+    t.text "error_message"
     t.string "finish_type"
     t.string "holo_type", default: "Standard"
     t.string "image_url"

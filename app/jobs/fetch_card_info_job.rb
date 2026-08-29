@@ -21,7 +21,7 @@ class FetchCardInfoJob < ApplicationJob
       timeout: 60,
       headers: { "X-Api-Key" => ENV["SCRYDEX_API_KEY"], "X-Team-ID" => "gtea" },
       query: { q: card.name }
-      )
+    )
 
     # Check if request was successful
     unless response.success?

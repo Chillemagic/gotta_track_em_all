@@ -4,7 +4,7 @@ class Card < ApplicationRecord
   has_many :price_histories, dependent: :destroy
   has_one_attached :image
 
-   validates api_tcg_id, presence: true, uniqueness: true
+   validates :api_tcg_id, uniqueness: true, allow_nil: true
   # validates :name, presence: true
 
   after_update_commit -> {

@@ -1,30 +1,43 @@
+require "base64"
+
 class IdentifyCardJob < ApplicationJob
   queue_as :default
 
-  def perform(card_id, upload, current_user)
+  def perform(card_id, current_user)
     card = Card.find(card_id)
+
 
     Rails.logger.info("Starting IdentifyCardJob")
     # Render the search page for a get request
     # !! return render :search if request.get? || request.head?
     # Check if image has been uploaded
-    unless upload.present?
-      card.update!(status: "incomplete", error_message: "No image provided")
+    unless card.image.attached?
+      card.update!(status: "incomplete",
+                   error_message: "No image provided"
+      )
+      Rails.logger.error("Error: #{card.error_message}")
+      return
       # Handle redirect in view return redirect_to search_cards_path, alert: "Please upload an image"
     end
 
-    formatted_image = "data:image/jpeg;base64,#{upload}"
-
-
+    formatted_image = image_data_url(card.image)
     # Identify card with OpenAi Api
     card_info = identify_card_with_api(formatted_image)
 
-    # Redirect if there is an error
-    if card_info["error"]
-      card.update!(status: "incomplete")
-      #  # Handle redirect in view return redirect_to search_cards_path, alert: "Could not identify card"
+    if card_info["error"].present?
+      card.update!(
+        status: "incomplete",
+        error_message: card_info["error"]
+      )
+      Rails.logger.error("Error: #{card.error_message}")
+
+      return
     end
-    
+
+    Rails.logger.info(
+      "Card identified name: #{card_info['name']}, number: #{card_info['number']}"
+    )
+
     # Check the Cards db to see if the card exists
     match = Card.find_by(name: card_info["name"], card_number: card_info["number"], holo_type: card.holo_type)
 
@@ -49,7 +62,11 @@ class IdentifyCardJob < ApplicationJob
     end
 
   rescue ActiveRecord::RecordInvalid => e
-    # Handle redirect in view redirect_to search_cards_path, alert: "Failed to save card: #{e.message}"
+    Rails.logger.error(
+      "IdentifyCardJob failed for card #{card_id}:
+      #{e.message}"
+    )
+    raise
   end
 
   def identify_card_with_api(image)
@@ -89,18 +106,19 @@ class IdentifyCardJob < ApplicationJob
     # Parse response
     return { error: "No response from OpenAI" } if parsed_content.nil?
 
-    identified_card = JSON.parse(parsed_content)
-
-    identified_card
+    JSON.parse(parsed_content)
   rescue JSON::ParserError => e
     { error: "Invalid JSON response: #{e.message}" }
   rescue StandardError => e
     { error: "OpenAI API error: #{e.message}" }
   end
 
+  private
   # Might need to uncomment later
-  # def image_to_base64(image)
-  #   base64_image = Base64.strict_encode64(image.read)
-  #   "data:image/jpeg;base64,#{base64_image}"
-  # end
+  def image_data_url(image)
+    encoded_image = Base64.strict_encode64(image.download)
+    content_type = image.blob.content_type.presence || "image/jpeg"
+
+    "data:#{content_type};base64,#{encoded_image}"
+  end
 end

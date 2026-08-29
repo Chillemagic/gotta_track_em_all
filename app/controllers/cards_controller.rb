@@ -28,21 +28,59 @@ class CardsController < ApplicationController
     end
   end
 
+  #def retry_with_scrydex
+  #  @card = Card.find(params[:id])
+  #  # Changes and checks
+  #  # ScrydexVisionIdentificationJob.perform_later(@card.id)
+  #end
+
   def search
-    @holo_options = [ "Standard", "Holo (The Pokemon artwork is shiny)", "Reverse Holo (The part outside the artwork is shiny)" ]
+     @holo_options = [
+      "Standard",
+      "Holo (The Pokemon artwork is shiny)",
+      "Reverse Holo (The part outside the artwork
+      is shiny)"
+    ]
 
-    if params[:search]  && params[:search][:image].present?
+    return unless request.post?
 
-      @card = Card.create!(
-        status: "processing",
-        holo_type: params[:search][:holo_type]
-      )
+    uploaded_image = params.dig(:search, :image)
 
-      upload = Base64.strict_encode64(params[:search][:image].read)
-      IdentifyCardJob.perform_later(@card.id, upload, current_user.id)
-      redirect_to @card
+    unless uploaded_image.present?
+      flash.now[:alert] = "Please upload an image."
+      return render :search,
+      status: :unprocessable_entity
     end
+
+    @card = Card.create!(
+      status: "processing",
+      holo_type: params.dig(:search, :holo_type)
+    )
+
+    @card.image.attach(uploaded_image)
+
+    IdentifyCardJob.perform_later(@card.id,
+    current_user.id)
+
+    redirect_to @card
   end
+ #   _________________________________________________________________________________
+ #    @holo_options = [ "Standard", "Holo (The Pokemon artwork is shiny)", "Reverse Holo (The part outside the artwork is shiny)" ]
+ # 
+ #    if params[:search]  && params[:search][:image].present?
+ # 
+ #      @card = Card.create!(
+ #        status: "processing",
+ #        holo_type: params[:search][:holo_type],
+ #      ) 
+ # 
+ #      @card.image.attach(params[:search][:image])
+ #
+ #      upload = Base64.strict_encode64(params[:search][:image].read)
+ #      IdentifyCardJob.perform_later(@card.id, upload, current_user.id)
+ #      redirect_to @card
+ #    end
+ #  end
 
   def new
     @card = Card.new
@@ -70,7 +108,7 @@ class CardsController < ApplicationController
 
   def card_params
   params.require(:card).permit(
-    :card_api_id,
+    :api_tcg_id,
     :name,
     :card_number,
     :pokemon_set,
