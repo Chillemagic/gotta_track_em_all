@@ -3,33 +3,33 @@ require "base64"
 class IdentifyCardJob < ApplicationJob
   queue_as :default
 
-  def perform(card_id, current_user)
-    card = Card.find(card_id)
+  def perform(search_attempt, current_user)
+    search_attempt = Card.find(card_id)
 
 
     Rails.logger.info("Starting IdentifyCardJob")
     # Render the search page for a get request
     # !! return render :search if request.get? || request.head?
     # Check if image has been uploaded
-    unless card.image.attached?
-      card.update!(status: "incomplete",
+    unless search_attempt.image.attached?
+      search_attempt.update!(status: "incomplete",
                    error_message: "No image provided"
       )
-      Rails.logger.error("Error: #{card.error_message}")
+      Rails.logger.error("Error: #{search_attempt.error_message}")
       return
       # Handle redirect in view return redirect_to search_cards_path, alert: "Please upload an image"
     end
 
-    formatted_image = image_data_url(card.image)
-    # Identify card with OpenAi Api
+    formatted_image = image_data_url(search_attempt.image)
+    # Identify search_attempt with OpenAi Api
     card_info = identify_card_with_api(formatted_image)
 
     if card_info["error"].present?
-      card.update!(
+      search_attempt.update!(
         status: "incomplete",
         error_message: card_info["error"]
       )
-      Rails.logger.error("Error: #{card.error_message}")
+      Rails.logger.error("Error: #{search_attempt.error_message}")
 
       return
     end
@@ -44,12 +44,12 @@ class IdentifyCardJob < ApplicationJob
     # Update price and direct to matching card show page
     if match.present?
       Rails.logger.info("Existing card found, card name:#{match.name},match id: #{match.id}")
-      card.update!(status: "duplicate", error_message: match.id.to_s)
+      search_attempt.update!(status: "duplicate", error_message: match.id.to_s)
       UpdatePriceHistoryJob.perform_later(match.id)
       #  # Handle redirect in view redirect_to card_path(match)
     else
       # Update card and fetch more info
-      card.update!(
+      search_attempt.update!(
       name: card_info["name"],
       set_name: card_info["set_name"],
       card_number: card_info["number"],
@@ -84,15 +84,16 @@ class IdentifyCardJob < ApplicationJob
                       from the sets provided. If a gold star is found in the card name near the top return the rarity as 'Rare Holo Star'
                       otherwise leave the ratiy empty. Identify the card number and make sure to ommit any leading zero for example don't 
                       do 086/096 instead use 86/96. Pay attention to any name suffix for example Charizard-GX and be sure to include 
-                      it in the name Return only the card name, card number, card set, language, rarity(only return if gold star is present)
+                      it in the name Return only the card name, card number, card set, first card effect/attack title, language, rarity(only return if gold star is present)
                       and if staff appears on the card in a Json that can be accessed with a key,value pair. Here is the JSON example: {
                       'id'=> 'base1-4',
                       'name' => 'Charizard',
                       'set_name' => 'Pokémon',
                       'rarity' => 'only return rarity if gold star is found!',
                       'number' => '4/102',
+                      'card_effect/attack' => 'Solar Wind'
                       'language' => 'English',
-                      'staff' => true }" 
+                      'staff' => true }"
                 },
                 { type: "image_url", image_url: { url: image } 
               }
