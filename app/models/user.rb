@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :collections, dependent: :destroy
   has_many :collection_cards, through: :collections
   has_many :cards, through: :collection_cards
+  has_many :search_attempts, dependent: :destroy
   has_one_attached :avatar
   # Trainer type
   TRAINER_TYPES = %w[pokescientist pokemaniac]

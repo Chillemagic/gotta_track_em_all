@@ -28,6 +28,7 @@ class FetchCardInfoJob < ApplicationJob
       Rails.logger.error("Pokemon TCG API failed: #{response.code} - #{response.message}")
       # Update card status and broadcast turbo stream
       card.update!(api_tcg_status: "incomplete")
+      fail_pending_search_attempts(card, "Could not fetch card information")
       # broadcast(card)
       return
     end
@@ -78,6 +79,7 @@ class FetchCardInfoJob < ApplicationJob
       Rails.logger.error("No matching card found for #{card.name} (#{card.card_number}) in set #{card.set_name}")
       # Update card status and broadcast turbo stream
       card.update!(api_tcg_status: "incomplete")
+      fail_pending_search_attempts(card, "No matching catalogue card was found")
       # broadcast(card)
       return
     end
@@ -109,6 +111,7 @@ class FetchCardInfoJob < ApplicationJob
       Rails.logger.warn("Card ##{card_id} missing: #{card.missing_fields.join(', ')}")
       # Update card status and broadcast turbo stream
       card.update!(api_tcg_status: "incomplete")
+      fail_pending_search_attempts(card, "The matched card information was incomplete")
       # broadcast(card)
       return
     end
@@ -116,6 +119,7 @@ class FetchCardInfoJob < ApplicationJob
     Rails.logger.info("Successfully updated card #{card_id} with Pokemon TCG data")
     # Update card status and broadcast turbo stream
     card.update!(api_tcg_status: "complete")
+    complete_pending_search_attempts(card)
     FetchCardPricingJob.perform_now(card_id)
     # broadcast(card)
 
@@ -123,6 +127,7 @@ class FetchCardInfoJob < ApplicationJob
       Rails.logger.error("Card #{card_id} not found")
     rescue StandardError => e
       Rails.logger.error("Failed to fetch card info for #{card_id}: #{e.message}")
+      fail_pending_search_attempts(card, e.message) if defined?(card) && card.present?
       raise
   end
 
@@ -138,6 +143,18 @@ class FetchCardInfoJob < ApplicationJob
   end
 
   private
+
+  def complete_pending_search_attempts(card)
+    card.search_attempts.status_creating_card.find_each do |search_attempt|
+      search_attempt.update!(status: "matched")
+    end
+  end
+
+  def fail_pending_search_attempts(card, message)
+    card.search_attempts.status_creating_card.find_each do |search_attempt|
+      search_attempt.update!(status: "failed", error_message: message)
+    end
+  end
 
   def broadcast(card)
     Turbo::StreamsChannel.broadcast_replace_to(

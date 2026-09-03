@@ -2,6 +2,7 @@ class Card < ApplicationRecord
   has_many :collection_cards, dependent: :destroy
   has_many :collections, through: :collection_cards
   has_many :price_histories, dependent: :destroy
+  has_many :search_attempts, dependent: :nullify
   has_one_attached :image
 
    validates :api_tcg_id, uniqueness: true, allow_nil: true

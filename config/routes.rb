@@ -21,8 +21,16 @@ Rails.application.routes.draw do
   root "pages#home"
 
   # collections routes
+
   resources :collections
 
+  resources :search_attempts, only: %i[create show] do
+    member do
+      post :retry_with_scrydex
+    end
+  end
+  # search_attempts
+  resources :search_attempts, only: %i[create show]
   # cards routes
   resources :cards, only: [ :index, :show ] do
     # member refers to an individual card
@@ -33,7 +41,6 @@ Rails.application.routes.draw do
     # collection refers to all cards
     collection do
       get "search"
-      post "search"
     end
   end
 end

@@ -1,0 +1,36 @@
+<div id="<%= dom_id(search_attempt) %>">
+  <div class="text-center mb-8">
+    <% if search_attempt.status_pending? || search_attempt.status_identifying? %>
+      <h1 class="text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+        Identifying your card…
+      </h1>
+    <% elsif search_attempt.status_creating_card? %>
+      <h1 class="text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+        Fetching card information…
+      </h1>
+    <% elsif search_attempt.status_failed? %>
+      <h1 class="text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+        We couldn't identify that card
+      </h1>
+      <% if search_attempt.error_message.present? %>
+        <p class="mt-4 text-gray-200"><%= search_attempt.error_message %></p>
+      <% end %>
+      <div class="mt-6">
+        <%= render "components/button", button_label: "Try Again", button_path: search_cards_path %>
+      </div>
+    <% elsif search_attempt.status_matched? && search_attempt.card.present? %>
+      <h1 class="text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
+        Match found!
+      </h1>
+      <div class="mt-8">
+        <%= render "cards/card_info", card: search_attempt.card %>
+      </div>
+      <div class="mt-6">
+        <%= render "components/button", button_label: "View Card", buton_path: card_path(
+                                                                                search_attempt.card,
+                                                                                search_attempt_id: search_attempt.id
+        )%>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -3,30 +3,24 @@ require "base64"
 class IdentifyCardJob < ApplicationJob
   queue_as :default
 
-  def perform(search_attempt, current_user)
-    search_attempt = Card.find(card_id)
+  def perform(search_attempt_id)
+    search_attempt = SearchAttempt.find(search_attempt_id)
+    search_attempt.update!(status: "identifying", error_message: nil)
 
+    Rails.logger.info("Starting IdentifyCardJob for search attempt #{search_attempt_id}")
 
-    Rails.logger.info("Starting IdentifyCardJob")
-    # Render the search page for a get request
-    # !! return render :search if request.get? || request.head?
-    # Check if image has been uploaded
     unless search_attempt.image.attached?
-      search_attempt.update!(status: "incomplete",
-                   error_message: "No image provided"
-      )
+      search_attempt.update!(status: "failed", error_message: "No image provided")
       Rails.logger.error("Error: #{search_attempt.error_message}")
       return
-      # Handle redirect in view return redirect_to search_cards_path, alert: "Please upload an image"
     end
 
     formatted_image = image_data_url(search_attempt.image)
-    # Identify search_attempt with OpenAi Api
     card_info = identify_card_with_api(formatted_image)
 
     if card_info["error"].present?
       search_attempt.update!(
-        status: "incomplete",
+        status: "failed",
         error_message: card_info["error"]
       )
       Rails.logger.error("Error: #{search_attempt.error_message}")
@@ -34,37 +28,49 @@ class IdentifyCardJob < ApplicationJob
       return
     end
 
+    search_attempt.update!(
+      identified_name: card_info["name"],
+      identified_number: card_info["number"],
+      identified_set_name: card_info["set_name"],
+      identified_rarity: card_info["rarity"],
+      identified_moves: card_info["card_effect/attack"],
+      identified_language: card_info["language"],
+      identified_staff: card_info["staff"]
+    )
+
     Rails.logger.info(
       "Card identified name: #{card_info['name']}, number: #{card_info['number']}"
     )
 
-    # Check the Cards db to see if the card exists
-    match = Card.find_by(name: card_info["name"], card_number: card_info["number"], holo_type: card.holo_type)
+    match = Card.find_by(
+      name: card_info["name"],
+      card_number: card_info["number"],
+      holo_type: search_attempt.holo_type
+    )
 
-    # Update price and direct to matching card show page
     if match.present?
       Rails.logger.info("Existing card found, card name:#{match.name},match id: #{match.id}")
-      search_attempt.update!(status: "duplicate", error_message: match.id.to_s)
+      search_attempt.update!(card: match, status: "matched")
       UpdatePriceHistoryJob.perform_later(match.id)
-      #  # Handle redirect in view redirect_to card_path(match)
     else
-      # Update card and fetch more info
-      search_attempt.update!(
-      name: card_info["name"],
-      set_name: card_info["set_name"],
-      card_number: card_info["number"],
-      rarity: card_info["rarity"],
-      status: "complete"
+      card = Card.create!(
+        name: card_info["name"],
+        set_name: card_info["set_name"],
+        card_number: card_info["number"],
+        rarity: card_info["rarity"],
+        holo_type: search_attempt.holo_type,
+        status: "complete"
       )
+
+      search_attempt.update!(card: card, status: "creating_card")
       Rails.logger.info("Created card with ID: #{card.id}, name: #{card.name}, set: #{card.set_name}, card_number: #{card.card_number}, rarity: #{card.rarity}")
 
-      FetchCardInfoJob.perform_later(card.id, current_user)
+      FetchCardInfoJob.perform_later(card.id, search_attempt.user_id)
     end
-
-  rescue ActiveRecord::RecordInvalid => e
+  rescue StandardError => e
+    search_attempt&.update(status: "failed", error_message: e.message)
     Rails.logger.error(
-      "IdentifyCardJob failed for card #{card_id}:
-      #{e.message}"
+      "IdentifyCardJob failed for search attempt #{search_attempt_id}: #{e.message}"
     )
     raise
   end

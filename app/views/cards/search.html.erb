@@ -17,9 +17,8 @@
 
     <%# Search Form Card %>
     <div class="bg-white/10 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
-      <%= simple_form_for :search,
-                          url: search_cards_path,
-                          method: :post,
+      <%= simple_form_for @search_attempt,
+                          url: search_attempts_path,
                           html: {
                             multipart: true,
                             class: "space-y-6",
