@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_28_013809) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_30_115824) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -107,6 +107,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_013809) do
     t.string "source"
     t.datetime "updated_at", null: false
     t.index ["card_id"], name: "index_price_histories_on_card_id"
+  end
+
+  create_table "search_attempts", force: :cascade do |t|
+    t.bigint "card_id"
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.string "identified_language"
+    t.string "identified_moves"
+    t.string "identified_name"
+    t.string "identified_number"
+    t.string "identified_rarity"
+    t.string "identified_set_name"
+    t.boolean "identified_staff"
+    t.string "provider", default: "openai", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["card_id"], name: "index_search_attempts_on_card_id"
+    t.index ["user_id"], name: "index_search_attempts_on_user_id"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -265,6 +284,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_013809) do
   add_foreign_key "collection_cards", "collections"
   add_foreign_key "collections", "users"
   add_foreign_key "price_histories", "cards"
+  add_foreign_key "search_attempts", "cards"
+  add_foreign_key "search_attempts", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
