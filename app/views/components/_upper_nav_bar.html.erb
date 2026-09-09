@@ -10,55 +10,177 @@
         <% end %>
       </div>
 
-      <div class="flex-1"></div>
-
-      <!-- Right: Profile dropdown (fixed size) -->
-      <div class="flex-none ml-3 relative z-20">
-        <el-dropdown class="relative">
-          <button aria-expanded="false" aria-controls="user-menu" class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-            <span class="absolute -inset-1.5"></span>
-            <span class="sr-only">Open user menu</span>
-            <%= image_tag "Plain-Profile-Icon.jpg", alt: "Profile Picture", class: "size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" %>
-          </button>
-
-          <el-menu id="user-menu" anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-            <%= link_to "Edit your profile", edit_user_registration_path, class: "block w-full px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:outline-hidden" %>
-            <%= button_to (local_assigns[:button_label] || "Sign out"), destroy_user_session_path, method: :delete, class: "block w-full px-4 py-2 text-sm text-left text-gray-700 focus:bg-gray-100 focus:outline-hidden" %>
-          </el-menu>
-        </el-dropdown>
-      </div>
 
       <!-- Absolute centered button group -->
       <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div class="hidden sm:flex items-center space-x-20 pointer-events-auto z-10">
+        <div class="hidden min-[600px]:flex items-center space-x-20 pointer-events-auto z-10">
           <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
           <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
         </div>
       </div>
 
+      <div class="flex-1"></div>
       <!-- Mobile menu button (kept in flow but hidden on sm+) -->
-      <div class="-mr-2 flex sm:hidden">
-        <button type="button" command="--toggle" commandfor="mobile-menu" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
+      <div class="-mr-2 flex  min-[600px]:hidden">
+        <el-dropdown class="relative">
+          <button aria-expanded="false" aria-controls="mobile-dropdown-menu" class="relative inline-flex items-center justify-center rounded-md p-2 text-red hover:bg-white/5 hover:text-red focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
           <span class="absolute -inset-0.5"></span>
           <span class="sr-only">Open main menu</span>
+          <!-- Burger icon -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
             <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
             <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-        </button>
+          </button> 
+          <el-menu id="mobile-dropdown-menu" anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-white backdrop-blur py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+            <div class="my-2">
+            </div>
+              
+            <div class="flex">
+              <% if current_user %>
+                <% avatar_url =
+                  if current_user.avatar.attached?
+                    url_for(current_user.avatar)
+                  elsif current_user.preset_avatar.present?
+                    asset_path(current_user.preset_avatar)
+                  else
+                    "Plain-Profile-Icon.jpg"
+                  end
+                %>
+                <%= image_tag avatar_url,
+                              alt: "Profile Picture",
+                              class: "mx-auto size-11 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" %>
+              <% else %>
+                <%= image_tag "Plain-Profile-Icon.jpg",
+                              alt: "Profile Picture",
+                              class: "mx-auto size-11 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" %>
+              <% end %>
+            </div>
+
+            <%= link_to collections_path, aria: {label: "Search Cards"}, class:"block w-full px-4 py-2 text-red-700 focus:bg-gray-100 focus:outline-hidden" do %>
+              <div class="flex justify-between">
+                <h2 class="mx-2">
+                  Collections
+                </h2> 
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-2 size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                </svg>
+              </div>
+            <% end %>
+            <%= link_to search_cards_path, aria: {label: "Search Cards"}, class:"block w-full px-4 py-2 text-red-700 focus:bg-gray-100 focus:outline-hidden" do %>   
+              <div class="flex justify-between">
+                <h2 class="mx-2">
+                  Card Search 
+                </h2> 
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-2 size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </div>
+            <% end %>
+
+            <%= link_to  edit_user_registration_path, class: "block w-full px-4 py-2 text-red-700 focus:bg-gray-100 focus:outline-hidden" do %>
+              <div class="flex justify-between">
+                <h2 class="mx-2">
+                  Edit profile 
+                </h2>             
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-2 size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                </svg>
+              </div>
+            <% end %>
+            <% if user_signed_in? %>   
+              <%= button_to destroy_user_session_path, method: :delete, class: "block w-full px-4 py-2 text-sm text-left text-red-700 focus:bg-gray-100 focus:outline-hidden" do %>
+                <div class="flex justify-between">
+                  <h2 class="mx-2">
+                  Log Out 
+                  </h2>             
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-2 size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                  </svg>
+                </div>
+              <% end %>
+            <% else %>
+              <%= link_to new_user_session_path, class: "block w-full px-4 py-2 text-sm text-left text-red-700 focus:bg-gray-100 focus:outline-hidden" do %>
+                <div class="flex justify-between">
+                  <h2 class="mx-2">
+                    Sign In 
+                  </h2>               
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-2 size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                  </svg>
+                </div>
+              <% end %>
+            <% end %>
+          </el-menu>
+        </el-dropdown>
       </div>
 
+      <!-- Right: Profile dropdown (fixed size) -->
+      <div class="max-[600px]:hidden flex-none ml-3 relative z-20">
+        <el-dropdown class="relative">
+          <button aria-expanded="false" aria-controls="user-menu" class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+            <span class="absolute -inset-1.5"></span>
+            <span class="sr-only">Open user menu</span>
+
+            <% if current_user %>
+              <% avatar_url =
+                if current_user.avatar.attached?
+                  url_for(current_user.avatar)
+                elsif current_user.preset_avatar.present?
+                  asset_path(current_user.preset_avatar)
+                else
+                  "Plain-Profile-Icon.jpg"
+                end
+              %>
+              <%= image_tag avatar_url,
+                            alt: "Profile Picture",
+                            class: "size-11 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" %>
+            <% else %>
+              <%= image_tag "Plain-Profile-Icon.jpg",
+                            alt: "Profile Picture",
+                            class: "size-11 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10" %>
+            <% end %>
+          </button>
+
+          <el-menu id="user-menu" anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+            <%= link_to  edit_user_registration_path, class: "block w-full px-4 py-2 text-red-700 focus:bg-gray-100 focus:outline-hidden" do %>
+                <div class="flex justify-between">
+                  <h2 class="mx-2">
+                    Edit profile 
+                  </h2>             
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-2 size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                  </svg>
+                </div>
+              <% end %>
+              <% if user_signed_in? %>   
+                <%= button_to destroy_user_session_path, method: :delete, class: "block w-full px-4 py-2 text-sm text-left text-red-700 focus:bg-gray-100 focus:outline-hidden" do %>
+                  <div class="flex justify-between">
+                    <h2 class="mx-2">
+                    Log Out 
+                    </h2>             
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-2 size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                    </svg>
+                  </div>
+                <% end %>
+              <% else %>
+                <%= link_to new_user_session_path, class: "block w-full px-4 py-2 text-sm text-left text-red-700 focus:bg-gray-100 focus:outline-hidden" do %>
+                  <div class="flex justify-between">
+                    <h2 class="mx-2">
+                      Sign In 
+                    </h2>               
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-2 size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                    </svg>
+                  </div>
+                <% end %>
+              <% end %>
+          </el-menu>
+        </el-dropdown>
+      </div>
     </div>
   </div>
-
-  <!-- Mobile menu -->
-  <el-disclosure id="mobile-menu" hidden class="block sm:hidden">
-    <div class="space-y-1 px-2 pt-2 pb-3">
-      <%= render partial: "components/button", locals: { button_path: trackers_path, button_label: "TRACKER" } %>
-      <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
-      <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
-    </div>
-  </el-disclosure>
 </nav>

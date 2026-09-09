@@ -1,42 +1,69 @@
-<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-  <!-- Nav bar -->
-  <%= render "components/upper_nav_bar" %>
+<% content_for :title, "Editing collection" %>
 
-<!-- app/views/collections/edit.html.erb -->
-<h1 class="mx-auto max-w-3xl px-4 mt-12 mb-8 text-4xl md:text-5xl font-pokemon text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA]">
-  Edit Collection
-</h1>
+<div class="w-full">
+  <div class="my-4 flex">
+    <h1 class="mx-auto mb-4 justify-self-center font-pokemon text-2xl text-yellow-400 drop-shadow-[2px_2px_0px_#3B4CCA] min-[599px]:mb-2 min-[599px]:text-lg sm:justify-self-center sm:text-3xl md:justify-self-center md:text-4xl lg:text-5xl">
+      <%= @collection.name %>
+    </h1>
+  </div>
 
-<div class="mx-auto max-w-3xl px-4">
-  <div class="rounded-xl bg-white/5 ring-1 ring-white/10 p-6 md:p-8">
-    <%= form_with model: @collection do |f| %>
-      <div class="space-y-6">
+  <div class="mx-2">
+    <div class="mx-auto w-full max-w-md rounded-2xl bg-white/30 p-6 shadow-2xl ring-1 ring-white/5 backdrop-blur sm:p-8">
+      <%= simple_form_for(@collection) do |f| %>
+        <%= f.error_notification %>
+        <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
-        <!-- Name -->
-        <div>
-          <%= f.label :name, "Name",
-                class: "block text-sm font-medium text-gray-400 mb-2 underline underline-offset-4" %>
-          <%= f.text_field :name,
-                class: "block w-full rounded-md bg-white/10 px-3 py-2 text-base md:text-lg text-gray-500 placeholder-gray-400
-                        ring-1 ring-inset ring-white/10 focus:outline-none focus:ring-2 focus:ring-orange-400" %>
+        <div class="space-y-5">
+          <%= f.input :name,
+                label: "Name",
+                label_html: { class: "text-white" },
+                input_html: {
+                  class: "w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder:text-gray-400"
+                } %>
+
+          <%= f.input :description,
+                as: :text,
+                label: "Description",
+                label_html: { class: "text-white" },
+                input_html: {
+                  rows: 5,
+                  class: "w-full resize-y rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder:text-gray-400"
+                } %>
         </div>
 
-        <!-- Description -->
-        <div>
-          <%= f.label :description, "Description",
-                class: "block text-sm font-medium text-gray-400 mb-2 underline underline-offset-4" %>
-          <%= f.text_area :description,
-                rows: 10,
-                class: "block w-full rounded-md bg-white/10 px-3 py-2 text-base md:text-lg text-gray-500 placeholder-gray-400
-                        ring-1 ring-inset ring-white/10 focus:outline-none focus:ring-2 focus:ring-orange-400
-                        min-h-56 resize-y" %>
-        </div>
+        <div class="mt-6 flex w-full items-center justify-between border-t border-white/10 pt-4">
+          <%= render "components/button",
+                button_label: "Confirm",
+                width: "w-1/2" %>
 
-        <!-- Actions -->
-        <div class="pt-2">
-          <%= render "components/button", button_label: "Save changes", is_button: true %>
+          <div class="py-1">
+            <%= link_to collection_path(@collection),
+                  data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Delete this collection and all of its cards?"
+                  },
+                  class: "group/item flex items-center px-4 py-2 text-sm text-white transition-colors hover:text-red-500 focus:bg-white/5 focus:text-red-500 focus:outline-hidden",
+                  role: "button" do %>
+              <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mr-3 size-5 text-white transition-colors group-hover/item:text-red-500 group-focus/item:text-red-500">
+                <path d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 1 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+              Delete
+            <% end %>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-6 flex w-full">
+    <div class="mx-auto">
+      <%= link_to "Show this collection",
+            @collection,
+            class: "text-white transition-colors hover:text-yellow-400 focus:text-yellow-400 focus:outline-none" %>
+      <span aria-hidden="true">|</span>
+      <%= link_to "Back to collections",
+            collections_path,
+            class: "text-white transition-colors hover:text-yellow-400 focus:text-yellow-400 focus:outline-none" %>
+    </div>
   </div>
 </div>

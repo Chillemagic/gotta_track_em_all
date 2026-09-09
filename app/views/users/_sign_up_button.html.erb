@@ -2,9 +2,10 @@
 <% path = local_assigns[:button_path] || "#" %>
 <% method = local_assigns[:method] || :get %>
 <% form_submit = local_assigns[:form_submit] || false %>
+<% width = local_assigns[:width] || "w-36" %>
 
 <% if form_submit %>
-  <button type="submit" class="relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group">
+  <button type="submit" class="relative block min-w-[40px] <%= width %> text-sm px-2 w-38 h-8 overflow-hidden group">
     <!-- Blue background as border -->
     <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
       <div class="flex-1 bg-blue-500 rounded-t-md"></div>
@@ -25,7 +26,7 @@
     </div>
   </button>
 <% else %>
-  <%= link_to path, method: method, data: { turbo: false }, class: "relative block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group" do %>
+  <%= link_to path, method: method, data: { turbo: false }, class: "relative #{width} block min-w-[40px] text-sm px-2 w-38 h-8 overflow-hidden group" do %>
     <!-- Blue background as border -->
     <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">
       <div class="flex-1 bg-blue-500 rounded-t-md"></div>

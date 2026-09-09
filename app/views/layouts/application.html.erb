@@ -7,10 +7,6 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%# Tailwind CSS %>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
@@ -24,10 +20,11 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <!-- Pokémon Font -->
     <link href="https://fonts.cdnfonts.com/css/pokemon-solid" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe/dist/photoswipe.css">
     <link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;600&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <%= turbo_include_tags %>
     <%= action_cable_meta_tag %>
 
   </head>

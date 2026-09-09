@@ -17,11 +17,11 @@ class FetchCardInfoJob < ApplicationJob
     # Fetch with retry logic and long timeout
     response = HTTParty.get(
       # "https://api.pokemontcg.io/v2/cards"
-      "https://apitcg.com/api/pokemon/cards",
+      "https://api.scrydex.com/pokemon/v1/cards",
       timeout: 60,
-      headers: { "x-api-key" => ENV["API_TCG_KEY"] },
-        query: { name: card.name }
-      )
+      headers: { "X-Api-Key" => ENV["SCRYDEX_API_KEY"], "X-Team-ID" => "gtea" },
+      query: { q: card.name }
+    )
 
     # Check if request was successful
     unless response.success?
@@ -29,9 +29,6 @@ class FetchCardInfoJob < ApplicationJob
       # Update card status and broadcast turbo stream
       card.update!(api_tcg_status: "incomplete")
       # broadcast(card)
-      # Call contingency API TCG Dex
-      Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
-      FetchCardInfoContingencyJob.perform_now(card_id, @user_id)
       return
     end
 
@@ -42,13 +39,12 @@ class FetchCardInfoJob < ApplicationJob
     cards = cards.select { |c| c["id"] == card.api_tcg_id } if card.api_tcg_id.present?
     Rails.logger.info("API returned #{cards.length} cards")
     # Match card name and set
-    # Iterate through cards
-
+    # Queue generating Card Objects from rejected cards to save Api calls 
+    
     card_info = cards.find do |c|
       # Strip and downcase card and c to compare
       name_match = PokedataParser.normalize_name(c["name"]) == PokedataParser.normalize_name(card.name)
-      #-------------------------------------------------------------------------------------------------------------------------------------
-      number_match = PokedataParser.extract_first_number(c["code"]||c["number"].to_s) == PokedataParser.extract_first_number(card.card_number.to_s)
+      number_match = PokedataParser.extract_first_number(c["printed_number"].to_s) == PokedataParser.extract_first_number(card.card_number.to_s)
       # Use card number as comparison
 
       name_match && number_match
@@ -67,7 +63,7 @@ class FetchCardInfoJob < ApplicationJob
 
         matching_card = cards.find do |c|
           PokedataParser.normalize_name(c["name"]) == PokedataParser.normalize_name(search_name) &&
-          PokedataParser.extract_first_number(c["code"]||c["number"].to_s) == PokedataParser.extract_first_number(card.card_number.to_s)
+          PokedataParser.extract_first_number(c["printed_number"].to_s) == PokedataParser.extract_first_number(card.card_number.to_s)
         end
 
         if matching_card
@@ -83,23 +79,28 @@ class FetchCardInfoJob < ApplicationJob
       # Update card status and broadcast turbo stream
       card.update!(api_tcg_status: "incomplete")
       # broadcast(card)
-      # Call contingency API TCG Dex
-      Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
-      FetchCardInfoContingencyJob.perform_now(card_id, @user_id)
       return
     end
+    rejected_cards = cards.reject do |candidate|
+      candidate["id"] == card_info["id"]
+    end
+
+    AddRejectedCardsFromApiJob.perform_later(rejected_cards) if rejected_cards.any?
+
+    # Scrydex returns images as an array (one entry per card side).
+    front_image = card_info["images"]&.find { |image| image["type"] == "front" } || card_info["images"]&.first
 
     # Save to database
-    card.update(
+    card.update!(
       api_tcg_id: card_info.dig("id"),
       artist: card_info.dig("artist"),
       rarity: card_info.dig("rarity"),
-      image_url: card_info.dig("images", "large"),
+      image_url: front_image&.dig("large"),
       pokemon_types: card_info["types"]&.join(", "),
       abilities: card_info.dig("abilities"),
       attacks: card_info.dig("attacks"),
-      set_name: card_info.dig("set", "name"),
-      release_date: PokedataParser.parse_release_date(card_info.dig("set", "releaseDate"))
+      set_name: card_info.dig("expansion", "name"),
+      release_date: PokedataParser.parse_release_date(card_info.dig("expansion", "release_date"))
     )
     # refresh card for most accurate check
     card.reload
@@ -109,9 +110,6 @@ class FetchCardInfoJob < ApplicationJob
       # Update card status and broadcast turbo stream
       card.update!(api_tcg_status: "incomplete")
       # broadcast(card)
-      # Call contingency API TCG Dex
-      Rails.logger.info("FetchCardInfoJob could not find information about card:#{card_id}")
-      FetchCardInfoContingencyJob.perform_now(card_id, @user_id)
       return
     end
 

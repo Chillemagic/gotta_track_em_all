@@ -1,0 +1,2 @@
+module SearchAttemptsHelper
+end
