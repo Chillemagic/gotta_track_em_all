@@ -4,7 +4,7 @@ class IdentifyCardJob < ApplicationJob
   queue_as :default
 
   def perform(search_attempt, current_user)
-    search_attempt = Card.find(card_id)
+    search_attempt = Card.find(search_attempt)
 
 
     Rails.logger.info("Starting IdentifyCardJob")
@@ -39,7 +39,7 @@ class IdentifyCardJob < ApplicationJob
     )
 
     # Check the Cards db to see if the card exists
-    match = Card.find_by(name: card_info["name"], card_number: card_info["number"], holo_type: card.holo_type)
+    match = Card.find_by(name: card_info["name"], card_number: card_info["number"], holo_type: search_attempt.holo_type)
 
     # Update price and direct to matching card show page
     if match.present?
@@ -56,14 +56,14 @@ class IdentifyCardJob < ApplicationJob
       rarity: card_info["rarity"],
       status: "complete"
       )
-      Rails.logger.info("Created card with ID: #{card.id}, name: #{card.name}, set: #{card.set_name}, card_number: #{card.card_number}, rarity: #{card.rarity}")
+      Rails.logger.info("Created card with ID: #{search_attempt.id}, name: #{search_attempt.name}, set: #{search_attempt.set_name}, card_number: #{search_attempt.card_number}, rarity: #{search_attempt.rarity}")
 
-      FetchCardInfoJob.perform_later(card.id, current_user)
+      FetchCardInfoJob.perform_later(search_attempt.id, current_user)
     end
 
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error(
-      "IdentifyCardJob failed for card #{card_id}:
+      "IdentifyCardJob failed for card #{search_attempt}:
       #{e.message}"
     )
     raise
@@ -80,10 +80,10 @@ class IdentifyCardJob < ApplicationJob
             role: "user",
             content: [
               { type: "text",
-                text: "Identify this Pokemon card be sure to identify if the word 'staff' can be found on the card and please select 
+                text: "Identify this Pokemon card be sure to identify if the word 'staff' can be found on the card and please select
                       from the sets provided. If a gold star is found in the card name near the top return the rarity as 'Rare Holo Star'
-                      otherwise leave the ratiy empty. Identify the card number and make sure to ommit any leading zero for example don't 
-                      do 086/096 instead use 86/96. Pay attention to any name suffix for example Charizard-GX and be sure to include 
+                      otherwise leave the ratiy empty. Identify the card number and make sure to ommit any leading zero for example don't
+                      do 086/096 instead use 86/96. Pay attention to any name suffix for example Charizard-GX and be sure to include
                       it in the name Return only the card name, card number, card set, first card effect/attack title, language, rarity(only return if gold star is present)
                       and if staff appears on the card in a Json that can be accessed with a key,value pair. Here is the JSON example: {
                       'id'=> 'base1-4',
@@ -95,7 +95,7 @@ class IdentifyCardJob < ApplicationJob
                       'language' => 'English',
                       'staff' => true }"
                 },
-                { type: "image_url", image_url: { url: image } 
+                { type: "image_url", image_url: { url: image }
               }
             ]
           }

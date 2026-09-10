@@ -4,8 +4,8 @@
 
     <%= turbo_stream_from "card_#{@card.id}" %>
     <%= render "card_search_status", card: @card %>
-    <div id="<%= dom_id(card, :info) %>">
-      <%= render "card_info" %> 
+    <div id="<%= dom_id(@card, :info) %>">
+      <%= render "card_info", card: @card %>
     </div>
     <%= render "collection_frame" %>
   </div>
