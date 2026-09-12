@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_30_115824) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_010734) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,15 +96,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_115824) do
     t.string "card_number"
     t.jsonb "cgc_pricing", default: {}
     t.datetime "created_at", null: false
+    t.string "error_message"
     t.string "pokedata_id"
     t.decimal "pokedata_raw_price"
     t.jsonb "pricing_data"
     t.jsonb "psa_pricing", default: {}
-    t.date "recorded_at"
+    t.datetime "recorded_at"
     t.date "release_date"
     t.boolean "secret"
     t.string "set_name"
     t.string "source"
+    t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
     t.index ["card_id"], name: "index_price_histories_on_card_id"
   end
@@ -113,6 +115,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_115824) do
     t.bigint "card_id"
     t.datetime "created_at", null: false
     t.text "error_message"
+    t.string "fetch_pricing_status", default: "standby", null: false
+    t.string "holo_type"
     t.string "identified_language"
     t.string "identified_moves"
     t.string "identified_name"
@@ -121,6 +125,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_115824) do
     t.string "identified_set_name"
     t.boolean "identified_staff"
     t.string "provider", default: "openai", null: false
+    t.datetime "scrydex_requested_at"
     t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false

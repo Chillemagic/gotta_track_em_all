@@ -6,17 +6,16 @@ class CollectionCard < ApplicationRecord
   after_initialize :set_default_condition, if: :new_record?
 
   def fetch_price
-    latest_price_history = price_histories.order(:created_at).last
-    return nil if latest_price_history.nil?
-    if condition.match?("Raw")
-      #Grab Pokedata raw price
-      latest_price_history.pricing_data.dig("Pokedata Raw", "value").to_f.round(2)
-    elsif condition.match?("CGC")
-      # Grab CGC Pricing
-      latest_price_history.cgc_pricing.dig(condition, "value").to_f.round(2)
-    elsif condition.match?("PSA")
-      latest_price_history.psa_pricing.dig(condition, "value").to_f.round(2)
-    end
+    latest_price_history = price_histories.order(recorded_at: :desc, id: :desc).first
+    return if latest_price_history.nil? || condition.blank?
+
+    # The saved condition is the exact key, including its variant and grade flags.
+    value = latest_price_history.pricing_data.to_h.dig(condition, "value")
+    # Older histories stored graded prices only in the company-specific fields.
+    value ||= latest_price_history.psa_pricing.to_h.dig(condition, "value")
+    value ||= latest_price_history.cgc_pricing.to_h.dig(condition, "value")
+
+    value.to_f.round(2) unless value.nil?
   end
   private
 

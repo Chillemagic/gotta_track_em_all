@@ -4,80 +4,56 @@ class FetchCardInfoJob < ApplicationJob
   # retry_on Net::ReadTimeout, wait: :exponentially_longer, attempts: 3
   # retry_on HTTParty::Error, wait: 5.minutes, attempts: 3
 
-  def perform(card_id, user_id)
+  def perform(search_attempt_id, user_id)
     @user_id = user_id
-    Rails.logger.info("Running FetchCardInfoJob for card #{card_id}")
     # Find created card to add to
     user = User.find(@user_id)
-    card = Card.find(card_id)
-    card.update!(api_tcg_status: "pending")
-    # Broadcast turbo stream
-    # broadcast(card)
+    search_attempt = user.search_attempts.find(search_attempt_id)
 
-    # Fetch with retry logic and long timeout
-    response = HTTParty.get(
-      # "https://api.pokemontcg.io/v2/cards"
-      "https://api.scrydex.com/pokemon/v1/cards",
-      timeout: 60,
-      headers: { "X-Api-Key" => ENV["SCRYDEX_API_KEY"], "X-Team-ID" => "gtea" },
-      query: { q: card.name }
-    )
+    Rails.logger.info("Running FetchCardInfoJob for card #{search_attempt.identified_name}")
+    cards = []
+    card_info = nil
+    page = 1
+    page_size = 100
 
-    # Check if request was successful
-    unless response.success?
-      Rails.logger.error("Pokemon TCG API failed: #{response.code} - #{response.message}")
-      # Update card status and broadcast turbo stream
-      card.update!(api_tcg_status: "incomplete")
-      # broadcast(card)
-      return
-    end
+    loop do
+      response = HTTParty.get(
+        "https://api.scrydex.com/pokemon/v1/cards",
+        timeout: 60,
+        headers: { "X-Api-Key" => ENV["SCRYDEX_API_KEY"], "X-Team-ID" => "gtea" },
+        query: { q: search_attempt.identified_name, page: page, page_size: page_size }
+      )
 
-    # Parse the api call
-    cards_response = response.parsed_response
-    cards = cards_response["data"]
-    # Use existing api id if one has been created
-    cards = cards.select { |c| c["id"] == card.api_tcg_id } if card.api_tcg_id.present?
-    Rails.logger.info("API returned #{cards.length} cards")
-    # Match card name and set
-    # Queue generating Card Objects from rejected cards to save Api calls 
-    
-    card_info = cards.find do |c|
-      # Strip and downcase card and c to compare
-      name_match = PokedataParser.normalize_name(c["name"]) == PokedataParser.normalize_name(card.name)
-      number_match = PokedataParser.extract_first_number(c["printed_number"].to_s) == PokedataParser.extract_first_number(card.card_number.to_s)
-      # Use card number as comparison
-
-      name_match && number_match
-    end
-
-    if card_info.nil?
-      Rails.logger.error("Checking card suffixes for: #{card.name}")
-
-      suffixes = [
-        "-GX", "-EX", "-V", "-VMAX", "-VSTAR", "-VUNION", "-BREAK",
-        "-LEGEND", "-LV.X", "-TAG TEAM", "-MEGA", "-C", "-PRISM STAR"
-      ]
-
-      suffixes.each do |suf|
-        search_name = "#{card.name}#{suf}"
-
-        matching_card = cards.find do |c|
-          PokedataParser.normalize_name(c["name"]) == PokedataParser.normalize_name(search_name) &&
-          PokedataParser.extract_first_number(c["printed_number"].to_s) == PokedataParser.extract_first_number(card.card_number.to_s)
-        end
-
-        if matching_card
-          card_info = matching_card
-          Rails.logger.info("Found card using suffix: #{suf}")
-          break
-        end
+      unless response.success?
+        Rails.logger.error("Scrydex API failed: #{response.code} - #{response.message}")
+        search_attempt.update!(status: "failed")
+        return
       end
+
+      payload = response.parsed_response
+      page_cards = Array(payload["data"])
+      Rails.logger.info("API returned #{page_cards.length} cards on page #{page}")
+      # Stop if an upstream pagination error repeats a page.
+      new_cards = page_cards.reject { |candidate| cards.any? { |seen| seen["id"] == candidate["id"] } }
+      break if new_cards.empty?
+
+      cards.concat(new_cards)
+      card_info = new_cards.find { |candidate| matches_identification?(candidate, search_attempt) }
+      break if card_info
+
+      total_count = payload["totalCount"] || payload["total_count"]
+      returned_page_size = (payload["pageSize"] || payload["page_size"] || page_size).to_i
+      break if returned_page_size <= 0
+      break if total_count && page * returned_page_size >= total_count.to_i
+      break if !total_count && page_cards.length < returned_page_size
+
+      page += 1
     end
 
     if card_info.nil?
-      Rails.logger.error("No matching card found for #{card.name} (#{card.card_number}) in set #{card.set_name}")
+      Rails.logger.error("No matching card found for #{search_attempt.identified_name} (#{search_attempt.identified_number}) in set #{search_attempt.identified_set_name}")
       # Update card status and broadcast turbo stream
-      card.update!(api_tcg_status: "incomplete")
+      search_attempt.update!(status: "failed")
       # broadcast(card)
       return
     end
@@ -90,40 +66,64 @@ class FetchCardInfoJob < ApplicationJob
     # Scrydex returns images as an array (one entry per card side).
     front_image = card_info["images"]&.find { |image| image["type"] == "front" } || card_info["images"]&.first
 
-    # Save to database
-    card.update!(
-      api_tcg_id: card_info.dig("id"),
-      artist: card_info.dig("artist"),
-      rarity: card_info.dig("rarity"),
-      image_url: front_image&.dig("large"),
-      pokemon_types: card_info["types"]&.join(", "),
-      abilities: card_info.dig("abilities"),
-      attacks: card_info.dig("attacks"),
-      set_name: card_info.dig("expansion", "name"),
-      release_date: PokedataParser.parse_release_date(card_info.dig("expansion", "release_date"))
-    )
-    # refresh card for most accurate check
-    card.reload
-
-    unless card.complete_card_info?
-      Rails.logger.warn("Card ##{card_id} missing: #{card.missing_fields.join(', ')}")
-      # Update card status and broadcast turbo stream
-      card.update!(api_tcg_status: "incomplete")
-      # broadcast(card)
+    existing_card = Card.find_by(api_tcg_id: card_info["id"])
+    if existing_card
+      search_attempt.update!(
+        card: existing_card,
+        status: "matched",
+        error_message: nil
+      )
+      FetchCardPricingJob.perform_later(existing_card.id)
       return
     end
 
-    Rails.logger.info("Successfully updated card #{card_id} with Pokemon TCG data")
+    # Save to database
+    search_attempt.update!(status: "creating_card")
+    card = Card.create!(
+      api_tcg_id: card_info["id"],
+      name: card_info["name"],
+      card_number: card_info["printed_number"].presence || card_info["number"],
+      artist: card_info["artist"],
+      rarity: card_info["rarity"],
+      image_url: front_image&.dig("large"),
+      pokemon_types: card_info["types"]&.join(", "),
+      abilities: card_info["abilities"] || [],
+      attacks: card_info["attacks"] || [],
+      set_name: card_info.dig("expansion", "name"),
+      release_date: PokedataParser.parse_release_date(card_info.dig("expansion", "release_date")),
+      language: card_info["language"] || card_info.dig("expansion", "language"),
+      holo_type: search_attempt.holo_type,
+      status: "processing",
+      api_tcg_status: "pending"
+    )
+    # refresh card for most accurate check
+    search_attempt.update!(card_id: card.id)
+    card.reload
+
+    unless card.complete_card_info?
+      Rails.logger.warn("Card ##{card.id} missing: #{card.missing_fields.join(', ')}")
+      # Update card status and broadcast turbo stream
+      card.update!(status: "incomplete", api_tcg_status: "incomplete")
+      search_attempt.update!(
+        status: "failed",
+        error_message: "Card data was incomplete: #{card.missing_fields.join(', ')}"
+      )
+      return
+    end
+
+    Rails.logger.info("Successfully updated card #{card.id} with Scrydex data")
     # Update card status and broadcast turbo stream
-    card.update!(api_tcg_status: "complete")
-    FetchCardPricingJob.perform_now(card_id)
+    card.update!(status: "complete",
+                 api_tcg_status: "complete"
+    )
+    search_attempt.update!(status: "matched")
+    FetchCardPricingJob.perform_now(card.id)
     # broadcast(card)
 
-  rescue ActiveRecord::RecordNotFound
-      Rails.logger.error("Card #{card_id} not found")
-    rescue StandardError => e
-      Rails.logger.error("Failed to fetch card info for #{card_id}: #{e.message}")
-      raise
+  rescue StandardError => e
+    search_attempt&.update!(status: "failed", error_message: e.message)
+    Rails.logger.error("Failed to fetch card info for search attempt #{search_attempt_id}: #{e.message}")
+    raise
   end
 
 
@@ -139,12 +139,40 @@ class FetchCardInfoJob < ApplicationJob
 
   private
 
-  def broadcast(card)
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "card_#{card_id}",
-      target: "card-details",
-      partial: "cards/card_info",
-      locals: { card: card }
-    )
+  def matches_identification?(candidate, search_attempt)
+    suffixes = [ "", "-GX", "-EX", "-V", "-VMAX", "-VSTAR", "-VUNION",
+                "-BREAK", "-LEGEND", "-LV.X", "-TAG TEAM", "-MEGA", "-C", "-PRISM STAR" ]
+    name_match = suffixes.any? do |suffix|
+      PokedataParser.normalize_name(candidate["name"]) ==
+        PokedataParser.normalize_name("#{search_attempt.identified_name}#{suffix}")
+    end
+    candidate_number = candidate["printed_number"].presence || candidate["number"]
+    number_match = search_attempt.identified_number.present? &&
+      PokedataParser.extract_first_number(candidate_number.to_s) ==
+        PokedataParser.extract_first_number(search_attempt.identified_number.to_s)
+    return false unless name_match && number_match
+
+    if search_attempt.identified_moves.present?
+      first_move = Array(candidate["abilities"]).first || Array(candidate["attacks"]).first
+      identified_move = normalize_move(search_attempt.identified_moves)
+      identified_move.present? && identified_move == normalize_move(first_move&.dig("name"))
+    else
+      search_attempt.identified_set_name.present? &&
+        PokedataParser.normalize_name(candidate.dig("expansion", "name")) ==
+          PokedataParser.normalize_name(search_attempt.identified_set_name)
+    end
   end
+
+  def normalize_move(name)
+    name.to_s.downcase.gsub(/[^a-z0-9]/, "")
+  end
+
+  # def broadcast(card)
+  #   Turbo::StreamsChannel.broadcast_replace_to(
+  #     "card_#{card_id}",
+  #     target: "card-details",
+  #     partial: "cards/card_info",
+  #     locals: { card: card }
+  #   )
+  # end
 end

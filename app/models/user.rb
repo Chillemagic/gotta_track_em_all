@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :collections, dependent: :destroy
   has_many :collection_cards, through: :collections
   has_many :cards, through: :collection_cards
+  has_many :search_attempts, dependent: :destroy
   has_one_attached :avatar
   # Trainer type
   TRAINER_TYPES = %w[pokescientist pokemaniac]
@@ -45,9 +46,12 @@ class User < ApplicationRecord
     end
   end
 
-  # Average price of all cards
+  # Average known price; unavailable prices do not count as zero-value cards.
   def average_card_price
-    total_card_value.fdiv(collection_cards.count)
+    prices = collection_cards.filter_map(&:fetch_price)
+    return 0.0 if prices.empty?
+
+    prices.sum.fdiv(prices.length)
   end
 
   # Most valuable card
@@ -70,7 +74,7 @@ class User < ApplicationRecord
       set = card.card&.set_name || "Unknown Set"
       set_values[set]+= price
     end
-    set_name, total = set_values.max_by { |_set, total| total } || [nil, nil]
+    set_name, total = set_values.max_by { |_set, total| total } || [ nil, nil ]
     { set_name: set_name, total: total }
   end
 

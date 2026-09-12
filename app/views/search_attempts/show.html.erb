@@ -1,0 +1,21 @@
+<% content_for :title, "Card search | Gotta Track Em All" %>
+
+<%= turbo_stream_from "search_attempt_#{@search_attempt.id}" %>
+
+<div class="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-4xl">
+    <% if notice.present? && notice != "Signed in successfully."%>
+      <div class="mb-6 rounded-xl border border-emerald-300/30 bg-emerald-500/15 px-5 py-4 text-emerald-100">
+        <%= notice %>
+      </div>
+    <% end %>
+
+    <% if alert.present? %>
+      <div class="mb-6 rounded-xl border border-red-300/30 bg-red-500/15 px-5 py-4 text-red-100">
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <%= render "search_attempt_info", search_attempt: @search_attempt %>
+  </div>
+</div>
