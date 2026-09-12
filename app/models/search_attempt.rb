@@ -4,6 +4,17 @@ class SearchAttempt < ApplicationRecord
 
   has_one_attached :image
 
+  after_update_commit -> {
+    Rails.logger.info "🔔 Broadcasting update for search_attempt#{id}"
+
+    broadcast_replace_to(
+      "search_attempt_#{id}",
+      target: "search_attempt_#{id}",
+      partial: "search_attempts/search_attempt_info",
+      locals: { search_attempt: self }
+    )
+  }
+
   enum :status, {
     pending: "pending",
     identifying: "identifying",

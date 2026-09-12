@@ -10,16 +10,8 @@ class CollectionCardsController < ApplicationController
 
   # GET /collection_cards/1 or /collection_cards/1.json
   def show
-    # Fetch most recent price and assign it to price_history
-    price_history = @collection_card.card.price_histories.last
-    condition = @collection_card.condition
     @collection = @collection_card.collection
-
-    if price_history.present?
-      pricing_data = price_history.pricing_data
-      price_info = pricing_data[@collection_card.condition] || pricing_data["Raw"]
-      @selected_price = price_info["value"] if price_info.present?
-    end
+    @selected_price = @collection_card.fetch_price
   end
 
   # GET /collection_cards/new
@@ -31,14 +23,41 @@ class CollectionCardsController < ApplicationController
   def edit
   end
   # POST /collection_cards or /collection_cards.json
+  # def create
+  #   @user = current_user
+  #   @search_attempt = SearchAttempt.find(params[:search_attempt_id])
+  #   # Check if current_user belongs to the search_attempt.
+  #   if @user.search_attempts.find(@search_attempt.id)
+  #     @collection_card = CollectionCard.new(collection_card_params)
+  #   else
+  #     redirect_to search_cards_path, alert: "Search again, this attempt does not belong to the current user"
+  #   end
+  #
+  #   if @collection_card.save
+  #     redirect_to @collection_card, notice: "Card added to collection!"
+  #   else
+  #     redirect_to card_path(@collection_card.card), alert: "Failed to add card to collection."
+  #   end
+  # end
+
   def create
-    @collection_card = CollectionCard.new(collection_card_params)
+    @search_attempt = current_user.search_attempts.find(params[:search_attempt_id])
+    collection = current_user.collections.find(collection_card_params[:collection_id])
+
+    @collection_card = collection.collection_cards.new(
+      collection_card_params.except(:collection_id, :card_id)
+    )
+    @collection_card.card = @search_attempt.card
 
     if @collection_card.save
       redirect_to @collection_card, notice: "Card added to collection!"
     else
-      redirect_to card_path(@collection_card.card), alert: "Failed to add card to collection."
+      redirect_to search_attempt_path(@search_attempt),
+                  alert: "Failed to add card to collection."
     end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to search_cards_path,
+                alert: "Search again. The search attempt or collection is invalid."
   end
 
   # PATCH/PUT /collection_cards/1 or /collection_cards/1.json
@@ -74,6 +93,6 @@ class CollectionCardsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def collection_card_params
-      params.require(:collection_card).permit(:collection_id, :card_id, :description, :condition, :price, :favourite)
+      params.require(:collection_card).permit(:collection_id, :card_id, :description, :condition, :price, :favourite, :search_attempt_id)
     end
 end

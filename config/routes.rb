@@ -23,6 +23,9 @@ Rails.application.routes.draw do
   # collections routes
   resources :collections
 
+  resources :search_attempts, only: [ :show ] do
+    post :retry_with_scrydex, on: :member
+  end
   # cards routes
   resources :cards, only: [ :index, :show ] do
     # member refers to an individual card

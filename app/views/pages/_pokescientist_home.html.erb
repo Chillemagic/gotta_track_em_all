@@ -16,17 +16,17 @@
       <div class="flex flex-[3] flex-col gap-3">
         <div class="flex flex-1 flex-col justify-center rounded-xl border border-white/20 bg-white/10 p-3 shadow-lg backdrop-blur">
           <p class="text-xs font-bold uppercase tracking-wider text-gray-700">Total card value</p>
-          <p class="text-3xl font-bold text-gray-900">$<%= current_user.total_card_value %></p>
+          <p class="text-3xl font-bold text-gray-900"><%= number_to_currency(current_user.total_card_value, precision: 2) %></p>
         </div>
         <div class="flex flex-1 flex-col justify-center rounded-xl border border-white/20 bg-white/10 p-3 shadow-lg backdrop-blur">
           <p class="text-xs font-bold uppercase tracking-wider text-gray-700">Average price</p>
-          <p class="text-3xl font-bold text-gray-900">$<%= current_user.average_card_price&.round(2) %></p>
+          <p class="text-3xl font-bold text-gray-900"><%= number_to_currency(current_user.average_card_price, precision: 2) %></p>
         </div>
         <% if most_set&.dig(:set_name) %>
           <div class="flex flex-1 flex-col justify-center rounded-xl border border-white/20 bg-white/10 p-3 shadow-lg backdrop-blur">
             <p class="text-xs font-bold uppercase tracking-wider text-gray-700">Top set</p>
             <p class="truncate text-base font-bold italic text-gray-900"><%= most_set[:set_name] %></p>
-            <p class="mt-1 text-2xl font-bold text-gray-900">$<%= most_set[:total] %></p>
+            <p class="mt-1 text-2xl font-bold text-gray-900"><%= number_to_currency(most_set[:total], precision: 2) %></p>
           </div>
         <% end %>
       </div>
@@ -42,7 +42,7 @@
           </div>
           <div class="text-center">
             <p class="text-xs font-bold uppercase tracking-wider text-gray-700">Current price</p>
-            <p class="text-2xl font-bold text-gray-900">$<%= most_card.fetch_price %></p>
+            <p class="text-2xl font-bold text-gray-900"><%= number_to_currency(most_card.fetch_price, precision: 2) %></p>
           </div>
         </div>
       <% end %>
@@ -66,7 +66,7 @@
             <% end %>
             <div class="mt-3 text-center">
               <p class="text-xs font-bold uppercase tracking-wider text-gray-700">Current price</p>
-              <p class="text-2xl font-bold text-gray-900">$<%= most_card.fetch_price %></p>
+              <p class="text-2xl font-bold text-gray-900"><%= number_to_currency(most_card.fetch_price, precision: 2) %></p>
             </div>
           <% else %>
             <div class="flex min-h-80 items-center justify-center text-center text-sm text-gray-700">
@@ -78,17 +78,17 @@
         <article class="flex min-w-0 basis-full flex-shrink-0 flex-grow-0 select-none flex-col justify-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-5 shadow-lg ring-1 ring-white/5 backdrop-blur">
           <div class="rounded-xl border border-white/20 bg-white/10 p-4 shadow-md backdrop-blur">
             <p class="text-xs font-bold uppercase tracking-wider text-gray-700">Total card value</p>
-            <p class="text-3xl font-bold text-gray-900">$<%= current_user.total_card_value %></p>
+            <p class="text-3xl font-bold text-gray-900"><%= number_to_currency(current_user.total_card_value, precision: 2) %></p>
           </div>
           <div class="rounded-xl border border-white/20 bg-white/10 p-4 shadow-md backdrop-blur">
             <p class="text-xs font-bold uppercase tracking-wider text-gray-700">Average price</p>
-            <p class="text-3xl font-bold text-gray-900">$<%= current_user.average_card_price&.round(2) %></p>
+            <p class="text-3xl font-bold text-gray-900"><%= number_to_currency(current_user.average_card_price, precision: 2) %></p>
           </div>
           <% if most_set&.dig(:set_name) %>
             <div class="rounded-xl border border-white/20 bg-white/10 p-4 shadow-md backdrop-blur">
               <p class="text-xs font-bold uppercase tracking-wider text-gray-700">Top set</p>
               <p class="truncate text-base font-bold italic text-gray-900"><%= most_set[:set_name] %></p>
-              <p class="mt-1 text-2xl font-bold text-gray-900">$<%= most_set[:total] %></p>
+              <p class="mt-1 text-2xl font-bold text-gray-900"><%= number_to_currency(most_set[:total], precision: 2) %></p>
             </div>
           <% end %>
         </article>

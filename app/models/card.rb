@@ -34,7 +34,7 @@ class Card < ApplicationRecord
       raw_keys = pricing_hash.keys.select { |k| k.downcase.include?("raw") }
       @condition_options = raw_keys + grading_keys
     else
-      @condition_options = ["Raw"] + (1..10).flat_map { |n| ["CGC #{n}.0", "PSA #{n}.0"] }
+      @condition_options = [ "Raw" ] + (1..10).flat_map { |n| [ "CGC #{n}.0", "PSA #{n}.0" ] }
     end
   end
 

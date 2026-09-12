@@ -24,15 +24,15 @@ class CardsController < ApplicationController
       raw_keys = pricing_hash.keys.select { |k| k.downcase.include?("raw") }
       @condition_options = raw_keys + grading_keys
     else
-      @condition_options = ["Raw"] + (1..10).flat_map { |n| [ "CGC #{n}.0", "PSA #{n}.0" ] }
+      @condition_options = [ "Raw" ] + (1..10).flat_map { |n| [ "CGC #{n}.0", "PSA #{n}.0" ] }
     end
   end
 
-  #def retry_with_scrydex
+  # def retry_with_scrydex
   #  @card = Card.find(params[:id])
   #  # Changes and checks
   #  # ScrydexVisionIdentificationJob.perform_later(@card.id)
-  #end
+  # end
 
   def search
      @holo_options = [
@@ -52,35 +52,34 @@ class CardsController < ApplicationController
       status: :unprocessable_entity
     end
 
-    @card = Card.create!(
-      status: "processing",
+    @search_attempt = current_user.search_attempts.create!(
+      status: "pending",
       holo_type: params.dig(:search, :holo_type)
     )
 
-    @card.image.attach(uploaded_image)
+    @search_attempt.image.attach(uploaded_image)
 
-    IdentifyCardJob.perform_later(@card.id,
-    current_user.id)
+    IdentifyCardJob.perform_later(@search_attempt.id, current_user.id)
 
-    redirect_to @card
+    redirect_to @search_attempt
   end
- #   _________________________________________________________________________________
- #    @holo_options = [ "Standard", "Holo (The Pokemon artwork is shiny)", "Reverse Holo (The part outside the artwork is shiny)" ]
- # 
- #    if params[:search]  && params[:search][:image].present?
- # 
- #      @card = Card.create!(
- #        status: "processing",
- #        holo_type: params[:search][:holo_type],
- #      ) 
- # 
- #      @card.image.attach(params[:search][:image])
- #
- #      upload = Base64.strict_encode64(params[:search][:image].read)
- #      IdentifyCardJob.perform_later(@card.id, upload, current_user.id)
- #      redirect_to @card
- #    end
- #  end
+  #   _________________________________________________________________________________
+  #    @holo_options = [ "Standard", "Holo (The Pokemon artwork is shiny)", "Reverse Holo (The part outside the artwork is shiny)" ]
+  #
+  #    if params[:search]  && params[:search][:image].present?
+  #
+  #      @card = Card.create!(
+  #        status: "processing",
+  #        holo_type: params[:search][:holo_type],
+  #      )
+  #
+  #      @card.image.attach(params[:search][:image])
+  #
+  #      upload = Base64.strict_encode64(params[:search][:image].read)
+  #      IdentifyCardJob.perform_later(@card.id, upload, current_user.id)
+  #      redirect_to @card
+  #    end
+  #  end
 
   def new
     @card = Card.new

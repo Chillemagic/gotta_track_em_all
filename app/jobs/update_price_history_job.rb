@@ -1,9 +1,16 @@
 class UpdatePriceHistoryJob < ApplicationJob
+  queue_as :default
+
+  class PricingError < StandardError; end
+  class PricingRequestError < PricingError; end
+  class PricingDataNotFoundError < PricingError; end
+  class RawPriceNotFoundError < PricingError; end
+
+  retry_on Net::ReadTimeout, wait: :exponentially_longer, attempts: 3
+  retry_on HTTParty::Error, PricingRequestError, wait: 5.minutes, attempts: 3
 
   def perform(card_id)
-
     card = Card.find(card_id)
-
 
     # Check if a price history has been pulled in the last 24 hours
     last_update = card.price_histories.order(recorded_at: :desc).first
@@ -16,27 +23,34 @@ class UpdatePriceHistoryJob < ApplicationJob
       "https://api.scrydex.com/pokemon/v1/cards",
       timeout: 60,
       headers: { "X-Api-Key" => ENV["SCRYDEX_API_KEY"], "X-Team-ID" => "gtea" },
-      query: { id: card.api_tcg_id, include: "prices" }
+      query: { q: "id:#{card.api_tcg_id}", include: "prices" }
     )
 
     unless pricing_response.success?
-      Rails.logger.error("Scrydex pricing failed: #{pricing_response.code}")
-      return
+      raise PricingRequestError,
+            "Scrydex pricing request failed with HTTP #{pricing_response.code}"
     end
 
     pricing_data = pricing_response.parsed_response.dig("data", 0)
-    return { error: "No Scrydex pricing data found" } if pricing_data.nil?
+    if pricing_data.nil?
+      raise PricingDataNotFoundError,
+            "No Scrydex pricing data found for card #{card_id}"
+    end
 
-    variants = pricing_data.fetch("variants", [])
+    variants = Array(pricing_data["variants"])
     pricing = build_pricing_data(variants)
     selected_variant = find_variant_for(card, variants)
     raw_price = preferred_raw_price(selected_variant) || preferred_raw_price_from(variants)
 
-    return { error: "No raw price found" } if raw_price.nil?
+    if raw_price.nil?
+      raise RawPriceNotFoundError,
+            "No raw price found for card #{card_id}"
+    end
 
     pricing["Raw"] = normalized_price(raw_price)
-    psa_pricing = graded_pricing(variants, "PSA")
-    cgc_pricing = graded_pricing(variants, "CGC")
+    psa_pricing = graded_pricing([ selected_variant ].compact, "PSA")
+    cgc_pricing = graded_pricing([ selected_variant ].compact, "CGC")
+    pricing.merge!(psa_pricing).merge!(cgc_pricing)
 
     card.price_histories.create!(
       pokedata_id: pricing_data["id"],
@@ -53,14 +67,16 @@ class UpdatePriceHistoryJob < ApplicationJob
     )
 
     Rails.logger.info("Successfully created price history for card #{card.id}")
-
-  rescue ActiveRecord::RecordNotFound
-    Rails.logger.error("Card #{card_id} not found")
-  rescue HTTParty::Error => e
-    Rails.logger.error("HTTP error fetching pricing for card #{card_id}: #{e.message}")
-    raise
+  rescue PricingDataNotFoundError, RawPriceNotFoundError => e
+    Rails.logger.warn(
+      "Pricing unavailable for card #{card_id}: #{e.class.name}: #{e.message}"
+    )
+  rescue ActiveRecord::RecordNotFound => e
+    Rails.logger.error("Card #{card_id} not found: #{e.message}")
   rescue StandardError => e
-    Rails.logger.error("Failed to fetch pricing for card #{card_id}: #{e.message}")
+    Rails.logger.error(
+      "Failed to fetch pricing for card #{card_id}: #{e.class.name}: #{e.message}"
+    )
     raise
   end
 
@@ -68,10 +84,19 @@ class UpdatePriceHistoryJob < ApplicationJob
 
   def build_pricing_data(variants)
     variants.each_with_object({}) do |variant, result|
-      variant.fetch("prices", []).each do |price|
+      Array(variant["prices"]).each do |price|
         next if price_value(price).nil?
 
-        key = "#{variant['name']} Raw #{price['condition']}"
+        label = case price["type"]
+        when "raw" then "Raw #{price['condition']}"
+        when "graded"
+          next if price["company"].blank? || price["grade"].blank?
+
+          graded_label(price)
+        else next
+        end
+        key = "#{variant['name']} #{label}"
+        key += " #{price['currency']}" if price["type"] == "graded" && price["currency"].present?
         result[key] = normalized_price(price).merge("variant" => variant["name"])
       end
     end
@@ -79,10 +104,10 @@ class UpdatePriceHistoryJob < ApplicationJob
 
   def find_variant_for(card, variants)
     variant_name = case card.holo_type
-                   when /reverse/i then "reverseHolofoil"
-                   when /holo/i then "holofoil"
-                   else "normal"
-                   end
+    when /reverse/i then "reverseHolofoil"
+    when /holo/i then "holofoil"
+    else "normal"
+    end
 
     variants.find { |variant| variant["name"].casecmp?(variant_name) } || variants.first
   end
@@ -90,7 +115,7 @@ class UpdatePriceHistoryJob < ApplicationJob
   def preferred_raw_price(variant)
     return if variant.nil?
 
-    prices = variant.fetch("prices", []).select { |price| price["type"] == "raw" }
+    prices = Array(variant["prices"]).select { |price| price["type"] == "raw" }
     prices.find { |price| price["condition"] == "NM" && price_value(price).present? } ||
       prices.find { |price| price_value(price).present? }
   end
@@ -101,14 +126,22 @@ class UpdatePriceHistoryJob < ApplicationJob
 
   def graded_pricing(variants, company)
     variants.each_with_object({}) do |variant, result|
-      variant.fetch("prices", []).each do |price|
-        next unless price["company"]&.casecmp?(company) && price["grade"].present?
+      Array(variant["prices"]).each do |price|
+        next unless price["type"] == "graded" && price["company"]&.casecmp?(company) && price["grade"].present?
         next if price_value(price).nil?
 
-        key = "#{company} #{price['grade']}"
+        key = graded_label(price.merge("company" => company))
         result[key] = normalized_price(price).merge("variant" => variant["name"])
       end
     end
+  end
+
+  def graded_label(price)
+    label = "#{price['company']} #{price['grade']}"
+    label += " Perfect" if price["is_perfect"]
+    label += " Signed" if price["is_signed"]
+    label += " Error" if price["is_error"]
+    label
   end
 
   def normalized_price(price)
