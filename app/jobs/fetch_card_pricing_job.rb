@@ -8,11 +8,9 @@ class FetchCardPricingJob < ApplicationJob
     # 1. Find Card from existing card db
     Rails.logger.info("Running FetchCardPricingJob for card #{card_id}")
     card = Card.find(card_id)
-    latest_price = Card.price_histories.last
+    latest_price = card.price_histories.order(recorded_at: :desc, id: :desc).first
 
-    if latest_price&.recorded_at > 24.hours.ago
-      new_history = card.price_histories.create!(status: "fetching")
-
+    if latest_price.nil? || latest_price.recorded_at.nil? || latest_price.recorded_at <= 24.hours.ago
       pricing_response = HTTParty.get(
         "https://api.scrydex.com/pokemon/v1/cards",
         timeout: 60,
@@ -20,13 +18,11 @@ class FetchCardPricingJob < ApplicationJob
         query: { q: "id:#{card.api_tcg_id}", include: "prices" }
       )
       unless pricing_response.success?
-        new_history.update(status: "failed", error: "#{pricing_response.code}")
         return Rails.logger.error("Scrydex pricing failed: #{pricing_response.code}")
       end
 
       pricing_data = pricing_response.parsed_response.dig("data", 0)
       if pricing_data.nil?
-        new_history.update!(status: "failed", error: "No Scrydex pricing data found")
         return { error: "No Scrydex pricing data found" }
       end
 
@@ -36,7 +32,6 @@ class FetchCardPricingJob < ApplicationJob
       raw_price = preferred_raw_price(selected_variant) || preferred_raw_price_from(variants)
 
       if raw_price.nil?
-        new_history.update!(status: "unavailable", error: "No raw price found")
         return { error: "No raw price found" }
       end
 
@@ -55,7 +50,7 @@ class FetchCardPricingJob < ApplicationJob
         release_date: PokedataParser.parse_release_date(pricing_data.dig("expansion", "release_date"))
       )
 
-      new_history.update!(
+      card.price_histories.create!(
         pokedata_id: pricing_data["id"],
         card_name: pricing_data["name"],
         card_number: pricing_data["printed_number"],
@@ -76,6 +71,8 @@ class FetchCardPricingJob < ApplicationJob
       latest_price.update!(status: "matched")
       Rails.logger.info("Most recent price_history is less than 24 hours old, using price_history: #{latest_price.id} for card: #{card.name}, #{card.card_number}")
     end
+
+    SearchAttempt.where(card_id: card.id).find_each(&:broadcast_pricing)
 
   rescue ActiveRecord::RecordNotFound
     Rails.logger.error("Card #{card_id} not found")

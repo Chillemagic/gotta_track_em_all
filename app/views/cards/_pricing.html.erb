@@ -1,0 +1,47 @@
+<% latest_price = card&.price_histories&.order(recorded_at: :desc, id: :desc)&.first %>
+
+<div
+  id="<%= dom_id(search_attempt, :pricing) %>"
+  class="mt-6 border-t border-white/10 pt-6"
+>
+  <h3 class="text-lg font-semibold text-white">Latest prices</h3>
+
+  <% if latest_price.present? %>
+    <p class="mt-1 text-xs text-gray-400">
+      <%= latest_price.recorded_at || latest_price.created_at.to_date %>
+      <% if latest_price.source.present? %>
+        ·
+        <%= latest_price.source %>
+      <% end %>
+    </p>
+
+    <% if latest_price.pokedata_raw_price.present? %>
+      <div class="mt-4 rounded-lg bg-black/20 p-4 ring-1 ring-white/10">
+        <p class="text-sm text-gray-300">Raw market value</p>
+        <p class="mt-1 text-3xl font-bold text-white">
+          <%= number_to_currency(latest_price.pokedata_raw_price) %>
+        </p>
+      </div>
+    <% end %>
+
+    <% available_prices =
+      latest_price.pricing_data.to_h.select do |_label, details|
+        details.is_a?(Hash) && details["value"].present?
+      end %>
+
+    <% if available_prices.any? %>
+      <ul class="mt-4 max-h-48 divide-y divide-white/10 overflow-y-auto pr-1 text-sm">
+        <% available_prices.each do |label, details| %>
+          <li class="flex justify-between gap-4 py-2">
+            <span class="text-gray-300"><%= label %></span>
+            <span class="font-semibold text-white"><%= number_to_currency(details["value"]) %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% else %>
+    <p class="mt-2 text-sm text-gray-300">
+      Pricing is not available for this card yet.
+    </p>
+  <% end %>
+</div>

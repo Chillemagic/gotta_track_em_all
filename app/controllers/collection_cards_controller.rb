@@ -42,6 +42,13 @@ class CollectionCardsController < ApplicationController
 
   def create
     @search_attempt = current_user.search_attempts.find(params[:search_attempt_id])
+
+    if collection_card_params[:collection_id].blank? || collection_card_params[:condition].blank?
+      redirect_to search_attempt_path(@search_attempt),
+                  alert: "Please select a collection and card condition."
+      return
+    end
+
     collection = current_user.collections.find(collection_card_params[:collection_id])
 
     @collection_card = collection.collection_cards.new(

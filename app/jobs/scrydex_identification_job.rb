@@ -75,7 +75,6 @@ class ScrydexIdentificationJob < ApplicationJob
     search_attempt.update!(
       identified_name: card_info["name"],
       identified_number: card_number,
-      identified_rarity: card_info["rarity"],
       identified_moves: Array(card_info["attacks"]).filter_map { |attack| attack["name"] }.join(", "),
       identified_set_name: set_name,
       identified_language: card_info["language"] || card_info.dig("expansion", "language"),
@@ -103,7 +102,6 @@ class ScrydexIdentificationJob < ApplicationJob
       name: card_info["name"],
       card_number: card_number,
       artist: card_info["artist"],
-      rarity: card_info["rarity"],
       image_url: front_image&.dig("large"),
       pokemon_types: card_info["types"]&.join(", "),
       abilities: card_info["abilities"] || [],

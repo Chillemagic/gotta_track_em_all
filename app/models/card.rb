@@ -22,7 +22,7 @@ class Card < ApplicationRecord
   enum :api_tcg_status, { pending: "pending", incomplete: "incomplete", complete: "complete" }, prefix: true
   enum :tcg_dex_status, { pending: "pending", incomplete: "incomplete", complete: "complete" }, prefix: true
 
-  ESSENTIAL_FIELDS = %i[artist image_url rarity set_name].freeze
+  ESSENTIAL_FIELDS = %i[artist image_url set_name].freeze
 
   def condition_options
     pricing_history = @card.price_histories.last
