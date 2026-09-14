@@ -54,7 +54,7 @@ class FetchCardInfoJobTest < ActiveJob::TestCase
     attempt = SearchAttempt.create!(user: user, status: "creating_card",
       identified_name: "Ludicolo", identified_number: "2/100", identified_set_name: "EX Deoxys")
     metadata = card_response(id: "ex8-2", number: "2/100", set_name: "EX Deoxys").merge(
-      "artist" => "Test Artist", "rarity" => "Rare Holo", "types" => [ "Water", "Grass" ],
+      "artist" => "Test Artist", "types" => [ "Water", "Grass" ],
       "images" => [ { "type" => "back", "large" => "https://example.com/back.png" },
         { "type" => "front", "large" => "https://example.com/front.png" } ],
       "expansion" => { "name" => "EX Deoxys", "release_date" => "2005/02/14", "language" => "English" }

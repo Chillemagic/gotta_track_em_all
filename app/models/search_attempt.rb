@@ -22,4 +22,20 @@ class SearchAttempt < ApplicationRecord
     creating_card: "creating_card",
     failed: "failed"
   }, prefix: true
+
+  def broadcast_pricing
+    broadcast_replace_to(
+      "search_attempt_#{id}",
+      target: ActionView::RecordIdentifier.dom_id(self, :pricing),
+      partial: "cards/pricing",
+      locals: { card: card, search_attempt: self }
+    )
+
+    broadcast_replace_to(
+      "search_attempt_#{id}",
+      target: ActionView::RecordIdentifier.dom_id(self, :condition_select),
+      partial: "search_attempts/condition_select",
+      locals: { card: card, search_attempt: self }
+    )
+  end
 end

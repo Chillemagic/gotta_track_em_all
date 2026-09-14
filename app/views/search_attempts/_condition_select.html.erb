@@ -1,0 +1,23 @@
+<% latest_price = card&.price_histories&.order(recorded_at: :desc, id: :desc)&.first %>
+<% pricing_keys = latest_price&.pricing_data.to_h.keys %>
+<% grading_keys = pricing_keys.grep(/\A(?:PSA|CGC)\s*\d+(?:\.\d+)?\z/) %>
+<% raw_keys = pricing_keys.select { |key| key.to_s.downcase.include?("raw") } %>
+<% condition_options = (["Raw"] + raw_keys + grading_keys).uniq %>
+
+<div id="<%= dom_id(search_attempt, :condition_select) %>" class="select optional collection_card_condition">
+  <%= label_tag :collection_card_condition, class: "text-white" do %>
+    Condition <abbr title="required">*</abbr>
+  <% end %>
+  <%= select_tag "collection_card[condition]",
+  options_for_select(
+    condition_options.map { |condition|
+      [collection_card_condition_label(condition), condition]
+    },
+    "Raw",
+  ),
+  id: :collection_card_condition,
+  prompt: "Select a condition",
+  required: true,
+  class:
+    "w-full rounded-md border-gray-300 bg-white px-3 py-1.5 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+</div>

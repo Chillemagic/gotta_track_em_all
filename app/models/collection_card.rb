@@ -3,6 +3,8 @@ class CollectionCard < ApplicationRecord
   belongs_to :card
   has_many :price_histories, through: :card
 
+  validates :condition, presence: true
+
   after_initialize :set_default_condition, if: :new_record?
 
   def fetch_price

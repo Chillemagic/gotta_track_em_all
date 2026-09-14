@@ -84,7 +84,7 @@ class FetchCardInfoJob < ApplicationJob
       name: card_info["name"],
       card_number: card_info["printed_number"].presence || card_info["number"],
       artist: card_info["artist"],
-      rarity: card_info["rarity"],
+      # rarity: card_info["rarity"],
       image_url: front_image&.dig("large"),
       pokemon_types: card_info["types"]&.join(", "),
       abilities: card_info["abilities"] || [],

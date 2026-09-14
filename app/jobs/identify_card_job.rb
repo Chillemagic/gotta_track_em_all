@@ -55,7 +55,6 @@ class IdentifyCardJob < ApplicationJob
         identified_name: card_info["name"],
         identified_number: card_info["number"],
         identified_set_name: card_info["set_name"],
-        identified_rarity: card_info["rarity"],
         identified_moves: card_info["first_card_ability_or_attack"],
         identified_language: card_info["language"],
         identified_staff: card_info["staff"]
@@ -69,7 +68,6 @@ class IdentifyCardJob < ApplicationJob
       identified_set_name: card_info["set_name"],
       identified_number: card_info["number"],
       identified_moves: card_info["first_card_ability_or_attack"],
-      identified_rarity: card_info["rarity"],
       status: "creating_card"
       )
 
@@ -96,18 +94,16 @@ class IdentifyCardJob < ApplicationJob
             content: [
               { type: "text",
                 text: "Identify this Pokemon card be sure to identify if the word 'staff' can be found on the card and please select
-                      from the sets provided. If a gold star is found in the card name near the top return the rarity as 'Rare Holo Star'
-                      otherwise leave the ratiy empty. Identify the card number and make sure to ommit any leading zero for example don't
+                      from the sets provided. Identify the card number and make sure to ommit any leading zero for example don't
                       do 086/096 instead use 86/96. Pay attention to any name suffix for example Charizard-GX and be sure to include
                       it in the name. If a card effect or attack is present be sure to include only the title of the first effect or
                       attack that appears. Some attacks and effects have descripions that I don't want returned. I.e: Card has
                       'Rest: Recover 4hp at the cost of 1 energy. This card is immobilized for one turn after resting' would only yield
-                      'Rest'. Return only the card name, card number, card set, first card effect/attack title, language, rarity(only return if gold star is present)
+                      'Rest'. Return only the card name, card number, card set, first card effect/attack title, language,
                       and if staff appears on the card in a Json that can be accessed with a key,value pair. Here is the JSON example: {
                       'id'=> 'base1-4',
                       'name' => 'Charizard',
                       'set_name' => 'Pokémon',
-                      'rarity' => 'only return rarity if gold star is found!',
                       'number' => '4/102',
                       'first_card_ability_or_attack' => 'Solar Wind'
                       'language' => 'English',
