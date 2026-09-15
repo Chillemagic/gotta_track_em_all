@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_many :cards, through: :collection_cards
   has_many :search_attempts, dependent: :destroy
   has_one_attached :avatar
+  before_validation :create_first_collection, on: :create
+  validates :collections, presence: true
   # Trainer type
   TRAINER_TYPES = %w[pokescientist pokemaniac]
 
@@ -80,5 +82,17 @@ class User < ApplicationRecord
 
   def favourites
     collection_cards.where(favourite: true)
+  end
+
+  private
+
+  def create_first_collection
+    return if collections.any?
+
+      collections.build(
+        name: "First Collection",
+        description: "Feel free to add cards to this collection or create another one
+                      of your own. You'll need a collection to add cards to",
+      )
   end
 end

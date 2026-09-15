@@ -21,6 +21,9 @@ class CollectionsController < ApplicationController
     @collection = current_user.collections.new(collection_params)
     @card = Card.find_by(id: params.dig(:collection, :card_id))
     # get card so Turbo Stream can render dropdown
+    if datetime.now - current_user.created_at > 1.minutes
+      redirect_to root_path
+    end
 
     if @collection.save
       respond_to do |format|
@@ -51,8 +54,16 @@ class CollectionsController < ApplicationController
   end
 
   def destroy
+    # Check if user has more than one collection
+    user = @collection.user
+    if user.collections.count <= 1
+      redirect_to collections_path,
+        alert: "You must have at least one Collection"
+      return
+    end
+
     @collection.destroy
-    redirect_to collections_path
+    redirect_to collections_path, notice: "Collection deleted"
   end
 
   private
