@@ -1,4 +1,4 @@
-<main class="isolate">
+<main class="isolate overflow-hidden">
   <!-- Hero section -->
   <div class="relative pt-10">
     <!-- Background-->
@@ -9,91 +9,175 @@
     </div>
 
     <!-- Sign-Up Card -->
-    <div class="py-1 sm:py-8 lg:pb-24">
+    <div class="py-1 sm:py-8 lg:pb-24 mb-6">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-md bg-white/30 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 shadow-2xl">
 
           <h1 class="text-3xl font-bold text-gray-900 mb-2">Sign Up</h1>
           <h2 class="text-lg text-gray-900 mb-6">Create your trainer profile</h2>
 
+          <div
+            data-controller="scroll-area"
+            data-scroll-area-target="root"
+            data-action="mouseenter->scroll-area#onRootMouseEnter mouseleave->scroll-area#onRootMouseLeave"
+            class="relative w-full pr-4"
+          >
+            <div
+              data-scroll-area-target="viewport"
+              data-action="scroll->scroll-area#onViewportScroll"
+              class="h-[min(32rem,calc(100dvh-14rem))] min-h-0 overflow-y-auto overscroll-contain pr-2"
+              tabindex="0"
+              role="region"
+              aria-label="Sign-up form"
+            >
           <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
             <%= f.error_notification %>
 
-            <div class="space-y-4">
-              <!-- First name -->
-              <%= f.input :first_name,
-                input_html: {
-                  class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                },
-                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+            <div data-controller="accordion">
+              <section data-accordion-target="item" data-state="open" class="border-b border-neutral-200 pb-2 dark:border-neutral-700">
+                <h3>
+                  <button
+                    type="button"
+                    data-accordion-target="trigger"
+                    data-action="click->accordion#toggle"
+                    aria-controls="sign-up-account-details-content"
+                    aria-expanded="true"
+                    data-state="open"
+                    id="sign-up-account-details-trigger"
+                    class="flex w-full items-center justify-between px-2 py-2 text-left font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2"
+                  >
+                    <span>Account Details</span>
+                    <svg data-accordion-target="icon" class="size-4 shrink-0 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </h3>
 
-              <!-- Last Name -->
-              <%= f.input :last_name,
-                input_html: {
-                  class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                },
-                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+                <div
+                  data-accordion-target="content"
+                  data-state="open"
+                  id="sign-up-account-details-content"
+                  role="region"
+                  aria-labelledby="sign-up-account-details-trigger"
+                  class="grid transition-[grid-template-rows] duration-300 ease-in-out data-[state=open]:grid-rows-[1fr] data-[state=closed]:grid-rows-[0fr]"
+                >
+                  <div class="min-h-0 overflow-hidden">
+                    <div class="space-y-4 px-2 pb-5 opacity-0 transition-opacity duration-300 data-[state=open]:opacity-100" data-state="open">
+                      <!-- First name -->
+                      <%= f.input :first_name,
+                        input_html: {
+                          class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        },
+                        label_html: { class: "block text-sm font-medium text-gray-700" } %>
 
-              <!-- Username with availability check -->
-              <div class="relative" data-controller="username-check">
-                <%= f.input :username,
-                  input_html: {
-                    class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                    data: {
-                      username_check_target: "input",
-                      action: "input->username-check#debouncedCheck"
-                    }
-                  },
-                  label_html: { class: "block text-sm font-medium text-gray-700" } %>
-                <div data-username-check-target="feedback" class="absolute left-0 top-full mt-1 z-10"></div>
-              </div>
+                      <!-- Last Name -->
+                      <%= f.input :last_name,
+                        input_html: {
+                          class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        },
+                        label_html: { class: "block text-sm font-medium text-gray-700" } %>
 
-              <!-- Date of Birth -->
-              <%= f.input :date_of_birth,
-                as: :date,
-                order: %i[day month year],
-                start_year: Date.today.year - 100,
-                end_year: Date.today.year,
-                default: Date.new(2000, 1, 1),
-                input_html: {
-                  class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                },
-                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+                      <!-- Username with availability check -->
+                      <div class="relative" data-controller="username-check">
+                        <%= f.input :username,
+                          input_html: {
+                            class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                            data: {
+                              username_check_target: "input",
+                              action: "input->username-check#debouncedCheck"
+                            }
+                          },
+                          label_html: { class: "block text-sm font-medium text-gray-700" } %>
+                        <div data-username-check-target="feedback" class="absolute left-0 top-full mt-1 z-10"></div>
+                      </div>
 
-              <!-- Email -->
-              <%= f.input :email,
-                input_html: {
-                  class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                },
-                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+                      <!-- Email -->
+                      <%= f.input :email,
+                        input_html: {
+                          class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        },
+                        label_html: { class: "block text-sm font-medium text-gray-700" } %>
 
-              <!-- Password -->
-              <%= f.input :password,
-                input_html: {
-                  class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                },
-                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+                      <!-- Password -->
+                      <%= f.input :password,
+                        input_html: {
+                          class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        },
+                        label_html: { class: "block text-sm font-medium text-gray-700" } %>
 
-              <!-- Password Confirmation -->
-              <%= f.input :password_confirmation,
-                input_html: {
-                  class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                },
-                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+                      <!-- Password Confirmation -->
+                      <%= f.input :password_confirmation,
+                        input_html: {
+                          class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        },
+                        label_html: { class: "block text-sm font-medium text-gray-700" } %>
 
-              <!-- Trainer Type -->
-              <%= f.input :trainer_type,
-                as: :select,
-                collection: [
-                  ["PokeScientist: Data-focussed", "pokescientist"],
-                  ["PokeManiac: Collector-focussed", "pokemaniac"]
-                ],
-                prompt: "Select your trainer type",
-                input_html: {
-                  class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                },
-                label_html: { class: "block text-sm font-medium text-gray-700" } %>
+                      <!-- Trainer Type -->
+                      <%= f.input :trainer_type,
+                        as: :select,
+                        collection: [
+                          ["PokeScientist: Data-focussed", "pokescientist"],
+                          ["PokeManiac: Collector-focussed", "pokemaniac"]
+                        ],
+                        prompt: "Select your trainer type",
+                        input_html: {
+                          class: "w-full rounded-md border-gray-300 py-1.5 px-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        },
+                        label_html: { class: "block text-sm font-medium text-gray-700" } %>
 
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section data-accordion-target="item" data-state="closed" class="border-b border-neutral-200 pb-2 dark:border-neutral-700">
+                <h3>
+                  <button
+                    type="button"
+                    data-accordion-target="trigger"
+                    data-action="click->accordion#toggle"
+                    aria-controls="sign-up-avatar-content"
+                    aria-expanded="false"
+                    data-state="closed"
+                    id="sign-up-avatar-trigger"
+                    class="flex w-full items-center justify-between px-2 py-2 text-left font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2"
+                  >
+                    <span>Choose an avatar</span>
+                    <svg data-accordion-target="icon" class="size-4 shrink-0 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </h3>
+
+                <div
+                  data-accordion-target="content"
+                  data-state="closed"
+                  id="sign-up-avatar-content"
+                  hidden
+                  role="region"
+                  aria-labelledby="sign-up-avatar-trigger"
+                  class="grid transition-[grid-template-rows] duration-300 ease-in-out data-[state=open]:grid-rows-[1fr] data-[state=closed]:grid-rows-[0fr]"
+                >
+                  <div class="min-h-0 overflow-hidden">
+                    <div class="space-y-4 px-2 pb-5 opacity-0 transition-opacity duration-300 data-[state=open]:opacity-100" data-state="closed">
+                      <div class="mt-2 grid grid-cols-3 gap-4 sm:grid-cols-4">
+                        <% ["beauty_avatar.png", "bug_catcher_avatar.png", "black_belt_avatar.png", "fisherman_avatar.png", "hiker_avatar.png", "pokefan_f_avatar.png", "pokefan_m_avatar.png", "pokemaniac_avatar.png", "rocket_grunt_f_avatar.png", "rocket_grunt_m_avatar.png", "scientist_f_avatar.png", "scientist_m_avatar.png"].each do |icon| %>
+                          <% avatar_label = icon.delete_suffix("_avatar.png").humanize %>
+                          <label class="block cursor-pointer text-center">
+                            <%= f.radio_button :preset_avatar, icon, class: "peer sr-only", aria: { label: avatar_label } %>
+                            <%= image_tag icon,
+                              alt: avatar_label,
+                              class: "mx-auto h-16 w-16 rounded-full border-2 border-transparent object-cover shadow-sm transition hover:scale-105 peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-300 peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500" %>
+                          </label>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div class="mt-4">
               <!-- Submit Button -->
               <div class="pt-2">
                 <%= render partial: "users/sign_up_button",
@@ -101,6 +185,21 @@
               </div>
             </div>
           <% end %>
+            </div>
+
+            <div
+              data-scroll-area-target="scrollbar"
+              data-scroll-area-orientation-value="vertical"
+              data-action="click->scroll-area#onScrollbarClick"
+              class="absolute inset-y-1 right-0 flex w-1.5 rounded-full bg-black/5 backdrop-blur-sm opacity-0 transition-opacity duration-150 delay-300 pointer-events-none data-[hovering]:opacity-100 data-[hovering]:duration-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto data-[scrolling]:opacity-100 data-[scrolling]:duration-100 data-[scrolling]:delay-0 data-[scrolling]:pointer-events-auto data-[visible=false]:hidden dark:bg-white/10"
+            >
+              <div
+                data-scroll-area-target="thumb"
+                data-action="mousedown->scroll-area#onThumbMouseDown"
+                class="relative w-full rounded-full bg-neutral-500 transition-opacity duration-100 dark:bg-neutral-400"
+              ></div>
+            </div>
+          </div>
 
           <div class="mt-2 text-sm text-gray-600 text-center">
             <%= link_to "Already have an account? Log in",

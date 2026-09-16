@@ -29,6 +29,10 @@ export default class extends Controller {
 
     if (this.hasViewportTarget) {
       this.resizeObserver.observe(this.viewportTarget);
+      // Accordion panels can resize the content without resizing the viewport.
+      if (this.viewportTarget.firstElementChild) {
+        this.resizeObserver.observe(this.viewportTarget.firstElementChild);
+      }
     }
     if (this.hasRootTarget) {
       this.resizeObserver.observe(this.rootTarget);
@@ -42,6 +46,8 @@ export default class extends Controller {
       this.mutationObserver.observe(this.viewportTarget, {
         childList: true,
         subtree: true,
+        attributes: true,
+        attributeFilter: ["hidden", "data-state", "class"],
       });
     }
 
@@ -333,8 +339,9 @@ export default class extends Controller {
     if (!this.hasScrollbarTarget) return;
 
     this.scrollbarTargets.forEach((scrollbar) => {
-      this.updateScrollbarPosition(scrollbar);
+      // Reveal an overflowing track before measuring its dimensions.
       this.updateScrollbarVisibility(scrollbar);
+      this.updateScrollbarPosition(scrollbar);
     });
   }
 

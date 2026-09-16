@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :search_attempts, dependent: :destroy
   has_one_attached :avatar
   before_validation :create_first_collection, on: :create
+  before_validation :assign_default_avatar, on: :create
   validates :collections, presence: true
   # Trainer type
   TRAINER_TYPES = %w[pokescientist pokemaniac]
@@ -94,5 +95,15 @@ class User < ApplicationRecord
         description: "Feel free to add cards to this collection or create another one
                       of your own. You'll need a collection to add cards to",
       )
+  end
+
+  def assign_default_avatar
+    nil if preset_avatar.present? || avatar.attached?
+
+    self.preset_avatar =
+      case self.trainer_type
+      when "pokemaniac" then "pokemaniac_avatar.png"
+      when "pokescientist" then "scientist_m_avatar.png"
+      end
   end
 end
