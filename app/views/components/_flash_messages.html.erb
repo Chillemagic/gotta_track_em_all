@@ -1,13 +1,13 @@
 <% if notice.present? || alert.present? %>
   <div class="mx-auto max-w-4xl space-y-4 px-4 pt-6 sm:px-6 lg:px-8">
     <% if notice.present? %>
-      <div role="status" class="rounded-xl border border-emerald-300/30 bg-emerald-500/15 px-5 py-4 text-emerald-100">
+      <div role="status" class="rounded-xl border border-emerald-300/30 bg-emerald-500/80 px-5 py-4 text-emerald-100">
         <%= notice %>
       </div>
     <% end %>
 
     <% if alert.present? %>
-      <div role="alert" class="rounded-xl border border-red-300/30 bg-red-500/15 px-5 py-4 text-red-100">
+      <div role="alert" class="rounded-xl border border-red-300/30 bg-red-500/80 px-5 py-4 text-red-100">
         <%= alert %>
       </div>
     <% end %>
