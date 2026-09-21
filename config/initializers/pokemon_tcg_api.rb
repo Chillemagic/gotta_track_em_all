@@ -1,7 +1,7 @@
 # require "pokemon_tcg_sdk"
 
 # Pokemon.configure do |config|
-#   config.api_key = ENV.fetch("POKEMON_TCG_API_KEY")
+#   config.api_key = Rails.application.credentials.dig(:pokemon_tcg, :api_key)
 # end
 
 # module Pokemon

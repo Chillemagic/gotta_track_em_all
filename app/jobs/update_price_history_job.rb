@@ -22,7 +22,7 @@ class UpdatePriceHistoryJob < ApplicationJob
     pricing_response = HTTParty.get(
       "https://api.scrydex.com/pokemon/v1/cards",
       timeout: 60,
-      headers: { "X-Api-Key" => ENV["SCRYDEX_API_KEY"], "X-Team-ID" => "gtea" },
+      headers: { "X-Api-Key" => Rails.application.credentials.dig(:scrydex, :api_key), "X-Team-ID" => "gtea" },
       query: { q: "id:#{card.api_tcg_id}", include: "prices" }
     )
 

@@ -138,7 +138,7 @@ class ScrydexIdentificationJob < ApplicationJob
 
   def headers
     {
-      "X-Api-Key" => ENV["SCRYDEX_API_KEY"],
+      "X-Api-Key" => Rails.application.credentials.dig(:scrydex, :api_key),
       "X-Team-ID" => "gtea"
     }
   end
