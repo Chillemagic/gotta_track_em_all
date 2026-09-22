@@ -18,7 +18,8 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  url: <%= ENV['DATABASE_URL'] %>
+  # Preserve local URL configuration without sharing one URL across production databases.
+  url: <%= ENV['DATABASE_URL'] unless Rails.env.production? %>
 # development:
 #   <<: *default
 #   database: gotta_track_em_all_development
@@ -110,8 +111,13 @@ production:
   primary: &primary_production
     <<: *default
     database: gotta_track_em_all_production
-    username: gotta_track_em_all
-    password: <%= ENV["GOTTA_TRACK_EM_ALL_DATABASE_PASSWORD"] %>
+    # Set DB_HOST in Kamal to the PostgreSQL hostname on the Docker/private network.
+    host: <%= ENV.fetch("DB_HOST", "gotta_track_em_all-db").to_json %>
+    port: <%= ENV.fetch("DB_PORT", 5432) %>
+    username: <%= ENV.fetch("DB_USERNAME", "gotta_track_em_all").to_json %>
+    # Store database.password in Rails credentials, or supply the environment override.
+    # Asset builds do not need credentials or a database connection.
+    password: <%= (ENV["GOTTA_TRACK_EM_ALL_DATABASE_PASSWORD"] || Rails.application.credentials.dig(:database, :password)).to_json if Rails.env.production? && !ENV["SECRET_KEY_BASE_DUMMY"] %>
   cache:
     <<: *primary_production
     database: gotta_track_em_all_production_cache

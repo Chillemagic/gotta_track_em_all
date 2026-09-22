@@ -7,8 +7,11 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore all environment files.
-/.env*
+# Ignore database dump
+**/*.dump
+
+# Ignore environment files at any directory depth.
+**/.env*
 
 # Ignore all default key files.
 /config/master.key
