@@ -5,6 +5,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
+         :password_archivable,
          authentication_keys: %i[login]
   has_many :collections, dependent: :destroy
   has_many :collection_cards, through: :collections
@@ -14,6 +15,7 @@ class User < ApplicationRecord
   before_validation :create_first_collection, on: :create
   before_validation :assign_default_avatar, on: :create
   validates :collections, presence: true
+  after_create_commit :send_welcome_email
   # Trainer type
   TRAINER_TYPES = %w[pokescientist pokemaniac]
 
@@ -105,5 +107,10 @@ class User < ApplicationRecord
       when "pokemaniac" then "pokemaniac_avatar.png"
       when "pokescientist" then "scientist_m_avatar.png"
       end
+  end
+
+  def send_welcome_email
+    # #with creates params i.e.@user welcome refers to welcome.html.erb || welcome.text.erb
+    UserMailer.with(user: self).welcome.deliver_later
   end
 end

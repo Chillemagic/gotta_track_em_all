@@ -23,6 +23,7 @@ gem "jbuilder"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
+gem "foreman"
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
@@ -64,6 +65,7 @@ end
 
 # User login
 gem "devise", "~> 4.9"
+gem "devise-security"
 gem "simple_form"
 
 # httparty for api requests
@@ -81,4 +83,4 @@ gem "ruby-openai"
 # cloudnary for image hosting
 gem "cloudinary"
 
-gem 'redis'
+gem "redis"
