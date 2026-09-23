@@ -1,0 +1,12 @@
+Welcome trainer, <%= @user.first_name %>
+===============================================
+
+Wer're glad to meet another <%= @user.trainer_type %> like you! 
+Your username is: <%= @user.username%>.
+
+To log in to the site, just follow this link: <%= new_user_session_url %>.
+
+Thanks for joining and have a great day!
+
+<%= render "devise/mailer/signature"  %>
+

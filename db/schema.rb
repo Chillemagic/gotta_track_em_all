@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_010734) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_23_023209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -90,6 +90,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_010734) do
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
+  create_table "old_passwords", force: :cascade do |t|
+    t.datetime "created_at"
+    t.string "encrypted_password", null: false
+    t.integer "password_archivable_id", null: false
+    t.string "password_archivable_type", null: false
+    t.string "password_salt"
+    t.index ["password_archivable_type", "password_archivable_id"], name: "index_password_archivable"
+  end
+
   create_table "price_histories", force: :cascade do |t|
     t.bigint "card_id", null: false
     t.string "card_name"
@@ -116,7 +125,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_010734) do
     t.datetime "created_at", null: false
     t.text "error_message"
     t.string "fetch_pricing_status", default: "standby", null: false
-    t.string "holo_type", default: "Standard", null: false
+    t.string "holo_type"
     t.string "identified_language"
     t.string "identified_moves"
     t.string "identified_name"
@@ -125,11 +134,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_010734) do
     t.string "identified_set_name"
     t.boolean "identified_staff"
     t.string "provider", default: "openai", null: false
-    t.string "scrydex_card_id"
-    t.text "scrydex_error_message"
     t.datetime "scrydex_requested_at"
-    t.datetime "scrydex_retried_at"
-    t.string "scrydex_status", default: "not_requested", null: false
     t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
