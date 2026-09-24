@@ -92,7 +92,7 @@
   </div>
   <div data-controller="scroll-area" data-scroll-area-target="root" data-action="mouseenter->scroll-area#onRootMouseEnter mouseleave->scroll-area#onRootMouseLeave" class="mx-auto relative w-full max-w-2xl">
   <!-- Viewport -->
-  <div class="rounded-xl border border-black/10 dark:border-white/10 bg-neutral-50 dark:bg-neutral-900 p-4">
+  <div class="rounded-xl border border-white/10 bg-neutral-900 p-4">
     <div class="overflow-x-auto scrollbar-hide flex pb-2 snap-align-start gap-4 scroll-fade-x" data-scroll-area-target="viewport" data-action="scroll->scroll-area#onViewportScroll">
       <% count = @collection.collection_cards.count %>
       <% @collection.collection_cards.each_with_index do |collection_card, index| %>
@@ -155,8 +155,8 @@
     </div>
     </div>
   <!-- Horizontal Scrollbar -->
-  <div data-scroll-area-target="scrollbar" data-scroll-area-orientation-value="horizontal" data-action="click->scroll-area#onScrollbarClick" class="mx-2 absolute left-2 right-2 bottom-2 flex h-1.5 items-center rounded-full bg-black/5 backdrop-blur-sm opacity-0 transition-opacity duration-150 delay-300 pointer-events-none data-[hovering]:opacity-100 data-[hovering]:duration-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto data-[scrolling]:opacity-100 data-[scrolling]:duration-100 data-[scrolling]:delay-0 data-[scrolling]:pointer-events-auto data-[visible=false]:hidden dark:bg-white/10">
+  <div data-scroll-area-target="scrollbar" data-scroll-area-orientation-value="horizontal" data-action="click->scroll-area#onScrollbarClick" class="mx-2 absolute left-2 right-2 bottom-2 flex h-1.5 items-center rounded-full backdrop-blur-sm opacity-0 transition-opacity duration-150 delay-300 pointer-events-none data-[hovering]:opacity-100 data-[hovering]:duration-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto data-[scrolling]:opacity-100 data-[scrolling]:duration-100 data-[scrolling]:delay-0 data-[scrolling]:pointer-events-auto data-[visible=false]:hidden bg-white/10">
     <!-- Thumb -->
-    <div data-scroll-area-target="thumb" data-action="mousedown->scroll-area#onThumbMouseDown" class="relative h-full rounded-full bg-neutral-500 transition-opacity duration-100 dark:bg-neutral-400"></div>
+    <div data-scroll-area-target="thumb" data-action="mousedown->scroll-area#onThumbMouseDown" class="relative h-full rounded-full transition-opacity duration-100 bg-neutral-400"></div>
   </div>
 </div>

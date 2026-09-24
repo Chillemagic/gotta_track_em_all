@@ -59,7 +59,7 @@
       <% end %>
     </div>
     <!-- Viewport -->
-    <div class="relative min-h-0 flex-1 rounded-xl border border-black/10 bg-neutral-50 p-2 dark:border-white/10 dark:bg-neutral-900">
+    <div class="relative min-h-0 flex-1 rounded-xl border p-2 border-white/10 bg-neutral-900">
       <div class="h-full overflow-y-auto overflow-x-hidden py-4 pr-2 scrollbar-hide scroll-fade-y" data-scroll-area-target="viewport" data-action="scroll->scroll-area#onViewportScroll">
         <!--_________________WIP-LightBox___________________________-->
         <div class="flex w-full flex-col-reverse gap-8 py-1 sm:py-8 lg:pb-8" style="display: flex; flex-direction: column-reverse;">
@@ -67,7 +67,7 @@
             <!-- Account details -->
 
             <% if @collection_card.card.pokemon_types.present? %>
-              <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-200 dark:border-neutral-700">
+              <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-700">
                 <h3>
                   <button
                     type="button"
@@ -77,7 +77,7 @@
                     aria-expanded="true"
                     data-state="open"
                     id="account-details-trigger"
-                    class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2 px-2"
+                    class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-white focus:outline-offset-2 px-2"
                   >
                     <span>
                       Types
@@ -120,7 +120,7 @@
               </section>
             <% end %>
             <% if @collection_card.card.abilities.present? %>
-              <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-200 dark:border-neutral-700">
+              <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-700">
                 <h3>
                   <button
                     type="button"
@@ -130,7 +130,7 @@
                     aria-expanded="true"
                     data-state="open"
                     id="account-details-trigger"
-                    class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2 px-2"
+                    class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-white focus:outline-offset-2 px-2"
                   >
                     <span>
                       Abilities
@@ -179,7 +179,7 @@
             <% end %>
 
             <% if @collection_card.card.attacks.present? %>
-              <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-200 dark:border-neutral-700">
+              <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-700">
                 <h3>
                   <button
                     type="button"
@@ -189,7 +189,7 @@
                     aria-expanded="true"
                     data-state="open"
                     id="account-details-trigger"
-                    class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2 px-2"
+                    class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-white focus:outline-offset-2 px-2"
                   >
                     <span>
                       Attacks
@@ -236,7 +236,7 @@
               </section>
             <% end %>
 
-            <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-200 dark:border-neutral-700">
+            <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-700">
               <h3>
                 <button
                   type="button"
@@ -246,7 +246,7 @@
                   aria-expanded="true"
                   data-state="open"
                   id="account-details-trigger"
-                  class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2 px-2"
+                  class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-white focus:outline-offset-2 px-2"
                 >
                   <span>
                     Set Info
@@ -290,7 +290,7 @@
               <section
                 data-accordion-target="item"
                 data-state="closed"
-                class="border-b pb-2 border-neutral-200 dark:border-neutral-700"
+                class="border-b pb-2 border-neutral-700"
               >
                 <h3>
                   <button
@@ -301,7 +301,7 @@
                     aria-expanded="false"
                     data-state="closed"
                     id="pricing-trigger"
-                    class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2 px-2"
+                    class="flex flex-1 items-center text-left justify-between py-2 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-white focus:outline-offset-2 px-2"
                   >
                     <span>
                       Price history
@@ -389,7 +389,7 @@
               <section
                 data-accordion-target="item"
                 data-state="closed"
-                class="border-b pb-2 border-neutral-200 dark:border-neutral-700"
+                class="border-b pb-2 border-neutral-700"
               >
                 <h3>
                   <button
@@ -486,10 +486,10 @@
       <div data-scroll-area-target="scrollbar"
           data-scroll-area-orientation-value="vertical"
           data-action="click->scroll-area#onScrollbarClick"
-          class="absolute bottom-2 right-2 top-2 flex w-1.5 justify-center rounded-full bg-black/5 opacity-0 backdrop-blur-sm transition-opacity duration-150 delay-300 pointer-events-none data-[hovering]:opacity-100 data-[hovering]:duration-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto data-[scrolling]:opacity-100 data-[scrolling]:duration-100 data-[scrolling]:delay-0 data-[scrolling]:pointer-events-auto data-[visible=false]:hidden dark:bg-white/10">
+          class="absolute bottom-2 right-2 top-2 flex w-1.5 justify-center rounded-full opacity-0 backdrop-blur-sm transition-opacity duration-150 delay-300 pointer-events-none data-[hovering]:opacity-100 data-[hovering]:duration-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto data-[scrolling]:opacity-100 data-[scrolling]:duration-100 data-[scrolling]:delay-0 data-[scrolling]:pointer-events-auto data-[visible=false]:hidden bg-white/10">
         <div data-scroll-area-target="thumb"
             data-action="mousedown->scroll-area#onThumbMouseDown"
-            class="relative w-full rounded-full bg-neutral-500 transition-opacity duration-100 dark:bg-neutral-400">
+            class="relative w-full rounded-full transition-opacity duration-100 bg-neutral-400">
         </div>
       </div>
     </div> <!-- Viewport Container End -->

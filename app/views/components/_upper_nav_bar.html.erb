@@ -1,4 +1,4 @@
-<nav class="relative bg-gray-400/30 backdrop-blur sticky top-0 z-50">
+<nav class="relative bg-gray-400/30 backdrop-blur min-[600px]:sticky top-0 z-50">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- top row: single non-wrapping flex line -->
     <div class="relative flex h-16 items-center">
@@ -14,7 +14,7 @@
       <!-- Absolute centered button group -->
       <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div class="hidden min-[600px]:flex items-center space-x-20 pointer-events-auto z-10">
-          <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "FOLIO" } %>
+          <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "COLLECTIONS" } %>
           <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
         </div>
       </div>

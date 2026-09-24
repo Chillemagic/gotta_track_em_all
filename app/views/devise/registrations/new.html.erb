@@ -34,7 +34,7 @@
             <%= f.error_notification %>
 
             <div data-controller="accordion">
-              <section data-accordion-target="item" data-state="open" class="border-b border-neutral-200 pb-2 dark:border-neutral-700">
+              <section data-accordion-target="item" data-state="open" class="border-b pb-2 border-neutral-700">
                 <h3>
                   <button
                     type="button"
@@ -44,7 +44,7 @@
                     aria-expanded="true"
                     data-state="open"
                     id="sign-up-account-details-trigger"
-                    class="flex w-full items-center justify-between px-2 py-2 text-left font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2"
+                    class="flex w-full items-center justify-between px-2 py-2 text-left font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-white focus:outline-offset-2"
                   >
                     <span>Account Details</span>
                     <svg data-accordion-target="icon" class="size-4 shrink-0 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -130,7 +130,7 @@
                 </div>
               </section>
 
-              <section data-accordion-target="item" data-state="closed" class="border-b border-neutral-200 pb-2 dark:border-neutral-700">
+              <section data-accordion-target="item" data-state="closed" class="border-b pb-2 border-neutral-700">
                 <h3>
                   <button
                     type="button"
@@ -140,7 +140,7 @@
                     aria-expanded="false"
                     data-state="closed"
                     id="sign-up-avatar-trigger"
-                    class="flex w-full items-center justify-between px-2 py-2 text-left font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-neutral-700 dark:focus:outline-white focus:outline-offset-2"
+                    class="flex w-full items-center justify-between px-2 py-2 text-left font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180 focus:outline-white focus:outline-offset-2"
                   >
                     <span>Choose an avatar</span>
                     <svg data-accordion-target="icon" class="size-4 shrink-0 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -191,12 +191,12 @@
               data-scroll-area-target="scrollbar"
               data-scroll-area-orientation-value="vertical"
               data-action="click->scroll-area#onScrollbarClick"
-              class="absolute inset-y-1 right-0 flex w-1.5 rounded-full bg-black/5 backdrop-blur-sm opacity-0 transition-opacity duration-150 delay-300 pointer-events-none data-[hovering]:opacity-100 data-[hovering]:duration-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto data-[scrolling]:opacity-100 data-[scrolling]:duration-100 data-[scrolling]:delay-0 data-[scrolling]:pointer-events-auto data-[visible=false]:hidden dark:bg-white/10"
+              class="absolute inset-y-1 right-0 flex w-1.5 rounded-full backdrop-blur-sm opacity-0 transition-opacity duration-150 delay-300 pointer-events-none data-[hovering]:opacity-100 data-[hovering]:duration-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto data-[scrolling]:opacity-100 data-[scrolling]:duration-100 data-[scrolling]:delay-0 data-[scrolling]:pointer-events-auto data-[visible=false]:hidden bg-white/10"
             >
               <div
                 data-scroll-area-target="thumb"
                 data-action="mousedown->scroll-area#onThumbMouseDown"
-                class="relative w-full rounded-full bg-neutral-500 transition-opacity duration-100 dark:bg-neutral-400"
+                class="relative w-full rounded-full transition-opacity duration-100 bg-neutral-400"
               ></div>
             </div>
           </div>
