@@ -21,9 +21,6 @@ class CollectionsController < ApplicationController
     @collection = current_user.collections.new(collection_params)
     @card = Card.find_by(id: params.dig(:collection, :card_id))
     # get card so Turbo Stream can render dropdown
-    if datetime.now - current_user.created_at > 1.minutes
-      redirect_to root_path
-    end
 
     if @collection.save
       respond_to do |format|
