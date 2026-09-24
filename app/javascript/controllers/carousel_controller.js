@@ -213,19 +213,19 @@ export default class extends Controller {
     this.thumbnailButtonTargets.forEach((button, index) => {
       if (index === selectedIndex) {
         // Active thumbnail styling
-        button.classList.remove("border-neutral-200", "dark:border-neutral-700");
-        button.classList.add("border-neutral-600", "dark:border-neutral-200");
+        button.classList.remove("border-neutral-700");
+        button.classList.add("border-neutral-200");
 
         // Update hover colors for active state
-        button.classList.remove("hover:border-neutral-400", "dark:hover:border-neutral-500");
-        button.classList.add("hover:border-neutral-700", "dark:hover:border-neutral-300");
+        button.classList.remove("hover:border-neutral-500");
+        button.classList.add("hover:border-neutral-300");
       } else {
         // Inactive thumbnail styling
-        button.classList.remove("border-neutral-600", "hover:border-neutral-700", "dark:hover:border-neutral-300");
-        button.classList.add("border-neutral-200", "dark:border-neutral-700");
+        button.classList.remove("border-neutral-200", "hover:border-neutral-300");
+        button.classList.add("border-neutral-700");
 
         // Reset hover colors for inactive state
-        button.classList.add("hover:border-neutral-400", "dark:hover:border-neutral-500");
+        button.classList.add("hover:border-neutral-500");
       }
     });
   }
@@ -323,7 +323,6 @@ export default class extends Controller {
       const button = document.createElement("button");
       button.classList.add(
         "appearance-none",
-        "bg-transparent",
         "touch-manipulation",
         "inline-flex",
         "no-underline",
@@ -335,21 +334,17 @@ export default class extends Controller {
         "justify-center",
         "rounded-full",
         "outline-hidden",
-        "bg-white",
-        "dark:bg-neutral-800",
+        "bg-neutral-800",
         "focus-visible:outline-offset-1.5",
-        "focus-visible:outline-neutral-500",
-        "dark:focus-visible:outline-neutral-200",
-        "hover:bg-neutral-100",
-        "dark:hover:bg-neutral-700/75",
+        "focus-visible:outline-neutral-200",
+        "hover:bg-neutral-700/75",
       );
       const dot = document.createElement("div");
       dot.classList.add(
         "w-4",
         "h-4",
         "rounded-full",
-        "shadow-[inset_0_0_0_0.15rem_#ccc]",
-        "dark:shadow-[inset_0_0_0_0.15rem_#fff]",
+        "shadow-[inset_0_0_0_0.15rem_#fff]",
       );
       button.appendChild(dot);
       button.type = "button";
@@ -375,16 +370,16 @@ export default class extends Controller {
     Array.from(this.dotsContainerTarget.children).forEach((dotButton, index) => {
       const dot = dotButton.firstChild;
       if (index === selectedIndex) {
-        dot.classList.remove("shadow-[inset_0_0_0_0.15rem_#ccc]", "dark:shadow-[inset_0_0_0_0.15rem_#404040]");
-        dot.classList.add("shadow-[inset_0_0_0_0.15rem_#333]", "dark:shadow-[inset_0_0_0_0.15rem_#fff]");
+        dot.classList.remove("shadow-[inset_0_0_0_0.15rem_#404040]");
+        dot.classList.add("shadow-[inset_0_0_0_0.15rem_#fff]");
         dotButton.setAttribute("aria-label", `Slide ${index + 1} (current)`);
         dotButton.setAttribute("aria-current", "true");
         if (aDotHadFocus) {
           newlySelectedDotButton = dotButton;
         }
       } else {
-        dot.classList.remove("shadow-[inset_0_0_0_0.15rem_#333]", "dark:shadow-[inset_0_0_0_0.15rem_#fff]");
-        dot.classList.add("shadow-[inset_0_0_0_0.15rem_#ccc]", "dark:shadow-[inset_0_0_0_0.15rem_#404040]");
+        dot.classList.remove("shadow-[inset_0_0_0_0.15rem_#fff]");
+        dot.classList.add("shadow-[inset_0_0_0_0.15rem_#404040]");
         dotButton.setAttribute("aria-label", `Go to slide ${index + 1}`);
         dotButton.removeAttribute("aria-current");
       }
