@@ -15,6 +15,17 @@
 @import url('https://fonts.cdnfonts.com/css/pokemon-solid');
 @import url('https://fonts.googleapis.com/css2?family=Saira:wght@300;400;600&display=swap');
 
+/* Prevent vertical rubber-banding from exposing space beyond the page. */
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
 .font-pokemon {
   font-family: 'Pokemon Solid', sans-serif;
 }

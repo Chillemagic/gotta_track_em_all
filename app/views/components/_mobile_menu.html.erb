@@ -1,5 +1,7 @@
 <% if user_signed_in? && current_user.collection_cards.present? %>
-  <footer class="min-[600px]:hidden relative bg-gray-400/30 backdrop-blur sticky bottom-0 z-50">
+  <%# Reserve the menu's height (h-12 buttons + p-2) and the device safe area. %>
+  <div aria-hidden="true" class="min-[600px]:hidden h-[calc(4rem+env(safe-area-inset-bottom,0px))]"></div>
+  <footer class="min-[600px]:hidden fixed inset-x-0 bottom-0 z-50 bg-gray-400/30 backdrop-blur pb-[env(safe-area-inset-bottom,0px)]">
     <div class="flex justify-between mx-auto max-w-7xl p-2 sm:px-6 lg:px-8">
       <%= render partial: "components/button", locals: { button_path: collections_path, button_label: "COLLECTIONS" } %>
       <%= render partial: "components/button", locals: { button_path: search_cards_path, button_label: "SEARCH" } %>
