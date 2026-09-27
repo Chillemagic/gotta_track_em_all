@@ -76,7 +76,7 @@ SimpleForm.setup do |config|
     b.optional :minlength
     b.optional :readonly
     b.use :label, class: "block text-sm font-medium text-gray-900 mb-1"
-    b.use :input, class: "block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100", error_class: "block w-full text-sm text-red-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100", valid_class: "ring-2 ring-blue-500"
+    b.use :input, class: "block w-full text-sm text-white-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100", error_class: "block w-full text-sm text-red-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100", valid_class: "ring-2 ring-blue-500"
     b.use :full_error, wrap_with: { class: "mt-1 text-sm text-red-600" }
     b.use :hint, wrap_with: { class: "mt-2 text-sm text-gray-500" }
   end

@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   attr_accessor :login
 
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -16,6 +17,7 @@ class User < ApplicationRecord
   before_validation :assign_default_avatar, on: :create
   validates :collections, presence: true
   after_create_commit :send_welcome_email
+
   # Trainer type
   TRAINER_TYPES = %w[pokescientist pokemaniac]
 
@@ -110,7 +112,7 @@ class User < ApplicationRecord
   end
 
   def send_welcome_email
-    # #with creates params i.e.@user welcome refers to welcome.html.erb || welcome.text.erb
+    # With creates params i.e.@user welcome refers to welcome.html.erb || welcome.text.erb
     UserMailer.with(user: self).welcome.deliver_later
   end
 end
