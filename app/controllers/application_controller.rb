@@ -9,6 +9,10 @@ class ApplicationController < ActionController::Base
   private
 
   def layout_by_resource
+    if devise_controller? && %w[sessions registrations].include?(controller_name) && %w[new create].include?(action_name)
+      return "root_layout"
+    end
+
     devise_controller? ? "background_nature" : "application"
   end
 
