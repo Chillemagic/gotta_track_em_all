@@ -1,0 +1,31 @@
+<main class="isolate relative overflow-hidden">
+  <!-- Hero section -->
+  <div class="relative pt-0">
+
+    <!-- Hero Text -->
+    <div class="py-8 sm:py-8 lg:pb-4">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8 ">
+        <div class="mx-auto max-w-2xl text-center z-10 relative">
+          <h1 class="font-pokemon tracking-tight text-gray-900 text-2xl sm:text-3xl lg:text-3xl">
+            Hello there,
+          </h1>
+          <h1 class="font-pokemon tracking-tight text-gray-900 text-2xl sm:text-3xl lg:text-3xl">
+            <%= current_user&.username.presence || "Trainer" %>!
+          </h1>
+        </div>
+
+        <div class="mt-0 flow-root sm: mt-4 m: mt-10 z-10 relative">
+            <div class="mt-auto mx-auto border border-white/20 max-w-4/5 bg-white bg-white/10 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 overflow-hidden">
+              <div class="h-115 w-full flex items-center justify-center text-gray-500 text-sm italic">
+                <% if current_user&.pokescientist? %>
+                      <%= render "pokescientist_home" %>
+                <% elsif current_user&.pokemaniac? %>
+                      <%= render "pokemaniac_home" %>
+                <% end %>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

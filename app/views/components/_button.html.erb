@@ -1,6 +1,6 @@
 <%# app/views/components/_button.html.erb %>
 <%# Usage: %>
-<%# For navigation link: render "components/button", button_label: "Home", button_path: root_path, width: "w-1/2" %>
+<%# For navigation link: render "components/button", button_label: "Home", button_path: users_home_path, width: "w-1/2" %>
 <%# For form submit: render "components/button", button_label: "Create Collection", width: "w-full" %>
 <% margin = local_assigns[:margin] || " " %>
 <% width = local_assigns[:width] || "w-38" %>
@@ -10,7 +10,7 @@
 
 <% if button_path.present? %>
   <%# Navigation button %>
-  <%= link_to button_path, method: (local_assigns[:method] || :get), data: { turbo: false }, class: "relative block appearance-none cursor-pointer text-sm px-2 #{margin} #{width} #{height} overflow-hidden group" do %>
+  <%= link_to button_path, method: (local_assigns[:method] || :get), data: { turbo: false, action: local_assigns[:action] }, class: "relative block appearance-none cursor-pointer text-sm px-2 #{margin} #{width} #{height} overflow-hidden group" do %>
 
     <!-- Blue background as border -->
     <div class="absolute inset-0 flex flex-col transition duration-100 ease-in-out group-hover:brightness-110">

@@ -87,7 +87,7 @@ class CollectionCardsController < ApplicationController
     @collection_card.destroy!
 
     respond_to do |format|
-      format.html { redirect_to root_path, notice: "Collection card was successfully destroyed.", status: :see_other }
+      format.html { redirect_to users_home_path, notice: "Collection card was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
   end

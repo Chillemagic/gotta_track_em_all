@@ -1,31 +1,178 @@
 <main class="isolate relative overflow-hidden">
   <!-- Hero section -->
-  <div class="relative pt-0">
+  <div class="w-full">
 
-    <!-- Hero Text -->
-    <div class="py-8 sm:py-8 lg:pb-4">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8 ">
-        <div class="mx-auto max-w-2xl text-center z-10 relative">
-          <h1 class="font-pokemon tracking-tight text-gray-900 text-2xl sm:text-3xl lg:text-3xl">
-            Hello there,
-          </h1>
-          <h1 class="font-pokemon tracking-tight text-gray-900 text-2xl sm:text-3xl lg:text-3xl">
-            <%= current_user&.username.presence || "Trainer" %>!
-          </h1>
-        </div>
-
-        <div class="mt-0 flow-root sm: mt-4 m: mt-10 z-10 relative">
-            <div class="mt-auto mx-auto border border-white/20 max-w-4/5 bg-white bg-white/10 backdrop-blur rounded-2xl p-8 ring-1 ring-white/5 overflow-hidden">
-              <div class="h-115 w-full flex items-center justify-center text-gray-500 text-sm italic">
-                <% if current_user&.pokescientist? %>
-                      <%= render "pokescientist_home" %>
-                <% elsif current_user&.pokemaniac? %>
-                      <%= render "pokemaniac_home" %>
-                <% end %>
-              </div>
+  <%# ----------------------- Corousel section ----------------------------------------------- %>
+  <section
+    id="collection-insights-carousel"
+    class="mx-auto my-6 w-full max-w-5xl px-4 sm:my-12 sm:px-6 lg:px-8"
+    aria-label="Collection insights"
+    data-controller="carousel"
+    data-carousel-dots-value="true"
+    data-carousel-buttons-value="true"
+    data-carousel-loop-value="true"
+  >
+    <div
+      class="
+        cursor-grab overflow-hidden rounded-3xl outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 active:cursor-grabbing
+      "
+      data-carousel-target="viewport"
+    >
+      <div class="flex touch-pan-y items-stretch">
+        <% [
+          { title: "Snap", image: "camera.png", alt: "Camera illustration", headline: "Identify cards in an instant.", description: "Take a photo or upload an image from your device. Our AI-powered scanner identifies the card for you.", features: ["Snap a photo", "Upload an image", "Find your card"] },
+          { title: "Discover", image: "dex.png", alt: "Pokédex illustration", headline: "Get to know every card.", description: "Explore the details behind your latest find, with card information and pricing in one place.", features: ["Set and release details", "Card artist", "Attacks and abilities", "Pricing data"] },
+          { title: "Collect", image: "collect.png", alt: "Card collection illustration", headline: "Your collection, your way.", description: "Keep your cards organized in custom collections that reflect how you like to collect.", features: ["Type", "Colour", "Set", "Personal themes and categories"] }
+        ].each_with_index do |slide, index| %>
+          <article
+            class="mr-4 flex min-w-0 flex-[0_0_100%] select-none flex-col items-center gap-6 rounded-3xl border border-white/60 bg-slate-100/70 p-2 text-slate-900 backdrop-blur sm:p-8 md:flex-row md:gap-10 md:p-10 "
+            aria-label="<%= index + 1 %> of 3: <%= slide[:title] %>"
+            aria-roledescription="slide"
+          >
+            <div class="flex w-full shrink-0 items-center justify-center rounded-2xl p-4 md:w-2/5 md:p-6">
+              <%= image_tag slide[:image], alt: slide[:alt], draggable: false,
+                class: "h-[clamp(10rem,35vw,20rem)] w-full object-contain", decoding: "async" %>
             </div>
-        </div>
+            <div class="min-w-0 flex-1 text-center md:text-left">
+              <p class="text-sm font-bold uppercase tracking-[0.2em] text-emerald-800"><%= slide[:title] %></p>
+              <h2 class="mt-3 text-[clamp(1.5rem,3vw,2.5rem)] font-bold leading-tight tracking-tight text-balance"><%= slide[:headline] %></h2>
+              <p class="mx-auto mt-4 max-w-prose text-base leading-relaxed text-slate-700 sm:text-lg md:mx-0"><%= slide[:description] %></p>
+              <ul class="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
+                <% slide[:features].each do |feature| %>
+                  <li class="rounded-full bg-emerald-50/70 px-3 py-1.5 text-sm font-medium leading-snug text-emerald-900 ring-1 ring-inset ring-emerald-800/15"><%= feature %></li>
+                <% end %>
+              </ul>
+            </div>
+          </article>
+        <% end %>
       </div>
     </div>
+
+    <div class="mt-4 flex items-center justify-between px-1">
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          class="
+            flex size-11 items-center justify-center rounded-full border border-white/60
+            bg-slate-100/70 text-emerald-900 shadow-sm backdrop-blur transition hover:bg-emerald-50/70
+            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700
+            disabled:cursor-not-allowed disabled:opacity-40
+          "
+          type="button"
+          data-carousel-target="prevButton"
+          aria-label="Previous insight"
+        >
+          <svg aria-hidden="true" class="size-4" viewBox="0 0 18 18" fill="currentColor"><path
+              d="M11.5 16a.75.75 0 0 1-.53-.22L4.72 9.53a.75.75 0 0 1 0-1.06l6.25-6.25a.75.75 0 1 1 1.06 1.06L6.31 9l5.72 5.72A.75.75 0 0 1 11.5 16Z"
+            /></svg>
+        </button>
+        <button
+          class="
+            flex size-11 items-center justify-center rounded-full border border-white/60
+            bg-slate-100/70 text-emerald-900 shadow-sm backdrop-blur transition hover:bg-emerald-50/70
+            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700
+            disabled:cursor-not-allowed disabled:opacity-40
+          "
+          type="button"
+          data-carousel-target="nextButton"
+          aria-label="Next insight"
+        >
+          <svg aria-hidden="true" class="size-4" viewBox="0 0 18 18" fill="currentColor"><path
+              d="M6.5 16a.75.75 0 0 1-.53-1.28L11.69 9 5.97 3.28a.75.75 0 0 1 1.06-1.06l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25A.75.75 0 0 1 6.5 16Z"
+            /></svg>
+        </button>
+      </div>
+      <div
+        class="flex flex-wrap items-center justify-end gap-1.5"
+        data-carousel-target="dotsContainer"
+      ></div>
+    </div>
+  </section>
+
+  <%# ---------------- Button Section --------------------- %>
+  <div>
+    <div data-controller="dialog" data-action="click->dialog#backdropClose" class="w-full flex"> 
+      <dialog data-dialog-target="dialog" class="mx-auto my-auto p-12 rounded-xl bg-slate-100/70 backdrop:bg-black/80">
+        <h2 class="text-center p-2 text-slate-700">
+          New Users:
+        </h2>
+        <div class ="m-2">
+          <%= render "components/button", button_label: "Create Account", button_path: new_user_registration_path%>
+        </div>
+        <hr class="border-slate-100/70">
+        <h2 class="text-center p-2 text-slate-700">
+          Existing Users:
+        </h2>
+        <div class="m-2">
+          <%= render "components/button", button_label: "User Login", button_path: new_user_session_path  %>
+        </div>
+      </dialog>
+      <%= render "components/button",
+          button_label: "Get Started",
+          margin: "mx-auto",
+          button_path: "#",
+          action: "click->dialog#open:prevent" 
+      %>
+    </div>
+
   </div>
+
+  <%# ----------------- Marquee Section -------------------------- %>
+  <footer class="mt-4 fixed inset-x-0 bottom-0 z-50 bg-gray-400/30 backdrop-blur pb-[env(safe-area-inset-bottom,0px)]">
+    <div class="w-full">
+      <h2 class="text-sm font-medium text-neutral-800 dark:text-neutral-200 text-center">Made with:</h2>
+      <div
+        data-controller="marquee"
+        data-marquee-speed-value="80"
+        data-marquee-hover-speed-value="90"
+        data-marquee-direction-value="left"
+        class="relative overflow-hidden bg-transparent py-4 [--marquee-fade-size:1.25rem] [mask-image:linear-gradient(to_right,transparent,black_var(--marquee-fade-size),black_calc(100%-var(--marquee-fade-size)),transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_var(--marquee-fade-size),black_calc(100%-var(--marquee-fade-size)),transparent)]"
+        data-action="mouseenter->marquee#pauseAnimation mouseleave->marquee#resumeAnimation"
+      >
+        <div data-marquee-target="track" class="relative flex w-full">
+          <div data-marquee-target="list" class="flex w-full shrink-0 flex-nowrap items-center justify-around gap-8">
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="#FFFFFF" viewBox="0 0 235 155" class="h-5">
+                <g>
+                  <path d="M180 17.8c-.9-.5-3.4-1.7-9.7-3.5l-.4 6.6c3.3 1.1 6.5 2.3 9.7 3.6l.4-6.7Z"></path>
+                  <path d="M124.9 18.9c-29.2 2.6-65 29.1-86 64.1S15 147.6 15 147.6h79s-15.1-68.9 34.9-96.8c10.9-5.3 45.6-25.1 102.4 16.9 1.8-1.5 3.5-2.7 3.5-2.7s-52-51.9-109.9-46.1Z"></path>
+                  <path d="m54.7 54.7-7.1-6.2c-2.6 2.5-5.1 5-7.4 7.5l7.7 6.6c2.1-2.7 4.4-5.4 6.8-7.9Z"></path>
+                  <path d="M92.5 25 88 18.1c-2.5 1.3-5.1 2.7-7.8 4.3l4.6 7c2.6-1.6 5.1-3.1 7.7-4.4Z"></path>
+                  <path d="M24.5 99.4 13 95.2c-1.9 4.3-4 9.3-5 12l11.5 4.2c1.3-3.4 3.4-8.3 5-12Z"></path>
+                  <path d="M133.1 14.5h1l-2-6.1c-3.1 0-6.3.2-9.6.6l1.9 5.9c2.9-.3 5.8-.4 8.7-.4Z"></path>
+                  <path d="M97 127.6c.2 5.3.7 9.6 1.2 12.6l12 4.3c-.9-3.9-1.8-8.3-2.4-13L97 127.6Z"></path>
+                  <path d="m137.9 51.3 2.3 6.9c2.9-1.4 5.8-2.6 8.7-3.5l-2.2-6.6c-3.4 1-6.3 2.1-8.8 3.2Z"></path>
+                  <path d="M169.7 52c3.3.1 6.6.5 9.9 1.2l.4-6.2c-3.4-.7-6.7-1.1-9.9-1.3l-.4 6.3Z"></path>
+                  <path d="M101.5 91.2c-1.3 3.7-2.2 7.4-3 11l8.1 6.4c.4-3.9 1.1-7.8 2.1-11.7l-7.2-5.7Z"></path>
+                  <path d="m113 70 4.8 7.2c1.7-2.5 3.7-4.8 5.9-7.1l-4.5-6.8c-2.3 2.1-4.4 4.4-6.2 6.7Z"></path>
+                </g>
+              </svg>
+              <span class="text-sm font-medium text-neutral-800 dark:text-neutral-200">Ruby on Rails</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <svg class="size-4 rounded-sm" width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <g class="fill-neutral-800 dark:fill-white">
+                  <path d="M1.76 1.85885e-08H58.2399C58.7016 -6.70275e-05 59.1447 0.181237 59.474 0.50484C59.8032 0.828443 59.9921 1.26844 59.9999 1.73V7.37823C59.9999 7.87239 59.9999 8.11947 59.9038 8.30822C59.8192 8.47424 59.6842 8.60923 59.5182 8.69382C59.3294 8.78999 59.0823 8.78999 58.5882 8.78999H45.92C44.7722 8.83556 43.6502 9.14343 42.64 9.68999L15.64 25.55C14.6261 26.0964 13.5008 26.4042 12.35 26.45H1.41176C0.9176 26.45 0.670518 26.45 0.481773 26.3538C0.315747 26.2692 0.180765 26.1342 0.0961706 25.9682C0 25.7795 0 25.5324 0 25.0382V17.2717C0 16.7776 0 16.5305 0.0961706 16.3418C0.180765 16.1757 0.315747 16.0408 0.481773 15.9562C0.670518 15.86 0.9176 15.86 1.41176 15.86H12.35C13.5001 15.9106 14.6243 16.2181 15.64 16.76L18.64 18.51C19.1037 18.7494 19.6181 18.8743 20.14 18.8743C20.6619 18.8743 21.1762 18.7494 21.64 18.51L25.48 16.25C25.6438 16.1661 25.7812 16.0386 25.8772 15.8815C25.9732 15.7245 26.024 15.544 26.024 15.36C26.024 15.1759 25.9732 14.9955 25.8772 14.8384C25.7812 14.6814 25.6438 14.5539 25.48 14.47L17.4 9.71999C16.3879 9.17798 15.2669 8.8704 14.12 8.81999H1.41176C0.9176 8.81999 0.670518 8.81999 0.481773 8.72382C0.315747 8.63923 0.180765 8.50424 0.0961706 8.33822C0 8.14947 0 7.90239 0 7.40823V1.76C0 1.29322 0.185428 0.845555 0.515492 0.515492C0.845555 0.185428 1.29322 1.85885e-08 1.76 1.85885e-08Z"></path>
+                  <path d="M47.65 15.8799C46.4998 15.9305 45.3757 16.238 44.36 16.7799L17.36 32.6499C16.3479 33.1919 15.2269 33.4994 14.08 33.5499H1.41176C0.9176 33.5499 0.670518 33.5499 0.481773 33.646C0.315747 33.7306 0.180765 33.8656 0.0961706 34.0316C0 34.2204 0 34.4674 0 34.9616V42.7281C0 43.2222 0 43.4693 0.0961706 43.6581C0.180765 43.8241 0.315747 43.9591 0.481773 44.0437C0.670518 44.1398 0.9176 44.1398 1.41176 44.1398H12.35C13.5001 44.0892 14.6243 43.7817 15.64 43.2398L42.64 27.3699C43.652 26.8278 44.773 26.5203 45.92 26.4699H58.5882C59.0823 26.4699 59.3294 26.4699 59.5182 26.3737C59.6842 26.2891 59.8192 26.1541 59.9038 25.9881C59.9999 25.7993 59.9999 25.5523 59.9999 25.0581V17.2916C59.9999 16.7975 59.9999 16.5504 59.9038 16.3616C59.8192 16.1956 59.6842 16.0606 59.5182 15.976C59.3294 15.8799 59.0823 15.8799 58.5882 15.8799H47.65Z"></path>
+                  <path d="M47.65 33.56C46.4998 33.6106 45.3757 33.9182 44.36 34.46L17.36 50.32C16.3497 50.8666 15.2277 51.1744 14.08 51.22H1.41176C0.9176 51.22 0.670518 51.22 0.481773 51.3162C0.315747 51.4008 0.180765 51.5358 0.0961706 51.7018C0 51.8905 0 52.1376 0 52.6318V58.28C0.0129646 58.739 0.203789 59.175 0.532182 59.4959C0.860576 59.8168 1.30083 59.9976 1.76 60H58.2399C58.7042 59.9974 59.1488 59.8125 59.4781 59.4852C59.8073 59.1578 59.9947 58.7142 59.9999 58.25V52.6018C59.9999 52.1076 59.9999 51.8605 59.9038 51.6718C59.8192 51.5058 59.6842 51.3708 59.5182 51.2862C59.3294 51.19 59.0823 51.19 58.5882 51.19H45.88C44.7322 51.1444 43.6102 50.8366 42.6 50.29L34.52 45.55C34.3536 45.4671 34.2136 45.3394 34.1157 45.1813C34.0179 45.0232 33.966 44.8409 33.966 44.655C33.966 44.4691 34.0179 44.2868 34.1157 44.1287C34.2136 43.9706 34.3536 43.843 34.52 43.76L38.36 41.51C38.8237 41.2706 39.3381 41.1457 39.86 41.1457C40.3819 41.1457 40.8962 41.2706 41.36 41.51L44.36 43.25C45.3739 43.7964 46.4991 44.1042 47.65 44.15H58.5882C59.0823 44.15 59.3294 44.15 59.5182 44.0538C59.6842 43.9693 59.8192 43.8343 59.9038 43.6682C59.9999 43.4795 59.9999 43.2324 59.9999 42.7383V34.9718C59.9999 34.4776 59.9999 34.2305 59.9038 34.0418C59.8192 33.8758 59.6842 33.7408 59.5182 33.6562C59.3294 33.56 59.0823 33.56 58.5882 33.56H47.65Z"></path>
+                </g>
+              </svg>
+              <span class="text-sm font-medium text-neutral-800 dark:text-neutral-200">Stimulus</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" class="h-5"><path fill="#FFFFFF" fill-rule="evenodd" d="M10 5Q6 5 5 8.334q1.5-1.668 3.5-1.25c.76.158 1.305.618 1.906 1.127C11.386 9.041 12.522 10 15 10q4 0 5-3.333-1.5 1.667-3.5 1.25c-.76-.159-1.305-.619-1.906-1.128C13.614 5.96 12.479 5 10 5m-5 5q-4 0-5 3.334 1.5-1.668 3.5-1.25c.76.158 1.305.618 1.906 1.127C6.386 14.041 7.521 15 10 15q4 0 5-3.333-1.5 1.667-3.5 1.25c-.76-.159-1.305-.619-1.906-1.128C8.614 10.96 7.478 10 5 10" clip-rule="evenodd"></path></svg>
+              <span class="text-sm font-medium text-neutral-800 dark:text-neutral-200">Tailwind CSS</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4 rounded-sm" viewBox="0 0 630 630">
+                <rect width="630" height="630" fill="#FFFFFF"/>
+                <path d="m423.2 492.19c12.69 20.72 29.2 35.95 58.4 35.95 24.53 0 40.2-12.26 40.2-29.2 0-20.3-16.1-27.49-43.1-39.3l-14.8-6.35c-42.72-18.2-71.1-41-71.1-89.2 0-44.4 33.83-78.2 86.7-78.2 37.64 0 64.7 13.1 84.2 47.4l-46.1 29.6c-10.15-18.2-21.1-25.37-38.1-25.37-17.34 0-28.33 11-28.33 25.37 0 17.76 11 24.95 36.4 35.95l14.8 6.34c50.3 21.57 78.7 43.56 78.7 93 0 53.3-41.87 82.5-98.1 82.5-54.98 0-90.5-26.2-107.88-60.54zm-209.13 5.13c9.3 16.5 17.76 30.45 38.1 30.45 19.45 0 31.72-7.61 31.72-37.2v-201.3h59.2v202.1c0 61.3-35.94 89.2-88.4 89.2-47.4 0-74.85-24.53-88.81-54.075z"/>
+              </svg>
+              <span class="text-sm font-medium text-neutral-800 dark:text-neutral-200">Javascript</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  
+  </footer>
+  
 </main>

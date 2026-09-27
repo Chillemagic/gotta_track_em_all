@@ -334,7 +334,7 @@ export default class extends Controller {
         "justify-center",
         "rounded-full",
         "outline-hidden",
-        "bg-neutral-800",
+        "bg-slate-100/70",
         "focus-visible:outline-offset-1.5",
         "focus-visible:outline-neutral-200",
         "hover:bg-neutral-700/75",
