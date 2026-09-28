@@ -19,6 +19,14 @@ The application allows collectors to photograph Pokémon cards, identify them us
 * 📱 **Responsive design** — Adaptive layouts for both mobile and desktop.
 * 🎨 **Dynamic UI components** — Interactive carousels, lightboxes and accordions built with JavaScript/Stimulus.
 
+## Responsive Design Examples:
+**Homepage from a large view port:**
+<img width="2499" height="1667" alt="screenshot from 28-09-2026-40" src="https://github.com/user-attachments/assets/b578b0b1-9e87-4b7f-9811-842c647bda00" />
+
+**Homepage from mobile view port**
+<img width="787" height="1250" alt="screenshot from 28-09-2026-39" src="https://github.com/user-attachments/assets/297aab0e-effe-4fc7-b56d-2c78143c670d" />
+
+
 ## How It Works
 
 1. **Snap** — The user uploads a photo of one or more Pokémon cards.
@@ -84,7 +92,7 @@ Users can:
 
 ## Project Background
 
-Gotta Track ’Em All was developed as part of the **Le Wagon AI Software Development Bootcamp**.
+Gotta Track ’Em All was started as part of the **Le Wagon AI Software Development Bootcamp**. The app was left in an incomplete state at the end of the boot camp so I decided to polish and deploy it.
 
 The project provided an opportunity to apply full-stack development concepts to a real-world application, combining a Ruby on Rails backend with a JavaScript frontend, relational database design, third-party APIs, background processing and AI-powered functionality.
 
@@ -107,3 +115,6 @@ Building GTAE gave me practical experience with:
 * JavaScript and Stimulus
 * Git/GitHub collaboration and development workflows
 * Connecting multiple services into a complete full-stack application
+* SMTP Configuration to a custom domain
+* Deployment using Docker images and Kamal
+  
