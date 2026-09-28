@@ -1,5 +1,7 @@
 # Gotta Track ’Em All
 
+This is the repo for the website [trackem.tech](https://trackem.tech)
+
 ### Snap. Discover. Collect.
 
 **Gotta Track ’Em All (GTAE)** is an AI-powered Pokémon card collection and tracking application built during the **Le Wagon AI Software Development Bootcamp**.
